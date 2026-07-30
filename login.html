@@ -51,7 +51,7 @@ const characterId = urlParams.get("id");
     const { data, error: lookupError } = await sb
         .from("characters")
         .select("email")
-        .eq("uuid", playerId)
+        .eq("playerID", characterId)
         .single();
 
     if (lookupError || !data) {
