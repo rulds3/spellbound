@@ -35,6 +35,9 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         async function syncCharacterData() {
             const { data: { user }, error: authError } = await sb.auth.getUser();
 
+const result = await sb.auth.getUser();
+console.log(result);
+
             if (authError || !user) {
                 window.location.href = "login.html";
                 return;
