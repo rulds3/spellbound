@@ -54,7 +54,7 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             });
 
             if (error) {
-                alert("ACCESS DENIED: Invalid PIN mapping for this character.");
+                alert("ACCESS DENIED: Wrong password.");
                 document.getElementById("pinInput").value = "";
             } else {
                 // Success! Route straight to your character page dashboard
