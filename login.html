@@ -17,11 +17,14 @@
 <body>
 
     <div class="login-card">
-  
+        <h2>🔐 Identity Verification</h2>
+        <p id="promptDesc">Verifying...</p>
+        
         <!--Input field is visible right away-->
-        <input type="password" id="pinInput" placeholder="ENTER PIN" maxlength="4">
-        <button id="authBtn">Enter Spellbound</button>
+//        <input type="password" id="pinInput" placeholder="ENTER PIN" maxlength="4">
+//        <button id="authBtn">Enter Spellbound</button>
 
+        <div class="status" id="statusMsg">Awaiting verification pin...</div>
     </div>
 
 
@@ -58,7 +61,8 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
             if (error) {
                 alert("ACCESS DENIED: Invalid PIN mapping for this character.");
-                document.getElementById("pinInput").value = "";            
+                document.getElementById("pinInput").value = "";
+                document.getElementById("statusMsg").innerText = "Awaiting verification pin...";
             } else {
                 // Success! Route straight to your character page dashboard
                 window.location.href = "index.html";
