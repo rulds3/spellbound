@@ -6,66 +6,109 @@
     <title>Player Terminal</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <style>
-        body { font-family: Arial, sans-serif; background: #0c0a0f; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .dashboard-box { background: rgba(17, 12, 28, 0.85); padding: 40px; border-radius: 12px; max-width: 500px; width: 90%; text-align: center; border: 1px solid #4c1d95; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        h1 { font-size: 2.2rem; color: #ffd700; margin-top: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .logout-btn { background: #333; color: #aaa; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 30px; font-size: 0.9rem; }
-        .logout-btn:hover { background: #444; color: #fff; }
-    </style>
-</head>
-<body>
+        body { 
+	   font-family: Arial, 
+           sans-serif; 
+           background: #0c0a0f; 
+           color: white; 
+           display: flex; 
+           justify-content: center; 
+           align-items: center; 
+           min-height: 
+           100vh; 
+           margin: 0; 
+        }
 
-    <div class="dashboard-box">
-        <!-- Renders the 'name' heading value directly from the database row -->
-        <h1 id="characterHeader">Loading...</h1>
-        <p id="characterStatus">Accessing static terminal configuration...</p>
+        .dashboard-box { 
+	    background: rgba(17, 12, 28, 0.85); 
+	    padding: 40px; 
+	    border-radius: 12px; 
+	    max-width: 500px; 
+	    width: 90%; 
+	    text-align: center; 
+	    border: 1px solid #4c1d95; 
+	    box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+	}
+
+        h1 { 
+	    font-size: 2.2rem; 
+	    color: #ffd700; 
+	    margin-top: 0; 
+	    text-shadow: 0 2px 4px rgba(0,0,0,0.5); 
+	}
+
+        .logout-btn { 
+	    background: #333; 
+	    color: #aaa; 
+	    padding: 10px 20px; 
+	    border: none; 
+	    border-radius: 6px; 
+	    cursor: pointer; 
+	    text-decoration: none; 
+	    display: inline-block; 
+	    margin-top: 30px; 
+	    font-size: 0.9rem; 
+	}
         
-        <hr style="border-color: #2e2640; margin: 20px 0;">
-        <p>Your session is active and secure.</p>
+	.logout-btn:hover { 
+	    background: #444; 
+	    color: #fff; 
+	}
+    </style>
 
-        <button class="logout-btn" id="logoutBtn">Logout</button>
-    </div>
+</head>
+    <body>
+        <div class="dashboard-box">
+            <!-- Renders the 'name' heading value directly from the database row -->
+            <h1 id="characterHeader">Loading...</h1>
+            <p id="characterStatus">Accessing static terminal configuration...</p>
+        
+            <hr style="border-color: #2e2640; margin: 20px 0;">
+            <p>Your session is active and secure.</p>
 
-<script>
-    const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </div>
 
-    async function syncCharacterData() {
-        // Check login using your PIN system
-        const playerID = sessionStorage.getItem("playerID");
+	<script>
+    	    const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
+       	    const SUPABASE_KEY = 				 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
+	    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        if (!playerID) {
-            // No login → send back to login page
-            window.location.href = "login.html";
-            return;
-        }
+    	    async function syncCharacterData() {
+            	// Check login using your PIN system
+        	const playerID = sessionStorage.getItem("playerID");
 
-        // Pull their data directly from spellboundPlayers
-        const { data: playerRow, error: dbError } = await sb
-            .from('spellboundPlayers')
-            .select('name')
-            .eq('playerID', playerID)
-            .single();
+        	if (!playerID) {
+            	// No login → send back to login page
+            	    window.location.href = "login.html";
+            	    return;
+            }
 
-        if (dbError || !playerRow) {
-            document.getElementById("characterHeader").innerText = "Unauthorized";
-            document.getElementById("characterStatus").innerText = "Character data unmapped.";
-            return;
-        }
+            // Pull their data directly from spellboundPlayers
+            const { data: playerRow, error: dbError } = await sb
+                .from('spellboundPlayers')
+                .select('name')
+                .eq('playerID', playerID)
+                .single();
 
-        // Display character name
-        document.getElementById("characterHeader").innerText = playerRow.name;
-        document.getElementById("characterStatus").innerText = "Terminal Synced Successfully.";
-    }
+        	if (dbError || !playerRow) {
+            	    document.getElementById("characterHeader").innerText = "Unauthorized";
+            	    document.getElementById("characterStatus").innerText = "Character data unmapped.";
+            	    return;
+        	}
 
-    // Logout clears your PIN session
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-        sessionStorage.clear();
-        window.location.href = "login.html";
-    });
+        	// Display character name
+        	document.getElementById("characterHeader").innerText = playerRow.name;
+        	document.getElementById("characterStatus").innerText = "Terminal Synced Successfully.";
+    	    }
 
-    syncCharacterData();
-</script>
-</body>
+    	    // Logout clears your PIN session
+    	    document.getElementById("logoutBtn").addEventListener("click", () => {
+                sessionStorage.clear();
+                window.location.href = "login.html";
+    	    });
+
+    	    syncCharacterData();
+	</script>
+    </body>
 </html>

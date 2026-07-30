@@ -6,78 +6,117 @@
     <title>Spellbound Terminal Authentication</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #0c0a0f; color: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-        .login-card { background: rgba(17, 12, 28, 0.9); padding: 40px; border-radius: 16px; max-width: 400px; width: 100%; text-align: center; border: 2px solid #6d28d9; box-shadow: 0 10px 30px rgba(109, 40, 217, 0.2); }
-        input { width: 100%; padding: 14px; box-sizing: border-box; background: #141021; border: 1px solid #4c1d95; color: #fff; border-radius: 8px; font-size: 1.2rem; text-align: center; letter-spacing: 4px; margin-top: 20px; }
-        button { width: 100%; padding: 14px; background: #7c3aed; color: white; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 15px; font-size: 1rem; }
-        button:hover { background: #6d28d9; }
+        body { 
+	    font-family: Arial, sans-serif; 
+	    background-color: #0c0a0f; 
+	    color: #f3f4f6; 
+	    display: flex; 
+	    justify-content: center; 
+	    align-items: center; 
+	    min-height: 100vh; 
+	    margin: 0; 
+	    padding: 20px; 
+	    box-sizing: border-box; 
+	}
+        
+	.login-card { 
+	    background: rgba(17, 12, 28, 0.9); 
+	    padding: 40px; 
+	    border-radius: 16px; 
+	    max-width: 400px; 
+	    width: 100%; 
+	    text-align: center; 
+	    border: 2px solid #6d28d9; 
+	    box-shadow: 0 10px 30px rgba(109, 40, 217, 0.2); 
+	}
+
+        input { 
+	    width: 100%; 
+	    padding: 14px; 
+	    box-sizing: border-box; 
+	    background: #141021; 
+	    border: 1px solid #4c1d95; 
+	    color: #fff; 
+	    border-radius: 8px; 
+	    font-size: 1.2rem; 
+	    text-align: center; 
+	    letter-spacing: 4px; 
+	    margin-top: 20px; 
+	}
+        
+	button { 
+	    width: 100%; 
+	    padding: 14px; 
+	    background: #7c3aed; 
+	    color: white; 
+	    border: none; 
+	    font-weight: bold; 
+	    border-radius: 8px; 
+	    cursor: pointer; 
+	    margin-top: 15px; 
+	    font-size: 1rem; 
+	}
+        
+	button:hover { background: #6d28d9; }
         .status { margin-top: 15px; color: #9ca3af; font-size: 0.9rem; }
     </style>
 </head>
-<body>
+    <body>
 
-    <div class="login-card">
-        <!--Input field is visible right away-->
-        <input type="password" id="pinInput" placeholder="ENTER PIN" maxlength="4">
-        <button id="authBtn">Enter Spellbound</button>
-        <div class="status" id="statusMsg"></div>
-    </div>
+        <div class="login-card">
+            <!--Input field is visible right away-->
+            <input type="password" id="pinInput" placeholder="ENTER PIN" maxlength="4">
+            <button id="authBtn">Enter Spellbound</button>
+            <div class="status" id="statusMsg"></div>
+        </div>
 
+	<script>
+	    const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
+	    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
 
-<script>
-const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
-
-
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-  auth: {
-    persistSession: false,
-    autoRefreshToken: false
-  }
-});
+	    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  		auth: {
+    		    persistSession: false,
+    		    autoRefreshToken: false
+  		}
+	    });
 
 
-// Get playerID from QR code URL
-const urlParams = new URLSearchParams(window.location.search);
-const playerID = urlParams.get("id");
+	    // Get playerID from QR code URL
+	    const urlParams = new URLSearchParams(window.location.search);
+	    const playerID = urlParams.get("id");
 
-// Make sure a QR code was scanned
-if (!playerID) {
-    document.getElementById("pinInput").style.display = "none";
-    document.getElementById("authBtn").style.display = "none";
-    document.getElementById("statusMsg").innerText =
-        "Please scan a character card.";
-}
+	    // Make sure a QR code was scanned
+	    if (!playerID) {
+    		document.getElementById("pinInput").style.display = "none";
+    		document.getElementById("authBtn").style.display = "none";
+    		document.getElementById("statusMsg").innerText = "Please scan a character card.";
+	    }
 
-document.getElementById("authBtn").addEventListener("click", async () => {
+	    document.getElementById("authBtn").addEventListener("click", async () => {
+    	    	const enteredPin = document.getElementById("pinInput").value;
+    	    	document.getElementById("statusMsg").innerText = "Checking credentials...";
 
-    const enteredPin = document.getElementById("pinInput").value;
+	   	const { data, error } = await sb
+        	    .from("spellboundPlayers")
+        	    .select("*")
+        	    .eq("playerID", playerID)
+        	    .eq("pin", enteredPin)
+        	    .single();
 
-    document.getElementById("statusMsg").innerText =
-        "Checking credentials...";
+	    	    if (error || !data) {
+        	       	alert("Wrong Pin");
+        	       	document.getElementById("pinInput").value = "";
+        		return;
+    	    	    }
 
-    const { data, error } = await sb
-        .from("spellboundPlayers")
-        .select("*")
-        .eq("playerID", playerID)
-        .eq("pin", enteredPin)
-        .single();
-
-    if (error || !data) {
-        alert("Wrong Pin");
-        document.getElementById("pinInput").value = "";
-        return;
-    }
-
-    // Save who logged in
-    sessionStorage.setItem("playerID", data.playerID);
-    sessionStorage.setItem("playerName", data.name);
+    	    	    // Save who logged in
+    	    	    sessionStorage.setItem("playerID", data.playerID);
+    	    	    sessionStorage.setItem("playerName", data.name);
     
-    setTimeout(() => {
-        window.location.href = "index.html";
-    }, 50);
+    	    	  
 
-});
-    </script>
-</body>
+	     	});
+  	</script>
+    </body>
 </html>
