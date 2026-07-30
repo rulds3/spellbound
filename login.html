@@ -98,10 +98,6 @@
 		event.preventDefault(); 
    	    	const enteredPin = document.getElementById("pinInput").value;
     	    	document.getElementById("statusMsg").innerText = "Checking credentials...";
-
-		console.log("playerID:", playerID);
-		console.log("PIN:", enteredPin);
-
 	   	const { data, error } = await sb
         	    .from("spellboundPlayers")
         	    .select("*")
@@ -110,7 +106,7 @@
         	    .single();
 
 	    	    if (error || !data) {
-        	       	alert("WRONG PIN");
+			document.getElementById("statusMsg").innerText = "WRONG PIN";
         	       	document.getElementById("pinInput").value = "";
         		return;
     	    	    }else {
