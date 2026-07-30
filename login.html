@@ -96,9 +96,6 @@
 
 	    document.getElementById("loginForm").addEventListener("submit", async (event) => {
 		event.preventDefault(); 
-
-		console.log("Form submitted");
-		
    	    	const enteredPin = document.getElementById("pinInput").value;
     	    	document.getElementById("statusMsg").innerText = "Checking credentials...";
 
@@ -116,11 +113,14 @@
         	       	alert("WRONG PIN");
         	       	document.getElementById("pinInput").value = "";
         		return;
-    	    	    }
-
-    	    	    // Save who logged in
-    	    	    sessionStorage.setItem("playerID", data.playerID);
-    	    	    sessionStorage.setItem("playerName", data.name);
+    	    	    }else {
+                       	// Save who logged in
+    	    	    	sessionStorage.setItem("playerID", data.playerID);
+    	    	    	sessionStorage.setItem("playerName", data.name);
+			
+			// Success! Route straight to your character page dashboard
+                	window.location.href = "index.html";
+            	    }
 	     });
   	</script>
     </body>
