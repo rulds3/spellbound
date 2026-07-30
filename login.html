@@ -31,10 +31,10 @@
 <script>
 const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 console.log(window.supabase);
-console.log(supabase);
+console.log(sb);
 
 
         // 1. Automatically grab the text from the link address bar and looks for '?id='string
@@ -58,7 +58,7 @@ console.log(supabase);
             const enteredPin = document.getElementById("pinInput").value;
             document.getElementById("statusMsg").innerText = "Authorizing credentials...";
 
-            const { error } = await supabase.auth.signInWithPassword({
+            const { error } = await sb.auth.signInWithPassword({
                 email: characterEmail, // Fed automatically from the QR link code
                 password: enteredPin
             });
