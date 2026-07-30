@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Master Admin Dashboard</title>
+    <!-- Loads the Supabase framework -->
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111111;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .admin-box {
+            background-color: rgba(20, 20, 20, 0.9);
+            border: 2px solid #ff4444; /* Red accent for admin tools */
+            max-width: 500px;
+            width: 90%;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.1);
+        }
+
+        .danger-btn {
+            background-color: #cc0000;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: background 0.2s ease;
+        }
+
+        .danger-btn:hover { background-color: #ff0000; }
+        .danger-btn:active { transform: translateY(1px); }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #888888;
+            text-decoration: none;
+        }
+        .back-link:hover { color: #ffffff; }
+    </style>
+</head>
+<body>
+
+// Strict Admin Only Check
+supabase.auth.getUser().then(({ data }) => {
+    if (!data.user || data.user.email !== "your-admin-email@example.com") {
+        alert("ACCESS DENIED: Game Masters Only!");
+        window.location.href = "login.html";
+    }
+});
+
+
+    <div class="admin-box">
+        <h1>🛠️ Game Master Panel</h1>
+        <p>Manage your small community's active game session.</p>
+        <hr style="border-color: #333; margin: 20px 0;">
+
+        <h3>Ability Replenishment</h3>
+        <p style="color: #aaa; font-size: 0.9rem;">
+            Clicking this button wipes out all tracking entries. Every player will immediately regain their full spell charges.
+        </p>
+        
+        <!-- The Reset Button -->
+        <button class="danger-btn" id="resetBtn">Reset All Player Charges</button>
+
+        <a href="index.html" class="back-link">← Return to Main Screen</a>
+    </div>
+
+    <script>
+        // Connect to your project database
+        const SUPABASE_URL = "https://supabase.co";
+        const SUPABASE_KEY = "your-anon-public-key";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        document.getElementById("resetBtn").addEventListener("click", async () => {
+            // Safety double check to prevent accidental misclicks
+            const confirmReset = confirm("CRITICAL ACTION: Are you sure you want to completely wipe the logs and restore all player abilities?");
+            
+            if (!confirmReset) return;
+
+            // Trigger the secure server function we created in Step 1
+            const { error } = await supabase.rpc('reset_all_player_abilities');
+
+            if (error) {
+                alert("Reset failed: " + error.message);
+                console.error(error);
+            } else {
+                alert("💥 Session wiped successfully! All player abilities are fully restored.");
+            }
+        });
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+Step 1: Update Your Database Security PolicyBecause deleting data is a highly sensitive action, Supabase requires an explicit security rule allowing it.Go to your Supabase Dashboard, open the SQL Editor, and run this command once to allow row deletion on your table:
+
+-- Create a security policy that allows targeting specific rows for deletion
+create policy "Allow anonymous deletions" on object_uses 
+for delete using (true);
+
+
+
+Step 2: Add the Player Selection UI to Your Admin PageOpen your admin.html file in Notepad. We will add a text input field so you can type in the exact name of the player you want to target, followed by a targeted reset button.Replace the content inside your <div class="admin-box"> with this updated layout:
+
+
+<div class="admin-box">
+    <h1>🛠️ Game Master Panel</h1>
+    <p>Manage your small community's active game session.</p>
+    <hr style="border-color: #333; margin: 20px 0;">
+
+    <h3>Targeted Player Reset</h3>
+    <p style="color: #aaa; font-size: 0.9rem;">
+        Type a player's ID below to fully restore only their specific spell charges.
+    </p>
+    
+    <!-- Input box to type the target player's name -->
+    <input type="text" id="targetPlayerInput" placeholder="Enter Player ID (e.g., user_1234)" 
+           style="width: 100%; padding: 12px; box-sizing: border-box; border-radius: 6px; border: 1px solid #555; background: #222; color: #fff; font-size: 1rem; margin-bottom: 10px;">
+
+    <!-- Button for a single target -->
+    <button class="danger-btn" id="resetSingleBtn" style="background-color: #d97706; margin-bottom: 25px;">Reset This Player Only</button>
+
+    <hr style="border-color: #333; margin: 20px 0;">
+
+    <h3>Global Server Reset</h3>
+    <!-- Keep your previous button here as a nuclear option if you ever need it -->
+    <button class="danger-btn" id="resetBtn">Reset All Player Charges</button>
+
+    <a href="index.html" class="back-link">← Return to Main Screen</a>
+</div>
+
+
+
+Step 3: Add the Target Delete JavaScript LogicNow, scroll down to the <script> tag at the bottom of your admin.html file and add this new click listener right alongside your old global reset code:
+
+
+document.getElementById("resetSingleBtn").addEventListener("click", async () => {
+    // 1. Get the name typed into the input field
+    const targetPlayer = document.getElementById("targetPlayerInput").value.trim();
+
+    // 2. Safety check: make sure you didn't leave the field blank
+    if (!targetPlayer) {
+        alert("Please enter a valid Player ID first!");
+        return;
+    }
+
+    // 3. Confirm your choice
+    const confirmSingle = confirm(`Are you sure you want to restore all abilities for ${targetPlayer}?`);
+    if (!confirmSingle) return;
+
+    // 4. Run the targeted deletion query
+    const { error } = await supabase
+        .from('object_uses')
+        .delete()
+        .eq('player_id', targetPlayer); // <-- Filters and deletes only rows matching this string
+
+    if (error) {
+        alert("Targeted reset failed: " + error.message);
+        console.error(error);
+    } else {
+        alert(`✨ Successfully restored all ability charges for player: ${targetPlayer}`);
+        document.getElementById("targetPlayerInput").value = ""; // Clear input field
+    }
+});

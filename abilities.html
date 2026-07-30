@@ -1,0 +1,98 @@
+<div class="text-box">
+    <h1>Your Spellbook</h1>
+    <p>Player: <strong id="playerDisplay">Loading...</strong></p>
+    <hr>
+
+    <!-- Ability 1 -->
+    <div class="ability-card">
+        <h3>🔥 Fireball</h3>
+        <p>Uses Left: <strong id="fireballUses">5 / 5</strong></p>
+        <button class="game-btn" id="castFireball">Cast Fireball</button>
+    </div>
+
+    <!-- Ability 2 -->
+    <div class="ability-card">
+        <h3>⚡ Lightning Bolt</h3>
+        <p>Uses Left: <strong id="lightningUses">3 / 3</strong></p>
+        <button class="game-btn" id="castLightning">Cast Lightning</button>
+    </div>
+
+    <br>
+    <a href="index.html" class="back-btn">Exit Menu</a>
+</div>
+
+
+
+
+
+
+
+const SUPABASE_URL = "https://supabase.co";
+const SUPABASE_KEY = "your-anon-public-key";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Define maximum rules for your game mechanics
+const ABILITY_LIMITS = {
+    "fireball": 5,
+    "lightning": 3
+};
+
+// Use the local browser cache to remember who this specific community player is
+if (!localStorage.getItem("gamePlayerId")) {
+    localStorage.setItem("gamePlayerId", "user_" + Math.floor(Math.random() * 10000));
+}
+const currentPlayerId = localStorage.getItem("gamePlayerId");
+document.getElementById("playerDisplay").innerText = currentPlayerId;
+
+// 1. Function to refresh and calculate remaining charges from the database
+async function updateAbilityDisplays() {
+    // Pull ALL object/ability actions belonging to THIS player
+    const { data, error } = await supabase
+        .from('object_uses')
+        .select('object_id')
+        .eq('player_id', currentPlayerId);
+
+    if (error) return console.error(error);
+
+    // Count how many times each ability appears in their database records
+    let counts = { fireball: 0, lightning: 0 };
+    data.forEach(row => {
+        if (counts[row.object_id] !== undefined) {
+            counts[row.object_id]++;
+        }
+    });
+
+    // Calculate remaining charges (Max Limit minus Used Rows)
+    const fireballLeft = Math.max(0, ABILITY_LIMITS.fireball - counts.fireball);
+    const lightningLeft = Math.max(0, ABILITY_LIMITS.lightning - counts.lightning);
+
+    // Update the numbers on the screen dynamically
+    document.getElementById("fireballUses").innerText = `${fireballLeft} / ${ABILITY_LIMITS.fireball}`;
+    document.getElementById("lightningUses").innerText = `${lightningLeft} / ${ABILITY_LIMITS.lightning}`;
+
+    // Disable the physical buttons if they run out of charges
+    document.getElementById("castFireball").disabled = (fireballLeft <= 0);
+    document.getElementById("castLightning").disabled = (lightningLeft <= 0);
+}
+
+// 2. Function to log an execution in the database when they use an ability
+async function castAbility(abilityName) {
+    const { error } = await supabase
+        .from('object_uses')
+        .insert([{ player_id: currentPlayerId, object_id: abilityName }]);
+
+    if (error) {
+        alert("Cast failed! Connection issue.");
+    } else {
+        alert(`Successfully cast ${abilityName}!`);
+        // Immediately reload database data to update the counts on screen
+        updateAbilityDisplays();
+    }
+}
+
+// 3. Link your button clicks to the functions
+document.getElementById("castFireball").addEventListener("click", () => castAbility("fireball"));
+document.getElementById("castLightning").addEventListener("click", () => castAbility("lightning"));
+
+// Load their current counts automatically on startup
+updateAbilityDisplays();

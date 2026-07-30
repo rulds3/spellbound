@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Authentication</title>
+    <!-- Loads the Supabase framework -->
+    <script src="https://jsdelivr.net"></script>
+    <!-- Loads the Free QR Code Scanner Library -->
+    <script src="https://unpkg.com"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #111; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .auth-box { background: rgba(0, 0, 0, 0.85); padding: 30px; border-radius: 12px; max-width: 400px; width: 100%; text-align: center; border: 1px solid #4f46e5; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        #reader { width: 100%; background: #222; border-radius: 8px; margin: 20px 0; overflow: hidden; }
+        .status-msg { margin-top: 15px; color: #aaa; font-size: 0.9rem; }
+        
+        /* Hidden input container that appears post-scan */
+        #pinContainer { display: none; margin-top: 20px; }
+        input { width: 100%; padding: 12px; box-sizing: border-box; background: #222; border: 1px solid #555; color: white; border-radius: 6px; font-size: 1.1rem; text-align: center; letter-spacing: 2px; }
+        button { width: 100%; padding: 14px; background: #4f46e5; color: white; border: none; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 15px; font-size: 1rem; }
+        button:hover { background: #6366f1; }
+    </style>
+</head>
+<body>
+
+    <div class="auth-box">
+        <h2 id="titleText">Step 1: Scan QR Card</h2>
+        <p id="descText">Hold your unique character QR card up to the camera lens.</p>
+        
+        <!-- Camera Area -->
+        <div id="reader"></div>
+
+        <!-- Hidden Pin Area (Unlocks after scan) -->
+        <div id="pinContainer">
+            <input type="password" id="playerPin" placeholder="Enter Secret Code / PIN">
+            <button id="submitBtn">Unlock Character</button>
+        </div>
+
+        <div class="status-msg" id="status">Waiting for camera...</div>
+    </div>
+
+    <script>
+        // Initialize Supabase configuration
+        const SUPABASE_URL = "https://supabase.co";
+        const SUPABASE_KEY = "your-anon-public-key";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Variable to remember the scanned character profile temporarily
+        let scannedEmail = "";
+
+        // Initialize the live web camera scanner
+        const html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", { fps: 10, qrbox: { width: 250, height: 250 } }, false
+        );
+
+        // This runs the millisecond a character QR code card hits the lens view
+        async function onScanSuccess(decodedText, decodedResult) {
+            // Stop camera immediately to clean up memory layout
+            html5QrcodeScanner.clear();
+            
+            // Save the raw text inside the card (the character email string)
+            scannedEmail = decodedText.trim();
+
+            // Modify UI to change into Password mode
+            document.getElementById("reader").style.display = "none";
+            document.getElementById("titleText").innerText = "Step 2: Security Check";
+            document.getElementById("descText").innerText = `Verifying identity token. Enter the secret code to access this profile.`;
+            document.getElementById("pinContainer").style.display = "block";
+            document.getElementById("status").innerText = "Character identity held safely in queue.";
+            
+            // Auto focus on the input box so they can just start typing immediately
+            document.getElementById("playerPin").focus();
+        }
+
+        function onScanFailure(error) { /* Normal telemetry noise ignored */ }
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+
+        // This runs when they click the unlock button or submit their code
+        document.getElementById("submitBtn").addEventListener("click", async () => {
+            const playerCode = document.getElementById("playerPin").value;
+            
+            if(!playerCode) {
+                alert("You must enter a code!");
+                return;
+            }
+
+            document.getElementById("status").innerText = "Authorizing credentials with server cloud...";
+
+            // Dial out to Supabase using the scanned card + typed private code
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: scannedEmail,
+                password: playerCode
+            });
+
+            if (error) {
+                alert("ACCESS DENIED: Incorrect secret code for this card!");
+                // Reload the webpage to restart the camera scanner loop cleanly
+                location.reload();
+            } else {
+                // Route directly based on who logged in successfully
+                if (scannedEmail === "admin@game.com") {
+                    window.location.href = "admin.html";
+                } else {
+                    window.location.href = "index.html";
+                }
+            }
+        });
+    </script>
+</body>
+</html>
