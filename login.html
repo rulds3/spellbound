@@ -47,21 +47,21 @@ const characterId = urlParams.get("id");
     const enteredPin = document.getElementById("pinInput").value;
     document.getElementById("statusMsg").innerText = "Authorizing credentials...";
 
-const { data, error } = await sb
+const { d, e } = await sb
     .from("characters")
     .select("*")
     .eq("playerID", characterId);
 
-console.log("Data:", data);
-console.log("Error:", error);
+console.log("Data:", d);
+console.log("Error:", e);
 
 
     // Look up email from UUID
-   // const { data, error: lookupError } = await sb
-     //   .from("characters")
-     //   .select("email")
-     //   .eq("playerID", characterId)
-     //   .single();
+    const { data, error: lookupError } = await sb
+        .from("characters")
+        .select("email")
+        .eq("playerID", characterId)
+        .single();
 
     if (lookupError || !data) {
         alert("Invalid character.");
@@ -69,9 +69,9 @@ console.log("Error:", error);
     }
 
     // Sign in using the email we found
-  //  const { error } = await sb.auth.signInWithPassword({
-  //      email: data.email,
-  //      password: enteredPin
+    const { error } = await sb.auth.signInWithPassword({
+        email: data.email,
+        password: enteredPin
     });
 
     if (error) {
