@@ -66,7 +66,7 @@
             <div class="login-card">
                 <!--Input field is visible right away-->
                 <input type="password" id="pinInput" placeholder="ENTER PIN" maxlength="4">
-                <button id="authBtn" type="submit>Enter Spellbound</button>
+                <button id="authBtn" type="submit">Enter Spellbound</button>
                 <div class="status" id="statusMsg"></div>
             </div>
 	</form>
@@ -95,7 +95,8 @@
 	    }
 
 	    document.getElementById("loginForm").addEventListener("submit", async (event) => {
-    	    	const enteredPin = document.getElementById("pinInput").value;
+		event.preventDefault(); 
+   	    	const enteredPin = document.getElementById("pinInput").value;
     	    	document.getElementById("statusMsg").innerText = "Checking credentials...";
 
 	   	const { data, error } = await sb
