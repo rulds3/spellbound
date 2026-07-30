@@ -20,7 +20,7 @@
         <h2>🔐 Identity Verification</h2>
         <p id="promptDesc">Verifying artifact token sequence...</p>
         
-        /*Input field is visible right away*/
+        <!--Input field is visible right away-->
         <input type="password" id="pinInput" placeholder="ENTER PIN" maxlength="6">
         <button id="authBtn">Enter Spellbound</button>
 
@@ -28,19 +28,15 @@
     </div>
 
     <script>
-/*      const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co"; */
-/*      const SUPABASE_KEY = "your-anon-public-key";*/
-/*        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);*/
-
 /*import { createClient } from '@supabase/supabase-js';*/
 const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co/rest/v1/";
 const SUPABASE_KEY = "sb_publishable_4TfbQ2p0G9oZcsz3MR9Npw_ty3go8wO";
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 
-        /* 1. Automatically grab the text from the link address bar*/
+        /* 1. Automatically grab the text from the link address bar and looks for '?id='string*/
         const urlParams = new URLSearchParams(window.location.search);
-        const characterEmail = urlParams.get('id'); /* Looks for '?id=' string*/
+        const characterEmail = urlParams.get('id'); 
 
         /* 2. Security Check: Ensure they actually arrived here via a valid character QR code*/
         if (!characterEmail) {
