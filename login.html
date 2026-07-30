@@ -17,7 +17,7 @@
 <body>
 
     <div class="login-card">
-        <p id="promptDesc">Welcome!</p>
+        <p id="promptDesc" hidden>Welcome!</p>
         <!--Input field is visible right away-->
         <input type="password" id="pinInput" placeholder="ENTER PIN" maxlength="4">
         <button id="authBtn">Enter Spellbound</button>
@@ -34,7 +34,6 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const urlParams = new URLSearchParams(window.location.search);
         const characterEmail = urlParams.get('id'); 
 
-console.log(characterEmail);
         // 2. Security Check: Ensure they actually arrived here via a valid character QR code
         if (!characterEmail) {
             document.getElementById("promptDesc").innerText = "ACCESS DENIED: No character artifact detected.";
