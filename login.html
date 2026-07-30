@@ -40,6 +40,7 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             document.getElementById("statusMsg").innerText = "Please scan a physical character card.";
         } else {
             // Clean up display text to show who is checking in
+            document.getElementById("promptDesc").innerText = `Unlocking sequence for token: ${characterEmail}`;
             document.getElementById("pinInput").focus();
         }
 
