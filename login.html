@@ -33,6 +33,8 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const urlParams = new URLSearchParams(window.location.search);
 const characterId = urlParams.get("id");
 
+console.log("Character ID:", characterId);
+
         // 2. Security Check: Ensure they actually arrived here via a valid character QR code
        if (!characterId) {
     document.getElementById("pinInput").style.display = "none";
