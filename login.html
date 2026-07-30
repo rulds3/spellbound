@@ -29,29 +29,34 @@ const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // 1. Automatically grab the text from the link address bar and looks for '?id='string
+// Get playerID from QR code URL
 const urlParams = new URLSearchParams(window.location.search);
-const characterId = urlParams.get("id");
+const playerID = urlParams.get("id");
 
-
-        // 2. Security Check: Ensure they actually arrived here via a valid character QR code
-       if (!characterId) {
+// Make sure a QR code was scanned
+if (!playerID) {
     document.getElementById("pinInput").style.display = "none";
     document.getElementById("authBtn").style.display = "none";
     document.getElementById("statusMsg").innerText =
-        "Please scan a physical character card.";
+        "Please scan a character card.";
 }
 
-      document.getElementById("authBtn").addEventListener("click", async () => {
+document.getElementById("authBtn").addEventListener("click", async () => {
 
     const enteredPin = document.getElementById("pinInput").value;
+
+    document.getElementById("statusMsg").innerText =
+        "Checking credentials...";
 
     const { data, error } = await sb
         .from("spellboundPlayers")
         .select("*")
-        .eq("playerID", characterId)
+        .eq("playerID", playerID)
         .eq("pin", enteredPin)
         .single();
+
+    console.log(data);
+    console.log(error);
 
     if (error || !data) {
         alert("ACCESS DENIED");
@@ -59,11 +64,12 @@ const characterId = urlParams.get("id");
         return;
     }
 
-    // Save which player logged in
+    // Save who logged in
     sessionStorage.setItem("playerID", data.playerID);
     sessionStorage.setItem("playerName", data.name);
 
     window.location.href = "index.html";
+
 });
     </script>
 </body>
