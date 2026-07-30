@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spellbound Terminal Login</title>
+    <title>Spellbound Terminal Authentication</title>
     <script src="https://jsdelivr.net"></script>
-    <script src="https://unpkg.com"></script>
     <style>
         body { font-family: Arial, sans-serif; background-color: #0c0a0f; color: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
         .login-card { background: rgba(17, 12, 28, 0.9); padding: 40px; border-radius: 16px; max-width: 400px; width: 100%; text-align: center; border: 2px solid #6d28d9; box-shadow: 0 10px 30px rgba(109, 40, 217, 0.2); }
-        #reader { width: 100%; background: #1f192e; border-radius: 8px; margin: 20px 0; overflow: hidden; }
-        #pinArea { display: none; margin-top: 20px; }
-        input { width: 100%; padding: 14px; box-sizing: border-box; background: #141021; border: 1px solid #4c1d95; color: #fff; border-radius: 8px; font-size: 1.2rem; text-align: center; letter-spacing: 4px; }
+        input { width: 100%; padding: 14px; box-sizing: border-box; background: #141021; border: 1px solid #4c1d95; color: #fff; border-radius: 8px; font-size: 1.2rem; text-align: center; letter-spacing: 4px; margin-top: 20px; }
         button { width: 100%; padding: 14px; background: #7c3aed; color: white; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 15px; font-size: 1rem; }
         button:hover { background: #6d28d9; }
         .status { margin-top: 15px; color: #9ca3af; font-size: 0.9rem; }
@@ -20,17 +17,14 @@
 <body>
 
     <div class="login-card">
-        <h2 id="stepTitle">🔮 Scan Your Artifact</h2>
-        <p id="stepDesc">Hold your unique QR code up to the camera lens.</p>
+        <h2>🔐 Identity Verification</h2>
+        <p id="promptDesc">Verifying artifact token sequence...</p>
         
-        <div id="reader"></div>
+        <!-- Input field is visible right away -->
+        <input type="password" id="pinInput" placeholder="ENTER PIN" maxlength="6">
+        <button id="authBtn">Enter Spellbound</button>
 
-        <div id="pinArea">
-            <input type="password" id="pinInput" placeholder="ENTER PIN" maxlength="6">
-            <button id="authBtn">Enter Spellbound</button>
-        </div>
-
-        <div class="status" id="statusMsg">Initializing camera feed...</div>
+        <div class="status" id="statusMsg">Awaiting verification pin...</div>
     </div>
 
     <script>
@@ -38,36 +32,38 @@
         const SUPABASE_KEY = "your-anon-public-key";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let scannedCardEmail = "";
-        const scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }, false);
+        // 1. Automatically grab the text from the link address bar
+        const urlParams = new URLSearchParams(window.location.search);
+        const characterEmail = urlParams.get('id'); // Looks for '?id=' string
 
-        async function onScanSuccess(decodedText) {
-            scanner.clear(); 
-            scannedCardEmail = decodedText.trim();
-
-            document.getElementById("reader").style.display = "none";
-            document.getElementById("stepTitle").innerText = "🔐 Identity Found";
-            document.getElementById("stepDesc").innerText = "Enter your secret pin number to unlock your terminal.";
-            document.getElementById("pinArea").style.display = "block";
-            document.getElementById("statusMsg").innerText = "Card token verified.";
+        // 2. Security Check: Ensure they actually arrived here via a valid character QR code
+        if (!characterEmail) {
+            document.getElementById("promptDesc").innerText = "ACCESS DENIED: No character artifact detected.";
+            document.getElementById("pinInput").style.display = "none";
+            document.getElementById("authBtn").style.display = "none";
+            document.getElementById("statusMsg").innerText = "Please scan a physical character card.";
+        } else {
+            // Clean up display text to show who is checking in
+            document.getElementById("promptDesc").innerText = `Unlocking sequence for token: ${characterEmail}`;
             document.getElementById("pinInput").focus();
         }
 
-        scanner.render(onScanSuccess, () => {});
-
+        // 3. Process the PIN submission
         document.getElementById("authBtn").addEventListener("click", async () => {
             const enteredPin = document.getElementById("pinInput").value;
             document.getElementById("statusMsg").innerText = "Authorizing credentials...";
 
             const { error } = await supabase.auth.signInWithPassword({
-                email: scannedCardEmail,
+                email: characterEmail, // Fed automatically from the QR link code
                 password: enteredPin
             });
 
             if (error) {
-                alert("ACCESS DENIED: Invalid PIN mapping for this character card.");
-                location.reload(); 
+                alert("ACCESS DENIED: Invalid PIN mapping for this character.");
+                document.getElementById("pinInput").value = "";
+                document.getElementById("statusMsg").innerText = "Awaiting verification pin...";
             } else {
+                // Success! Route straight to your character page dashboard
                 window.location.href = "index.html";
             }
         });
