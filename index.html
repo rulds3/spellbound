@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Player Terminal</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js">
     <style>
         body { font-family: Arial, sans-serif; background: #0c0a0f; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
         .dashboard-box { background: rgba(17, 12, 28, 0.85); padding: 40px; border-radius: 12px; max-width: 500px; width: 90%; text-align: center; border: 1px solid #4c1d95; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
@@ -25,14 +26,14 @@
         <button class="logout-btn" id="logoutBtn">Disconnect Session</button>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js">
+<script>
 const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 
         async function syncCharacterData() {
-            const { data: { user }, error: authError } = await supabase.auth.getUser();
+            const { data: { user }, error: authError } = await sb.auth.getUser();
 
             if (authError || !user) {
                 window.location.href = "login.html";
@@ -40,7 +41,7 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             }
 
             // Pull their data directly from the spellboundPlayers row matching their ID
-            const { data: playerRow, error: dbError } = await supabase
+            const { data: playerRow, error: dbError } = await sb
                 .from('spellboundPlayers')
                 .select('name')
                 .eq('playerID', user.id)
@@ -58,7 +59,7 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         }
 
         document.getElementById("logoutBtn").addEventListener("click", async () => {
-            await supabase.auth.signOut();
+            await sb.auth.signOut();
             window.location.href = "login.html";
         });
 
