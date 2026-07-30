@@ -30,46 +30,47 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // 1. Automatically grab the text from the link address bar and looks for '?id='string
-        const urlParams = new URLSearchParams(window.location.search);
-        const characterId = urlParams.get('id'); 
+const urlParams = new URLSearchParams(window.location.search);
+const characterId = urlParams.get("id");
 
         // 2. Security Check: Ensure they actually arrived here via a valid character QR code
-        if (!characterId) {
-            document.getElementById("pinInput").style.display = "none";
-            document.getElementById("authBtn").style.display = "none";
-            document.getElementById("statusMsg").innerText = "Please scan a physical character card.";
-        } 
+       if (!characterId) {
+    document.getElementById("pinInput").style.display = "none";
+    document.getElementById("authBtn").style.display = "none";
+    document.getElementById("statusMsg").innerText =
+        "Please scan a physical character card.";
+}
 
-        // 3. Process the PIN submission 
-        document.getElementById("authBtn").addEventListener("click", async () => {
-            const enteredPin = document.getElementById("pinInput").value;
-            document.getElementById("statusMsg").innerText = "Authorizing credentials...";
+       document.getElementById("authBtn").addEventListener("click", async () => {
 
- 	// Look up email from UUID
-   	 const { data, error: lookupError } = await sb
-        	.from("characters")
-       	 	.select("email")
-        	.eq("uuid", characterId)
-        	.single();
+    const enteredPin = document.getElementById("pinInput").value;
+    document.getElementById("statusMsg").innerText = "Authorizing credentials...";
 
-   	 if (lookupError || !data) {
-        	alert("Invalid character.");
-        	return;
-    	}
+    // Look up email from UUID
+    const { data, error: lookupError } = await sb
+        .from("characters")
+        .select("email")
+        .eq("uuid", characterId)
+        .single();
 
-            const { error } = await sb.auth.signInWithPassword({
-                email: data.email,
-                password: enteredPin
-            });
+    if (lookupError || !data) {
+        alert("Invalid character.");
+        return;
+    }
 
-            if (error) {
-                alert("ACCESS DENIED: Wrong pin.");
-                document.getElementById("pinInput").value = "";
-            } else {
-                // Success! Route straight to your character page dashboard
-                window.location.href = "index.html";
-            }
-        });
+    // Sign in using the email we found
+    const { error } = await sb.auth.signInWithPassword({
+        email: data.email,
+        password: enteredPin
+    });
+
+    if (error) {
+        alert("ACCESS DENIED: Wrong PIN.");
+        document.getElementById("pinInput").value = "";
+    } else {
+        window.location.href = "index.html";
+    }
+});
     </script>
 </body>
 </html>
