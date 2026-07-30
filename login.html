@@ -27,7 +27,16 @@
 <script>
 const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+//const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false
+  }
+});
+
 
 // Get playerID from QR code URL
 const urlParams = new URLSearchParams(window.location.search);
