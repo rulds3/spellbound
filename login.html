@@ -17,7 +17,6 @@
 <body>
 
     <div class="login-card">
-        <p id="promptDesc" hidden>Welcome!</p>
         <!--Input field is visible right away-->
         <input type="password" id="pinInput" placeholder="ENTER PIN" maxlength="4">
         <button id="authBtn">Enter Spellbound</button>
@@ -32,11 +31,10 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // 1. Automatically grab the text from the link address bar and looks for '?id='string
         const urlParams = new URLSearchParams(window.location.search);
-        const characterEmail = urlParams.get('id'); 
+        const characterId = urlParams.get('id'); 
 
         // 2. Security Check: Ensure they actually arrived here via a valid character QR code
-        if (!characterEmail) {
-            document.getElementById("promptDesc").innerText = "ACCESS DENIED: No character artifact detected.";
+        if (!characterId) {
             document.getElementById("pinInput").style.display = "none";
             document.getElementById("authBtn").style.display = "none";
             document.getElementById("statusMsg").innerText = "Please scan a physical character card.";
@@ -47,8 +45,20 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             const enteredPin = document.getElementById("pinInput").value;
             document.getElementById("statusMsg").innerText = "Authorizing credentials...";
 
+ 	// Look up email from UUID
+   	 const { data, error: lookupError } = await sb
+        	.from("characters")
+       	 	.select("email")
+        	.eq("uuid", characterId)
+        	.single();
+
+   	 if (lookupError || !data) {
+        	alert("Invalid character.");
+        	return;
+    	}
+
             const { error } = await sb.auth.signInWithPassword({
-                email: characterEmail, // Fed automatically from the QR link code
+                email: data.email,
                 password: enteredPin
             });
 
