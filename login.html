@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spellbound Terminal Authentication</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+   /* <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>*/
     <style>
         body { font-family: Arial, sans-serif; background-color: #0c0a0f; color: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
         .login-card { background: rgba(17, 12, 28, 0.9); padding: 40px; border-radius: 16px; max-width: 400px; width: 100%; text-align: center; border: 2px solid #6d28d9; box-shadow: 0 10px 30px rgba(109, 40, 217, 0.2); }
@@ -29,10 +29,13 @@
 
     <script>
 /*import { createClient } from '@supabase/supabase-js';*/
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
 const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/*const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);*/
 
 
         /* 1. Automatically grab the text from the link address bar and looks for '?id='string*/
