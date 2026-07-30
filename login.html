@@ -47,6 +47,15 @@ const characterId = urlParams.get("id");
     const enteredPin = document.getElementById("pinInput").value;
     document.getElementById("statusMsg").innerText = "Authorizing credentials...";
 
+const { data, error } = await sb
+    .from("characters")
+    .select("*")
+    .eq("playerID", characterId);
+
+console.log("Data:", data);
+console.log("Error:", error);
+
+
     // Look up email from UUID
     const { data, error: lookupError } = await sb
         .from("characters")
