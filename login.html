@@ -63,11 +63,8 @@ document.getElementById("authBtn").addEventListener("click", async () => {
         .eq("pin", enteredPin)
         .single();
 
-    console.log(data);
-    console.log(error);
-
     if (error || !data) {
-        alert("ACCESS DENIED");
+        alert("Wrong Pin");
         document.getElementById("pinInput").value = "";
         return;
     }
@@ -75,8 +72,10 @@ document.getElementById("authBtn").addEventListener("click", async () => {
     // Save who logged in
     sessionStorage.setItem("playerID", data.playerID);
     sessionStorage.setItem("playerName", data.name);
-
-    window.location.href = "index.html";
+    
+    setTimeout(() => {
+        window.location.href = "index.html";
+    }, 50);
 
 });
     </script>
