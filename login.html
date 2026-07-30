@@ -17,12 +17,12 @@
 <body>
 
     <div class="login-card">
-        <h2>🔐 Identity Verification</h2>
+      /*  <h2>🔐 Identity Verification</h2>*/
         <p id="promptDesc">Verifying...</p>
         
         <!--Input field is visible right away-->
-//        <input type="password" id="pinInput" placeholder="ENTER PIN" maxlength="4">
-//        <button id="authBtn">Enter Spellbound</button>
+        <input type="password" id="pinInput" placeholder="ENTER PIN" maxlength="4">
+        <button id="authBtn">Enter Spellbound</button>
 
         <div class="status" id="statusMsg">Awaiting verification pin...</div>
     </div>
@@ -45,7 +45,6 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             document.getElementById("statusMsg").innerText = "Please scan a physical character card.";
         } else {
             // Clean up display text to show who is checking in
-            document.getElementById("promptDesc").innerText = `Unlocking sequence for token: ${characterEmail}`;
             document.getElementById("pinInput").focus();
         }
 
