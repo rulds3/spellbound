@@ -105,7 +105,7 @@
         	    .single();
 
 	    	    if (error || !data) {
-        	       	alert("Wrong Pin");
+        	       	alert("WRONG PIN");
         	       	document.getElementById("pinInput").value = "";
         		return;
     	    	    }
@@ -113,12 +113,7 @@
     	    	    // Save who logged in
     	    	    sessionStorage.setItem("playerID", data.playerID);
     	    	    sessionStorage.setItem("playerName", data.name);
-    
-    	    	    setTimeout(() => {
-        		window.location.href = "index.html";
-    	    	    }, 50);
-
-	     	});
+	     });
   	</script>
     </body>
 </html>
