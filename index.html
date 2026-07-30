@@ -27,44 +27,45 @@
     </div>
 
 <script>
-   const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
-   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
-   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-
-        async function syncCharacterData() {
+    async function syncCharacterData() {
+        // Check login using your PIN system
         const playerID = sessionStorage.getItem("playerID");
 
-	if (!playerID) {
-    	    window.location.href = "login.html";
-    	    return;
-	}
-
-
-            // Pull their data directly from the spellboundPlayers row matching their ID
-            const { data: playerRow, error: dbError } = await sb
-                .from('spellboundPlayers')
-                .select('name')
-                .eq('playerID', playerID)
-                .single();
-
-            if (dbError || !playerRow) {
-                document.getElementById("characterHeader").innerText = "Unauthorized";
-                document.getElementById("characterStatus").innerText = "Character data unmapped.";
-                return;
-            }
-
-            // Lock their custom 'name' straight into the main text header
-            document.getElementById("characterHeader").innerText = playerRow.name;
-            document.getElementById("characterStatus").innerText = "Terminal Synced Successfully.";
+        if (!playerID) {
+            // No login → send back to login page
+            window.location.href = "login.html";
+            return;
         }
 
-        document.getElementById("logoutBtn").addEventListener("click", async () => {
-            await sb.auth.signOut();
-            window.location.href = "login.html";
-        });
+        // Pull their data directly from spellboundPlayers
+        const { data: playerRow, error: dbError } = await sb
+            .from('spellboundPlayers')
+            .select('name')
+            .eq('playerID', playerID)
+            .single();
 
-        syncCharacterData();
-    </script>
+        if (dbError || !playerRow) {
+            document.getElementById("characterHeader").innerText = "Unauthorized";
+            document.getElementById("characterStatus").innerText = "Character data unmapped.";
+            return;
+        }
+
+        // Display character name
+        document.getElementById("characterHeader").innerText = playerRow.name;
+        document.getElementById("characterStatus").innerText = "Terminal Synced Successfully.";
+    }
+
+    // Logout clears your PIN session
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+        sessionStorage.clear();
+        window.location.href = "login.html";
+    });
+
+    syncCharacterData();
+</script>
 </body>
 </html>
