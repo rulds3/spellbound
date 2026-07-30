@@ -3,140 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Control Interface</title>
+    <title>Player Terminal</title>
     <style>
-        /* Base page layout */
-        body {
-            font-family: Arial, sans-serif;
-            /*background-color: #1a1a1a;  Use if I want a solid color.*/
-
-	    background-image: url('magicBackground.png');
-	    background-size: cover;
-   	    background-position: center;
-    	    background-repeat: no-repeat;
-
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        h1 {
-            margin-bottom: 30px;
-            font-size: 2rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        /* 3-column grid structure that collapses to 2 columns or 1 column on small screens */
-        .button-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            width: 90%;
-            max-width: 600px;
-        }
-
-        /* Styling for the buttons */
-        .game-btn {
-            //background-color: #333333;
-	    background-color: #001F3F;            
-	    color: #ffffff;
-            border: 2px solid #555555;
-            padding: 20px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-
-        /* Hover effects to make the screen feel responsive */
-        .game-btn:hover {
-            background-color: #4f46e5; /* Nice purple color on hover */
-            border-color: #6366f1;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(79, 70, 229, 0.4);
-        }
-
-        .game-btn:active {
-            transform: translateY(1px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        /* Responsive grid adjustments for small screen devices */
-        @media (max-width: 600px) {
-            .button-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        @media (max-width: 400px) {
-            .button-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+        body { font-family: Arial, sans-serif; background: #0c0a0f; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .dashboard-box { background: rgba(17, 12, 28, 0.85); padding: 40px; border-radius: 12px; max-width: 500px; width: 90%; text-align: center; border: 1px solid #4c1d95; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        h1 { font-size: 2.2rem; color: #ffd700; margin-top: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .logout-btn { background: #333; color: #aaa; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; margin-top: 30px; font-size: 0.9rem; }
+        .logout-btn:hover { background: #444; color: #fff; }
     </style>
 </head>
-
 <body>
 
-<!--/* Check if a user is logged in 
-  const sessionUser = supabase.auth.getUser().then(({ data }) => {
-    if (!data.user) {
-       // No session found? Kick them back to the login page immediately!
-       window.location.href = "login.html";
-    } else {
-       // Swap out your old random name logic for their true secure User ID
-       const currentPlayerId = data.user.id; 
-       document.getElementById("playerTag").innerText = data.user.email;
-    }
-  });
-*/-->
+    <div class="dashboard-box">
+        <!-- Renders the 'name' heading value directly from the database row -->
+        <h1 id="characterHeader">Loading...</h1>
+        <p id="characterStatus">Accessing static terminal configuration...</p>
+        
+        <hr style="border-color: #2e2640; margin: 20px 0;">
+        <p>Your session is active and secure.</p>
 
-
-    <h1>Jason Edwards</h1>
-
-    <!-- Container holding the 6 distinct buttons -->
-    <div class="button-grid">
-        <button class="game-btn" id="btn1">Character Information</button>
-        <button class="game-btn" id="btn2">Goals and Tips</button>
-        <button class="game-btn" id="btn3">Cast</button>
-        <button class="game-btn" id="btn4">Abilities</button>
-        <button class="game-btn" id="btn5">Secret and Info</button>
-        <button class="game-btn" id="btn6">Rules</button>
-        <button class="game-btn" id="btn7">The Sorcerer's Scoop</button>
-        <button class="game-btn" id="btn8">Exam Information</button>
+        <button class="logout-btn" id="logoutBtn">Disconnect Session</button>
     </div>
 
-    <script>
-    /* Map each button ID to the exact name of the file you want to open*/
-    const buttonLinks = {
-      "btn1": "characterInfo.html",
-      "btn2": "goalsTips.html",
-      "btn3": "castList.pdf",
-      "btn4": "abilities.html",
-      "btn5": "secretNInfo.html",
-      "btn6": "rulesForSpellbound.html",
-      "btn7": "sorcerersScoop.pdf",
-      "btn8": "examInfo.pdf",
-   };
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js">
+const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-   /* Loop through all buttons and add the click feature*/
-   document.querySelectorAll('.game-btn').forEach(button => {
-       button.addEventListener('click', (event) => {
-           const buttonId = event.target.id;
-           const targetPage = buttonLinks[buttonId];
 
-           if (targetPage) {
-            /*This line tells the browser to change pages instantly*/
-            window.location.href = targetPage;
+        async function syncCharacterData() {
+            const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+            if (authError || !user) {
+                window.location.href = "login.html";
+                return;
             }
-       });
-   });
-   </script>
 
+            // Pull their data directly from the spellboundPlayers row matching their ID
+            const { data: playerRow, error: dbError } = await supabase
+                .from('spellboundPlayers')
+                .select('name')
+                .eq('playerID', user.id)
+                .single();
+
+            if (dbError || !playerRow) {
+                document.getElementById("characterHeader").innerText = "Unauthorized";
+                document.getElementById("characterStatus").innerText = "Character data unmapped.";
+                return;
+            }
+
+            // Lock their custom 'name' straight into the main text header
+            document.getElementById("characterHeader").innerText = playerRow.name;
+            document.getElementById("characterStatus").innerText = "Terminal Synced Successfully.";
+        }
+
+        document.getElementById("logoutBtn").addEventListener("click", async () => {
+            await supabase.auth.signOut();
+            window.location.href = "login.html";
+        });
+
+        syncCharacterData();
+    </script>
 </body>
 </html>
