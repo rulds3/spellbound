@@ -17,7 +17,7 @@
 
     <div class="login-card">
         <h2>🔐 Identity Verification</h2>
-        <p id="promptDesc">Verifying artifact token sequence...</p>
+        <p id="promptDesc">Verifying...</p>
         
         <!--Input field is visible right away-->
         <input type="password" id="pinInput" placeholder="ENTER PIN" maxlength="6">
@@ -34,23 +34,23 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 
 
-        /* 1. Automatically grab the text from the link address bar and looks for '?id='string*/
+        // 1. Automatically grab the text from the link address bar and looks for '?id='string
         const urlParams = new URLSearchParams(window.location.search);
         const characterEmail = urlParams.get('id'); 
 
-        /* 2. Security Check: Ensure they actually arrived here via a valid character QR code*/
+        // 2. Security Check: Ensure they actually arrived here via a valid character QR code
         if (!characterEmail) {
             document.getElementById("promptDesc").innerText = "ACCESS DENIED: No character artifact detected.";
             document.getElementById("pinInput").style.display = "none";
             document.getElementById("authBtn").style.display = "none";
             document.getElementById("statusMsg").innerText = "Please scan a physical character card.";
         } else {
-            /* Clean up display text to show who is checking in*/
+            // Clean up display text to show who is checking in
             document.getElementById("promptDesc").innerText = `Unlocking sequence for token: ${characterEmail}`;
             document.getElementById("pinInput").focus();
         }
 
-        /* 3. Process the PIN submission */
+        // 3. Process the PIN submission 
         document.getElementById("authBtn").addEventListener("click", async () => {
             const enteredPin = document.getElementById("pinInput").value;
             document.getElementById("statusMsg").innerText = "Authorizing credentials...";
