@@ -96,6 +96,11 @@
 
 	    document.getElementById("loginForm").addEventListener("submit", async (event) => {
 		event.preventDefault(); 
+
+		console.log("Form submitted");
+		console.log("playerID:", playerID);
+		console.log("PIN:", enteredPin);
+
    	    	const enteredPin = document.getElementById("pinInput").value;
     	    	document.getElementById("statusMsg").innerText = "Checking credentials...";
 
