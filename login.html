@@ -57,11 +57,11 @@ console.log("Error:", error);
 
 
     // Look up email from UUID
-    const { data, error: lookupError } = await sb
-        .from("characters")
-        .select("email")
-        .eq("playerID", characterId)
-        .single();
+   // const { data, error: lookupError } = await sb
+     //   .from("characters")
+     //   .select("email")
+     //   .eq("playerID", characterId)
+     //   .single();
 
     if (lookupError || !data) {
         alert("Invalid character.");
