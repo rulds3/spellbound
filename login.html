@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: Arial, sans-serif; background-color: #0c0a0f; color: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-        .login-card { background: rgba(17, 12, 28, 0.9); padding: 40px; border-radius: 16px; max-width: 400px; width: 100%; text-align: center; border: 2px solid #6d28d9; box-shadow: 0 10px 30px rgba(109, 40, 217, 0.2); }
+        .login-card { background: rgba(17, 12, 28, 0.9); padding: 20px; border-radius: 16px; max-width: 400px; width: 100%; text-align: center; border: 2px solid #6d28d9; box-shadow: 0 10px 30px rgba(109, 40, 217, 0.2); }
         input { width: 100%; padding: 14px; box-sizing: border-box; background: #141021; border: 1px solid #4c1d95; color: #fff; border-radius: 8px; font-size: 1.2rem; text-align: center; letter-spacing: 4px; margin-top: 20px; }
         button { width: 100%; padding: 14px; background: #7c3aed; color: white; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 15px; font-size: 1rem; }
         button:hover { background: #6d28d9; }
@@ -54,7 +54,7 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             });
 
             if (error) {
-                alert("ACCESS DENIED: Wrong password.");
+                alert("ACCESS DENIED: Wrong pin.");
                 document.getElementById("pinInput").value = "";
             } else {
                 // Success! Route straight to your character page dashboard
