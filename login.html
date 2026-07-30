@@ -33,7 +33,6 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const urlParams = new URLSearchParams(window.location.search);
 const characterId = urlParams.get("id");
 
-console.log("Character ID:", characterId);
 
         // 2. Security Check: Ensure they actually arrived here via a valid character QR code
        if (!characterId) {
@@ -52,7 +51,7 @@ console.log("Character ID:", characterId);
     const { data, error: lookupError } = await sb
         .from("characters")
         .select("email")
-        .eq("uuid", characterId)
+        .eq("uuid", playerId)
         .single();
 
     if (lookupError || !data) {
