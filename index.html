@@ -33,19 +33,19 @@
 
 
         async function syncCharacterData() {
-            const { data: { user }, error: authError } = await sb.auth.getUser();
+        const playerID = sessionStorage.getItem("playerID");
 
+	if (!playerID) {
+    	    window.location.href = "login.html";
+    	    return;
+	}
 
-            if (authError || !user) {
-                window.location.href = "login.html";
-                return;
-            }
 
             // Pull their data directly from the spellboundPlayers row matching their ID
             const { data: playerRow, error: dbError } = await sb
                 .from('spellboundPlayers')
                 .select('name')
-                .eq('playerID', user.id)
+                .eq('playerID', playerID)
                 .single();
 
             if (dbError || !playerRow) {
