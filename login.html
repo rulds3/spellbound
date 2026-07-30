@@ -42,44 +42,28 @@ const characterId = urlParams.get("id");
         "Please scan a physical character card.";
 }
 
-       document.getElementById("authBtn").addEventListener("click", async () => {
+      document.getElementById("authBtn").addEventListener("click", async () => {
 
     const enteredPin = document.getElementById("pinInput").value;
-    document.getElementById("statusMsg").innerText = "Authorizing credentials...";
 
-const { d, e } = await sb
-    .from("characters")
-    .select("*")
-    .eq("playerID", characterId);
-
-console.log("Data:", d);
-console.log("Error:", e);
-
-
-    // Look up email from UUID
-    const { data, error: lookupError } = await sb
-        .from("characters")
-        .select("email")
+    const { data, error } = await sb
+        .from("spellboundPlayers")
+        .select("*")
         .eq("playerID", characterId)
+        .eq("pin", enteredPin)
         .single();
 
-    if (lookupError || !data) {
-        alert("Invalid character.");
+    if (error || !data) {
+        alert("ACCESS DENIED");
+        document.getElementById("pinInput").value = "";
         return;
     }
 
-    // Sign in using the email we found
-    const { error } = await sb.auth.signInWithPassword({
-        email: data.email,
-        password: enteredPin
-    });
+    // Save which player logged in
+    sessionStorage.setItem("playerID", data.playerID);
+    sessionStorage.setItem("playerName", data.name);
 
-    if (error) {
-        alert("ACCESS DENIED: Wrong PIN.");
-        document.getElementById("pinInput").value = "";
-    } else {
-        window.location.href = "index.html";
-    }
+    window.location.href = "index.html";
 });
     </script>
 </body>
