@@ -34,6 +34,7 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const urlParams = new URLSearchParams(window.location.search);
         const characterEmail = urlParams.get('id'); 
 
+console.log(characterEmail);
         // 2. Security Check: Ensure they actually arrived here via a valid character QR code
         if (!characterEmail) {
             document.getElementById("promptDesc").innerText = "ACCESS DENIED: No character artifact detected.";
