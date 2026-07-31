@@ -112,12 +112,21 @@
                             Uses remaining: <strong>${ability.usesRemaining}</strong>
                         </p>
                         
-			<button 
-                            onclick="useAbility(${ability.id}, ${ability.usesRemaining})"
+			<button
+			    //Use Ability button 
+                            onclick="useAbility(${ability.id}, 							    ${ability.usesRemaining})"
                             ${ability.usesRemaining <= 0 ? "disabled" : ""}
                         >
                             Use Ability
                         </button>
+
+  			<button
+			    //Undo use ability
+            		    onclick="undoAbility(${ability.id}, 						    ${ability.usesRemaining}, ${ability.maxUses})"
+            		    ${ability.usesRemaining >= ability.maxUses ? "disabled" : ""}
+  		      	>
+            		    Undo
+        		</button>
                     </div>
             `    ;
     	    });
@@ -149,6 +158,26 @@
     	    // Refresh the display
     	    loadAbilities();
 	}
+
+	async function undoAbility(id, currentUses, maxUses) {
+    	    if (currentUses >= maxUses) {
+            return;
+    	}
+
+    	const newUses = currentUses + 1;
+
+    	const { error } = await sb
+            .from("playerAbilities")
+            .update({ usesRemaining: newUses })
+            .eq("id", id);
+
+	if (error) {
+            console.log(error);
+            return;
+        }
+
+        loadAbilities();
+}
 
 	loadAbilities();
      </script>
