@@ -78,12 +78,9 @@
     	    const { data: abilities, error } = await sb
         	.from("playerAbilities")
         	.select("*")
-        	.eq("playerID", playerID)
- 		.order("id", { ascending: true });
+
    	   
-console.log("playerID being searched:", playerID);
-console.log("Abilities returned:", abilities);
-console.log("Error:", error);
+console.log("All abilities:", abilities);
 
  
 	    if (error) {
