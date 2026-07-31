@@ -101,7 +101,7 @@
 	async function loadAbilities() {
 	    const playerID = sessionStorage.getItem("playerID");
 
-    	    const { data: abilites, error } = await sb
+    	    const { data: abilities, error } = await sb
         	.from("playerAbilities")
         	.select("*")
         	.eq("playerID", playerID)
@@ -134,18 +134,27 @@
 	}
 
 
-	async function completeAbility(id, completed) {
+	async function useAbility(id, currentUses) {
+ 	    if (currentUses <= 0) {
+                return;
+            }
+
+     	    const newUses = currentUses - 1;
+
     	    const { error } = await sb
         	.from("playerAbilities")
-        	.update({ completed: completed })
+        	.update({ usesRemaining: newUses })
         	.eq("id", id);
-	    if (error) {
+
+    	    if (error) {
         	console.log(error);
+        	return;
     	    }
+
+    	    // Refresh the display
+    	    loadAbilities();
 	}
 
-
-	loadAbilities();
 	syncCharacterData();
      </script>
 </body>
