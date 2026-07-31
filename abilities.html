@@ -106,7 +106,7 @@
 	
    	    abilities.forEach(ability => {
                 abilityBox.innerHTML += `
-		    <div class="ability-box">
+		    <div class="ability-box ${ability.usesRemaining <= 0 ? "used-up" : ""}">
                         ${ability.ability}
 
                     	<p>
@@ -145,8 +145,6 @@
     	    // Refresh the display
     	    loadAbilities();
 	}
-
-	<div class="ability-box ${ability.usesRemaining <= 0 ? "used-up" : ""}">
 
 	loadAbilities();
      </script>
