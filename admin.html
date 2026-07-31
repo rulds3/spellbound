@@ -122,12 +122,12 @@
             	    return;
                 }
 
-            // Pull their data directly from spellboundPlayers
-            const { data: playerRow, error: dbError } = await sb
-                .from('spellboundPlayers')
-                .select('name')
-                .eq('playerID', playerID)
-                .single();
+                // Pull their data directly from spellboundPlayers
+            	const { data: playerRow, error: dbError } = await sb
+                    .from('spellboundPlayers')
+                    .select('name')
+                    .eq('playerID', playerID)
+                    .single();
 
         	if (dbError || !playerRow) {
             	    document.getElementById("characterHeader").innerText = "Unauthorized";
@@ -149,8 +149,10 @@ async function resetGame() {
         return;
     }
 
-
     const { error } = await sb.rpc("reset_game");
+
+    console.log("RPC data:", data);
+    console.log("RPC error:", error);
 
 
     if (error) {
@@ -158,10 +160,7 @@ async function resetGame() {
         alert("Reset failed.");
         return;
     }
-
-
     alert("Game reset complete!");
-
 }
 
 	    document.getElementById("btn4").addEventListener("click", resetGame);
