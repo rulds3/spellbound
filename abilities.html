@@ -78,11 +78,9 @@
     	    const { data: abilities, error } = await sb
         	.from("playerAbilities")
         	.select("*")
-
+        	.eq("playerID", playerID)
+ 		.order("id", { ascending: true });
    	   
-console.log("All abilities:", abilities);
-
- 
 	    if (error) {
         	console.log(error);
         	return;
@@ -111,6 +109,9 @@ console.log("All abilities:", abilities);
 
 
 	async function useAbility(id, currentUses) {
+
+
+   console.log("Using ability:", id);
  	    if (currentUses <= 0) {
                 return;
             }
