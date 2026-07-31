@@ -133,42 +133,19 @@ async function resetGame() {
     }
 
 
-    // Reset all abilities
-    const { error: abilityError } = await sb
-        .from("playerAbilities")
-        .update({
-            usesRemaining: sb.raw("maxUses")
-        })
-        .neq("id", 0);
+    const { error } = await sb.rpc("reset_game");
 
 
-    if (abilityError) {
-        console.log("Ability reset error:", abilityError);
-        alert("Error resetting abilities.");
+    if (error) {
+        console.log("Reset error:", error);
+        alert("Reset failed.");
         return;
     }
 
 
-    // Reset all goals
-    const { error: goalError } = await sb
-        .from("playerGoals")
-        .update({
-            completed: false
-        })
-        .neq("id", 0);
-
-
-    if (goalError) {
-        console.log("Goal reset error:", goalError);
-        alert("Error resetting goals.");
-        return;
-    }
-
-
-    alert("Game has been reset!");
+    alert("Game reset complete!");
 
 }
-
 
             // Pull their data directly from spellboundPlayers
             const { data: playerRow, error: dbError } = await sb
