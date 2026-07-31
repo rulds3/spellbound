@@ -110,9 +110,10 @@
         	.from("playerGoals")
         	.select("*")
         	.eq("playerID", playerID);
-    		.order("goalOrder", { ascending: true });
-
-   	    if (error) {
+    		.order("completed", { ascending: true })
+ 		.order("id", { ascending: true });
+   	    
+	    if (error) {
         	console.log(error);
         	return;
     	    }
