@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Announcement Admin</title>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <style>
         body {
             background-color: #1b1a24;
@@ -230,7 +231,7 @@
 
 <script>
 const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
-const SUPABASE_KEY = "YOUR_SUPABASE_KEY_HERE";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
 
 const sb = window.supabase.createClient(
     SUPABASE_URL,
@@ -262,7 +263,6 @@ async function checkAdmin() {
         document.getElementById("unauthorized").classList.remove("hidden");
         return false;
     }
-
 
     return true;
 }
