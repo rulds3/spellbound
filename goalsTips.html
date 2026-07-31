@@ -106,10 +106,25 @@
 	async function loadGoals() {
 	    const playerID = sessionStorage.getItem("playerID");
 
+
+
+console.log("Player ID:", playerID);
+
+    if (!playerID) {
+        console.log("No playerID found");
+        return;
+    }
+
+
+
+
     	    const { data: goals, error } = await sb
         	.from("playerGoals")
         	.select("*")
         	.eq("playerID", playerID);
+
+    console.log("Goals returned:", goals);
+    console.log("Database error:", error);
 
 	    if (error) {
         	console.log(error);
@@ -121,12 +136,15 @@
 
    	    goals.forEach(goal => {
         	goalBox.innerHTML += `
-                <p>
-                <input 
-                    type="checkbox"
-                    ${goal.completed ? "checked" : ""}
-                    onchange="completeGoal(${goal.id}, this.checked)"
-                >${goal.goalText}</p>`;
+                    <p>
+                        <input 
+                            type="checkbox"
+                            ${goal.completed ? "checked" : ""}
+                            onchange="completeGoal(${goal.id}, this.checked)"
+                        >
+		        ${goal.goalText}
+	   	    </p>
+	        `;
     	    });
 	}
 
