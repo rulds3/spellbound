@@ -62,6 +62,11 @@
     	    color: #f5e6c8;
 	}
 
+	.used-up {
+    	    opacity: 0.5;
+    	    border-color: gray;
+	}
+
     </style>
 </head>
 
@@ -139,6 +144,8 @@
     	    // Refresh the display
     	    loadAbilities();
 	}
+
+	<div class="ability-box ${ability.usesRemaining <= 0 ? "used-up" : ""}">
 
 	loadAbilities();
      </script>
