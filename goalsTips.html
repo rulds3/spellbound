@@ -60,7 +60,7 @@
     <div class="text-box">
         <h1 id="characterHeader"></h1>
 	<h2>Goals</h2>
-        <p id="characterGoals"></p>
+        <div id="characterGoals"></div>
 	<br>
 	<h2>Tips</h2>
 	<p id="characterTips"></p>
@@ -103,6 +103,47 @@
         	document.getElementById("characterGoals").innerHTML = playerRow.goals;
         	document.getElementById("characterTips").innerHTML = playerRow.tips;
     	    }
+
+	async function loadGoals() {
+	    const playerID = sessionStorage.getItem("playerID");
+
+    	    const { data: goals, error } = await sb
+        	.from("playerGoals")
+        	.select("*")
+        	.eq("playerID", playerID);
+
+	    if (error) {
+        	console.log(error);
+        	return;
+    	    }
+
+    	    const goalBox = document.getElementById("characterGoals");
+	    goalBox.innerHTML = "";
+
+   	    goals.forEach(goal => {
+        	goalBox.innerHTML += `
+                <p>
+                <input 
+                    type="checkbox"
+                    ${goal.completed ? "checked" : ""}
+                    onchange="completeGoal(${goal.id}, this.checked)"
+                >${goal.goalText}</p>`;
+    	    });
+	}
+
+
+	async function completeGoal(id, completed) {
+    	    const { error } = await sb
+        	.from("playerGoals")
+        	.update({ completed: completed })
+        	.eq("id", id);
+	    if (error) {
+        	console.log(error);
+    	    }
+	}
+
+
+	loadGoals();
 	syncCharacterData();
      </script>
 </body>
