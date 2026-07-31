@@ -122,6 +122,23 @@
             	    return;
                 }
 
+            // Pull their data directly from spellboundPlayers
+            const { data: playerRow, error: dbError } = await sb
+                .from('spellboundPlayers')
+                .select('name')
+                .eq('playerID', playerID)
+                .single();
+
+        	if (dbError || !playerRow) {
+            	    document.getElementById("characterHeader").innerText = "Unauthorized";
+            	    document.getElementById("characterStatus").innerText = "Character data unmapped.";
+            	    return;
+        	}
+
+        	// Display character name
+        	document.getElementById("characterHeader").innerText = playerRow.name;
+    	    }
+
 async function resetGame() {
 
     const confirmed = confirm(
@@ -146,23 +163,6 @@ async function resetGame() {
     alert("Game reset complete!");
 
 }
-
-            // Pull their data directly from spellboundPlayers
-            const { data: playerRow, error: dbError } = await sb
-                .from('spellboundPlayers')
-                .select('name')
-                .eq('playerID', playerID)
-                .single();
-
-        	if (dbError || !playerRow) {
-            	    document.getElementById("characterHeader").innerText = "Unauthorized";
-            	    document.getElementById("characterStatus").innerText = "Character data unmapped.";
-            	    return;
-        	}
-
-        	// Display character name
-        	document.getElementById("characterHeader").innerText = playerRow.name;
-    	    }
 
 	    document.getElementById("btn4").addEventListener("click", resetGame);
 
