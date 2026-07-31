@@ -2,184 +2,169 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Game Master Admin Dashboard</title>
-    <!-- Loads the Supabase framework -->
-    <script src="https://jsdelivr.net"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Terminal</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <style>
+        /* Base page layout */
         body {
             font-family: Arial, sans-serif;
-            background-color: #111111;
+            /*background-color: #1a1a1a;  Use if I want a solid color.*/
+	    background-image: url('magicBackground.png');
+	    background-size: cover;
+   	    background-position: center;
+    	    background-repeat: no-repeat;
+
             color: #ffffff;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             min-height: 100vh;
             margin: 0;
         }
 
-        .admin-box {
-            background-color: rgba(20, 20, 20, 0.9);
-            border: 2px solid #ff4444; /* Red accent for admin tools */
-            max-width: 500px;
-            width: 90%;
-            padding: 40px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.1);
+
+        h1 { 
+	    font-size: 2.2rem; 
+	    color: #ffd700; 
+	    margin-top: 0; 
+	    text-shadow: 0 2px 4px rgba(0,0,0,0.5); 
+	}
+
+	h1 {
+            margin-bottom: 30px;
+            font-size: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        .danger-btn {
-            background-color: #cc0000;
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 6px;
+        /* 3-column grid structure that collapses to 2 columns or 1 column on small screens */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        /* Styling for the buttons */
+        .game-btn {
+            //background-color: #333333;
+	    background-color: #001F3F;            
+	    color: #ffffff;
+            border: 2px solid #555555;
+            padding: 20px;
             font-size: 1.1rem;
             font-weight: bold;
+            border-radius: 8px;
             cursor: pointer;
-            width: 100%;
-            margin-top: 20px;
-            transition: background 0.2s ease;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
-        .danger-btn:hover { background-color: #ff0000; }
-        .danger-btn:active { transform: translateY(1px); }
-
-        .back-link {
-            display: inline-block;
-            margin-top: 30px;
-            color: #888888;
-            text-decoration: none;
+        /* Hover effects to make the screen feel responsive */
+        .game-btn:hover {
+            background-color: #4f46e5; /* Nice purple color on hover */
+            border-color: #6366f1;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(79, 70, 229, 0.4);
         }
-        .back-link:hover { color: #ffffff; }
-    </style>
-</head>
-<body>
 
-// Strict Admin Only Check
-supabase.auth.getUser().then(({ data }) => {
-    if (!data.user || data.user.email !== "your-admin-email@example.com") {
-        alert("ACCESS DENIED: Game Masters Only!");
-        window.location.href = "login.html";
-    }
-});
+        .game-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
 
-
-    <div class="admin-box">
-        <h1>🛠️ Game Master Panel</h1>
-        <p>Manage your small community's active game session.</p>
-        <hr style="border-color: #333; margin: 20px 0;">
-
-        <h3>Ability Replenishment</h3>
-        <p style="color: #aaa; font-size: 0.9rem;">
-            Clicking this button wipes out all tracking entries. Every player will immediately regain their full spell charges.
-        </p>
-        
-        <!-- The Reset Button -->
-        <button class="danger-btn" id="resetBtn">Reset All Player Charges</button>
-
-        <a href="index.html" class="back-link">← Return to Main Screen</a>
-    </div>
-
-    <script>
-        // Connect to your project database
-        const SUPABASE_URL = "https://supabase.co";
-        const SUPABASE_KEY = "your-anon-public-key";
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        document.getElementById("resetBtn").addEventListener("click", async () => {
-            // Safety double check to prevent accidental misclicks
-            const confirmReset = confirm("CRITICAL ACTION: Are you sure you want to completely wipe the logs and restore all player abilities?");
-            
-            if (!confirmReset) return;
-
-            // Trigger the secure server function we created in Step 1
-            const { error } = await supabase.rpc('reset_all_player_abilities');
-
-            if (error) {
-                alert("Reset failed: " + error.message);
-                console.error(error);
-            } else {
-                alert("💥 Session wiped successfully! All player abilities are fully restored.");
+        /* Responsive grid adjustments for small screen devices */
+        @media (max-width: 600px) {
+            .button-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
-        });
-    </script>
+        }
+        @media (max-width: 400px) {
+            .button-grid {
+                grid-template-columns: 1fr;
+            }
+        }
 
-</body>
+    </style>
+
+</head>
+    <body>
+	<h1 id="characterHeader">Loading...</h1>
+
+   	<!-- Container holding the 6 distinct buttons -->
+    	<div class="button-grid">
+            <button class="game-btn" id="btn1">Announcement</button>
+            <button class="game-btn" id="btn2">Timeline</button>
+            <button class="game-btn" id="btn3">Rules</button>
+            <button class="game-btn" id="btn4">Nina Brown</button>
+            <button class="game-btn" id="btn5">Reset Game</button>
+            <button class="game-btn" id="btn6">Blank</button>
+            <button class="game-btn" id="btn7">The Sorcerer's Scoop</button>
+            <button class="game-btn" id="btn8">Exam Information</button>
+        </div>
+
+
+
+       	<script>
+    	    const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
+       	    const SUPABASE_KEY = 				 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
+	    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    	    async function syncCharacterData() {
+            	// Check login using your PIN system
+        	const playerID = sessionStorage.getItem("playerID");
+
+        	if (!playerID) {
+            	// No login → send back to login page
+            	    window.location.href = "login.html";
+            	    return;
+                }
+
+            // Pull their data directly from spellboundPlayers
+            const { data: playerRow, error: dbError } = await sb
+                .from('spellboundPlayers')
+                .select('name')
+                .eq('playerID', playerID)
+                .single();
+
+        	if (dbError || !playerRow) {
+            	    document.getElementById("characterHeader").innerText = "Unauthorized";
+            	    document.getElementById("characterStatus").innerText = "Character data unmapped.";
+            	    return;
+        	}
+
+        	// Display character name
+        	document.getElementById("characterHeader").innerText = playerRow.name;
+    	    }
+
+	    /* Map each button ID to the exact name of the file you want to open*/
+   	    const buttonLinks = {
+      		"btn1": "adminAnnouncements.html",
+      		"btn2": "timeline.html",
+      		"btn3": "rules.pdf",
+      		"btn4": "ninaBrown.html",
+      		"btn5": "resetGame.html",
+      		"btn6": "",
+      		"btn7": "sorcerersScoop.pdf",
+      		"btn8": "examInfo.pdf",
+   	    };
+
+   	    /* Loop through all buttons and add the click feature*/
+   	    document.querySelectorAll('.game-btn').forEach(button => {
+       		button.addEventListener('click', (event) => {
+           	const buttonId = event.target.id;
+           	const targetPage = buttonLinks[buttonId];
+
+           	if (targetPage) {
+           	    /*This line tells the browser to change pages instantly*/
+            	    window.location.href = targetPage;
+            	}
+       	    	});
+  	    });
+    	   
+    	    syncCharacterData();
+	</script>
+    </body>
 </html>
-
-
-
-
-
-
-Step 1: Update Your Database Security PolicyBecause deleting data is a highly sensitive action, Supabase requires an explicit security rule allowing it.Go to your Supabase Dashboard, open the SQL Editor, and run this command once to allow row deletion on your table:
-
--- Create a security policy that allows targeting specific rows for deletion
-create policy "Allow anonymous deletions" on object_uses 
-for delete using (true);
-
-
-
-Step 2: Add the Player Selection UI to Your Admin PageOpen your admin.html file in Notepad. We will add a text input field so you can type in the exact name of the player you want to target, followed by a targeted reset button.Replace the content inside your <div class="admin-box"> with this updated layout:
-
-
-<div class="admin-box">
-    <h1>🛠️ Game Master Panel</h1>
-    <p>Manage your small community's active game session.</p>
-    <hr style="border-color: #333; margin: 20px 0;">
-
-    <h3>Targeted Player Reset</h3>
-    <p style="color: #aaa; font-size: 0.9rem;">
-        Type a player's ID below to fully restore only their specific spell charges.
-    </p>
-    
-    <!-- Input box to type the target player's name -->
-    <input type="text" id="targetPlayerInput" placeholder="Enter Player ID (e.g., user_1234)" 
-           style="width: 100%; padding: 12px; box-sizing: border-box; border-radius: 6px; border: 1px solid #555; background: #222; color: #fff; font-size: 1rem; margin-bottom: 10px;">
-
-    <!-- Button for a single target -->
-    <button class="danger-btn" id="resetSingleBtn" style="background-color: #d97706; margin-bottom: 25px;">Reset This Player Only</button>
-
-    <hr style="border-color: #333; margin: 20px 0;">
-
-    <h3>Global Server Reset</h3>
-    <!-- Keep your previous button here as a nuclear option if you ever need it -->
-    <button class="danger-btn" id="resetBtn">Reset All Player Charges</button>
-
-    <a href="index.html" class="back-link">← Return to Main Screen</a>
-</div>
-
-
-
-Step 3: Add the Target Delete JavaScript LogicNow, scroll down to the <script> tag at the bottom of your admin.html file and add this new click listener right alongside your old global reset code:
-
-
-document.getElementById("resetSingleBtn").addEventListener("click", async () => {
-    // 1. Get the name typed into the input field
-    const targetPlayer = document.getElementById("targetPlayerInput").value.trim();
-
-    // 2. Safety check: make sure you didn't leave the field blank
-    if (!targetPlayer) {
-        alert("Please enter a valid Player ID first!");
-        return;
-    }
-
-    // 3. Confirm your choice
-    const confirmSingle = confirm(`Are you sure you want to restore all abilities for ${targetPlayer}?`);
-    if (!confirmSingle) return;
-
-    // 4. Run the targeted deletion query
-    const { error } = await supabase
-        .from('object_uses')
-        .delete()
-        .eq('player_id', targetPlayer); // <-- Filters and deletes only rows matching this string
-
-    if (error) {
-        alert("Targeted reset failed: " + error.message);
-        console.error(error);
-    } else {
-        alert(`✨ Successfully restored all ability charges for player: ${targetPlayer}`);
-        document.getElementById("targetPlayerInput").value = ""; // Clear input field
-    }
-});
