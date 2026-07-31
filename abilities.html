@@ -94,6 +94,7 @@
         	.select("*")
         	.eq("playerID", playerID)
  		.order("playerID", { ascending: true });
+		.order("usesRemaining", { ascending: false });
    	   
 	    if (error) {
         	console.log(error);
