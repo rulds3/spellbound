@@ -85,17 +85,9 @@
             // Pull their data directly from spellboundPlayers
             const { data: playerRow, error: dbError } = await sb
                 .from('spellboundPlayers')
-                .select('name, tips')
+                .select('name')
                 .eq('playerID', playerID)
-                .single();
-
-        	if (dbError || !playerRow) {
-            	    document.getElementById("characterHeader").innerText = "Unauthorized";
-              	    return;
-        	}
-
-        	// Display character information
-        	document.getElementById("characterHeader").innerText = playerRow.name;
+                .single();        	
     	    }
 
 	async function loadAbilities() {
