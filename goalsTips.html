@@ -109,7 +109,7 @@
     	    const { data: goals, error } = await sb
         	.from("playerGoals")
         	.select("*")
-        	.eq("playerID", playerID);
+        	.eq("playerID", playerID)
     		.order("completed", { ascending: true })
  		.order("id", { ascending: true });
    	    
