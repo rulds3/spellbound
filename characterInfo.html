@@ -59,7 +59,7 @@
 <body>
     <div class="text-box">
         <h1 id="characterHeader"></h1>
-        <p id="characterInformation"><p>
+        <p id="characterInformation"></p>
     </div>
 
     <!-- A simple button to go straight back to your main button screen -->
@@ -91,8 +91,7 @@
 
         	if (dbError || !playerRow) {
             	    document.getElementById("characterHeader").innerText = "Unauthorized";
-            	    document.getElementById("characterStatus").innerText = "Character data unmapped.";
-            	    return;
+              	    return;
         	}
 
         	// Display character information
