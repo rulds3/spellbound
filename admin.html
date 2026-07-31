@@ -151,10 +151,6 @@ async function resetGame() {
 
     const { error } = await sb.rpc("reset_game");
 
-    console.log("RPC data:", data);
-    console.log("RPC error:", error);
-
-
     if (error) {
         console.log("Reset error:", error);
         alert("Reset failed.");
