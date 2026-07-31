@@ -137,12 +137,7 @@
 	    if (currentUses <= 0) {
                 return;
             }
-
- 	    const confirmUse = confirm("Are you sure you want to use this ability?");
-	    if (!confirmUse) {
-        	return;
-    	    }
-
+ 	  
      	    const newUses = currentUses - 1;
 
     	    const { error } = await sb
