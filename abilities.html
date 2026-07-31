@@ -80,7 +80,12 @@
         	.select("*")
         	.eq("playerID", playerID)
  		.order("id", { ascending: true });
-   	    
+   	   
+console.log("playerID being searched:", playerID);
+console.log("Abilities returned:", abilities);
+console.log("Error:", error);
+
+ 
 	    if (error) {
         	console.log(error);
         	return;
