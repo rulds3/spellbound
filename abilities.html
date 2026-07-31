@@ -1,98 +1,152 @@
-<div class="text-box">
-    <h1>Your Spellbook</h1>
-    <p>Player: <strong id="playerDisplay">Loading...</strong></p>
-    <hr>
-
-    <!-- Ability 1 -->
-    <div class="ability-card">
-        <h3>🔥 Fireball</h3>
-        <p>Uses Left: <strong id="fireballUses">5 / 5</strong></p>
-        <button class="game-btn" id="castFireball">Cast Fireball</button>
-    </div>
-
-    <!-- Ability 2 -->
-    <div class="ability-card">
-        <h3>⚡ Lightning Bolt</h3>
-        <p>Uses Left: <strong id="lightningUses">3 / 3</strong></p>
-        <button class="game-btn" id="castLightning">Cast Lightning</button>
-    </div>
-
-    <br>
-    <a href="index.html" class="back-btn">Exit Menu</a>
-</div>
-
-
-
-
-
-
-
-const SUPABASE_URL = "https://supabase.co";
-const SUPABASE_KEY = "your-anon-public-key";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// Define maximum rules for your game mechanics
-const ABILITY_LIMITS = {
-    "fireball": 5,
-    "lightning": 3
-};
-
-// Use the local browser cache to remember who this specific community player is
-if (!localStorage.getItem("gamePlayerId")) {
-    localStorage.setItem("gamePlayerId", "user_" + Math.floor(Math.random() * 10000));
-}
-const currentPlayerId = localStorage.getItem("gamePlayerId");
-document.getElementById("playerDisplay").innerText = currentPlayerId;
-
-// 1. Function to refresh and calculate remaining charges from the database
-async function updateAbilityDisplays() {
-    // Pull ALL object/ability actions belonging to THIS player
-    const { data, error } = await supabase
-        .from('object_uses')
-        .select('object_id')
-        .eq('player_id', currentPlayerId);
-
-    if (error) return console.error(error);
-
-    // Count how many times each ability appears in their database records
-    let counts = { fireball: 0, lightning: 0 };
-    data.forEach(row => {
-        if (counts[row.object_id] !== undefined) {
-            counts[row.object_id]++;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Abilities</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            /*background-color: #0b2212;  Dark green theme */
+	    background-image: url('magicBackground.png');
+	    background-size: cover;
+   	    background-position: center;
+    	    background-repeat: no-repeat;
+	   
+	    color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;            
+            padding-top: 50px;
         }
-    });
 
-    // Calculate remaining charges (Max Limit minus Used Rows)
-    const fireballLeft = Math.max(0, ABILITY_LIMITS.fireball - counts.fireball);
-    const lightningLeft = Math.max(0, ABILITY_LIMITS.lightning - counts.lightning);
+        .back-btn {
+            //background-color: #333;
+	    background-color: #001F3F;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
 
-    // Update the numbers on the screen dynamically
-    document.getElementById("fireballUses").innerText = `${fireballLeft} / ${ABILITY_LIMITS.fireball}`;
-    document.getElementById("lightningUses").innerText = `${lightningLeft} / ${ABILITY_LIMITS.lightning}`;
+	p {
+    	    /*max-width: 600px;    Prevents text from stretching wider than 600 pixels */
+            /*margin: 0 auto;       Centers the text block perfectly on the screen */
+            /*padding: 0 20px;      Adds a safety cushion on the left/right for mobile screens */
+            line-height: 1.6;     /* Spaces out lines of text so they are easier to read */
+            font-size: 1.1rem;    /* Makes the text slightly larger and cleaner */
+	    margin-bottom: 20px;
+	}
 
-    // Disable the physical buttons if they run out of charges
-    document.getElementById("castFireball").disabled = (fireballLeft <= 0);
-    document.getElementById("castLightning").disabled = (lightningLeft <= 0);
-}
+	.text-box {
+    	   /* 0, 0, 0 is black. 0.8 means 85% solid, 15% transparent */
+    	   background-color: rgba(0, 31, 63, 0.85); 
+    
+   	   max-width: 650px;           /* Sets the width limit of the box */
+	   margin: 50px auto;          /* Centers the box and pushes it down from the top */
+	   padding: 40px;              /* Adds breathing room inside the box around your text */
+    	   border-radius: 12px;        /* Smooths out the corners of the box */
+    	   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Adds a subtle shadow beneath the box */
+	}
 
-// 2. Function to log an execution in the database when they use an ability
-async function castAbility(abilityName) {
-    const { error } = await supabase
-        .from('object_uses')
-        .insert([{ player_id: currentPlayerId, object_id: abilityName }]);
+    </style>
+</head>
 
-    if (error) {
-        alert("Cast failed! Connection issue.");
-    } else {
-        alert(`Successfully cast ${abilityName}!`);
-        // Immediately reload database data to update the counts on screen
-        updateAbilityDisplays();
-    }
-}
+<body>
+    <div class="text-box">
+	<h2>Abilities</h2>
+        <div id="characterAbilities"></div>
+    </div>
 
-// 3. Link your button clicks to the functions
-document.getElementById("castFireball").addEventListener("click", () => castAbility("fireball"));
-document.getElementById("castLightning").addEventListener("click", () => castAbility("lightning"));
+    <!-- A simple button to go straight back to your main button screen -->
+    <a href="index.html" class="back-btn">Back</a>
 
-// Load their current counts automatically on startup
-updateAbilityDisplays();
+
+
+    <script>
+        const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
+        const SUPABASE_KEY = 				 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    	async function syncCharacterData() {
+            // Check login using your PIN system
+            const playerID = sessionStorage.getItem("playerID");
+
+            if (!playerID) {
+            // No login → send back to login page
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Pull their data directly from spellboundPlayers
+            const { data: playerRow, error: dbError } = await sb
+                .from('spellboundPlayers')
+                .select('name, tips')
+                .eq('playerID', playerID)
+                .single();
+
+        	if (dbError || !playerRow) {
+            	    document.getElementById("characterHeader").innerText = "Unauthorized";
+              	    return;
+        	}
+
+        	// Display character information
+        	document.getElementById("characterHeader").innerText = playerRow.name;
+    	    }
+
+	async function loadAbilities() {
+	    const playerID = sessionStorage.getItem("playerID");
+
+    	    const { data: abilites, error } = await sb
+        	.from("playerAbilities")
+        	.select("*")
+        	.eq("playerID", playerID)
+ 		.order("id", { ascending: true });
+   	    
+	    if (error) {
+        	console.log(error);
+        	return;
+    	    }
+
+    	    const abilityBox = document.getElementById("characterAbilities");
+	    abilityBox.innerHTML = "";
+
+   	    abilities.forEach(ability => {
+                abilityBox.innerHTML += `
+                    <p>
+                        ${ability.abilityText}
+                        <br>
+                        Uses remaining: <strong>${ability.usesRemaining}</strong>
+                        <br>
+                        <button 
+                            onclick="useAbility(${ability.id}, ${ability.usesRemaining})"
+                            ${ability.usesRemaining <= 0 ? "disabled" : ""}
+                        >
+                            Use Ability
+                        </button>
+                    </p>
+            `    ;
+    	    });
+	}
+
+
+	async function completeAbility(id, completed) {
+    	    const { error } = await sb
+        	.from("playerAbilities")
+        	.update({ completed: completed })
+        	.eq("id", id);
+	    if (error) {
+        	console.log(error);
+    	    }
+	}
+
+
+	loadAbilities();
+	syncCharacterData();
+     </script>
+</body>
+</html>
