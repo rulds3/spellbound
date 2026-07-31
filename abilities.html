@@ -93,8 +93,7 @@
         	.from("playerAbilities")
         	.select("*")
         	.eq("playerID", playerID)
- 		.order("playerID", { ascending: true })
-		.order("usesRemaining", { ascending: false });
+ 		.order("id", { ascending: true })
    	   
 	    if (error) {
         	console.log(error);
