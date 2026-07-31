@@ -72,25 +72,7 @@
         const SUPABASE_KEY = 				 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
         const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    	async function syncCharacterData() {
-            // Check login using your PIN system
-            const playerID = sessionStorage.getItem("playerID");
-
-            if (!playerID) {
-            // No login → send back to login page
-                window.location.href = "login.html";
-                return;
-            }
-
-            // Pull their data directly from spellboundPlayers
-            const { data: playerRow, error: dbError } = await sb
-                .from('spellboundPlayers')
-                .select('name')
-                .eq('playerID', playerID)
-                .single();        	
-    	    }
-
-	async function loadAbilities() {
+    	async function loadAbilities() {
 	    const playerID = sessionStorage.getItem("playerID");
 
     	    const { data: abilities, error } = await sb
@@ -148,7 +130,6 @@
 	}
 
 	loadAbilities();
-	syncCharacterData();
      </script>
 </body>
 </html>
