@@ -100,8 +100,8 @@
 
         	// Display character information
         	document.getElementById("characterHeader").innerText = playerRow.name;
-        	document.getElementById("characterGoals").innerText = playerRow.goals;
-        	document.getElementById("characterTips").innerText = playerRow.tips;
+        	document.getElementById("characterGoals").innerHTML = playerRow.goals;
+        	document.getElementById("characterTips").innerHTML = playerRow.tips;
     	    }
 	syncCharacterData();
      </script>
