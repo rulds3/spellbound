@@ -114,8 +114,16 @@
     	    	    	sessionStorage.setItem("playerID", data.playerID);
     	    	    	sessionStorage.setItem("playerName", data.name);
 			
-			// Success! Route straight to your character page dashboard
-                	window.location.href = "index.html";
+			// Admin player ID
+    			const ADMIN_PLAYER_ID = "16739";
+
+    			if (data.playerID === ADMIN_PLAYER_ID) {
+		            // Send admin to admin page
+    			    window.location.href = "admin.html";
+    			} else {
+        		    // Send normal players to game dashboard
+        		    window.location.href = "index.html";
+    			}
             	    }
 	     });
   	</script>
