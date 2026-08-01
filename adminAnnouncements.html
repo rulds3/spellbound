@@ -451,7 +451,7 @@ async function sendAnnouncementNow() {
             playerID: playerID,
             title: title,
             announcement: message,
-            whenToSend: new Date().toISOString(),
+	    whenToSend: new Date().toTimeString().split(" ")[0],
             sent: true,
             read: false
         });
@@ -499,7 +499,7 @@ async function scheduleAnnouncement() {
             playerID: playerID,
             title: title,
             announcement: message,
-            whenToSend: new Date(sendTime).toISOString(),
+	    whenToSend: new Date().toTimeString().split(" ")[0],
             sent: false,
             read: false
 
