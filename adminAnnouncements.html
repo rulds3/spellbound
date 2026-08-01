@@ -191,25 +191,11 @@
         </textarea>
 
 
-        <label for="sendTime">
-            Send Time:
-        </label>
-
-        <input 
-            id="sendTime"
-            type="datetime-local">
-
-
-        <div class="button-row">
+       <div class="button-row">
 
             <button id="sendNowButton">
                 Send Now
             </button>
-
-            <button id="scheduleButton">
-                Schedule
-            </button>
-
         </div>
 
 
@@ -247,8 +233,6 @@ let announcements = [];
 async function checkAdmin() {
 
     const playerID = sessionStorage.getItem("playerID");
-
-console.log(playerID);
 
     if (!playerID) {
         document.getElementById("adminPanel").classList.add("hidden");
