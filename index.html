@@ -87,6 +87,37 @@ h1 {
             }
         }
 
+
+.announcement-popup {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.75);
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background: #171221;
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    border: 2px solid #7c3aed;
+    max-width: 500px;
+    width: 80%;
+}
+
+.popup-content button {
+    float: right;
+}
+
+
+
+
     </style>
 
 </head>
@@ -100,6 +131,15 @@ h1 {
     </div>
 
 </div>
+
+<div id="announcementPopup" class="announcement-popup">
+    <div class="popup-content">
+        <button id="closeAnnouncement">X</button>
+        <h2 id="popupTitle"></h2>
+        <p id="popupMessage"></p>
+    </div>
+</div>
+
 
 	<h1 id="characterHeader">Loading...</h1>
 
@@ -120,12 +160,82 @@ h1 {
        	    const SUPABASE_KEY = 				 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
 	    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+function listenForAnnouncements() {
+
+    const playerID = sessionStorage.getItem("playerID");
+
+    if (!playerID) {
+        return;
+    }
+
+
+    sb
+    .channel("player-announcements")
+    .on(
+        "postgres_changes",
+        {
+            event: "INSERT",
+            schema: "public",
+            table: "announcements",
+            filter: `playerID=eq.${playerID}`
+        },
+        payload => {
+
+            const announcement = payload.new;
+
+
+            if (announcement.sent === true) {
+
+                showAnnouncementPopup(announcement);
+
+            }
+
+        }
+    )
+    .subscribe();
+
+}
+
+
+function showAnnouncementPopup(announcement) {
+
+    document.getElementById("popupTitle").innerHTML =
+        announcement.title;
+
+
+    document.getElementById("popupMessage").innerHTML =
+        announcement.announcement;
+
+
+    document.getElementById("announcementPopup").style.display =
+        "flex";
+
+
+
+    document.getElementById("closeAnnouncement").onclick =
+        async function() {
+
+            document.getElementById("announcementPopup").style.display =
+                "none";
+
+
+            await sb
+                .from("announcements")
+                .update({
+                    read: true
+                })
+                .eq("id", announcement.id);
+
+        };
+
+}
+
+
+
 //player announcements
 async function loadPlayerAnnouncements() {
 
 const playerID = sessionStorage.getItem("playerID");
-
-console.log("Logged in playerID:", playerID);
 
 if (!playerID) {
     console.log("No playerID found");
@@ -140,10 +250,6 @@ if (!playerID) {
         .eq("sent", true)
         .eq("read", false)
         .order("id", { ascending: false });
-
-console.log("Announcements returned:", announcements);
-console.log("Announcement error:", error);
-
 
     if (error) {
         console.log("Announcement error:", error);
@@ -259,8 +365,9 @@ async function markAnnouncementRead(id) {
        	    	});
   	    });
     	   
-    	    syncCharacterData();
-	    loadPlayerAnnouncements();
+syncCharacterData();
+loadPlayerAnnouncements();
+listenForAnnouncements();
 	</script>
 	<script src="session.js"></script>
     </body>
