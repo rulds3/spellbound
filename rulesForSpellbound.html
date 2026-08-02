@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Rules for Spellbound</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="session.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,6 +57,15 @@
     </style>
 </head>
 <body>
+
+<div id="announcementPopup" class="announcement-popup">
+    <div class="popup-content">
+        <h2 id="popupTitle"></h2>
+        <p id="popupMessage"></p>
+        <button id="closeAnnouncement">Announcement Made</button>
+    </div>
+</div>
+
     	<h1> Rules for Spellbound </h1>
 
     <div class="text-box">
@@ -77,6 +88,5 @@
 
     <!-- A simple button to go straight back to your main button screen -->
     <a href="index.html" class="back-btn">Back</a>
-<script src="session.js"></script>
 </body>
 </html>

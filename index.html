@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Player Terminal</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="session.js"></script>
     <style>
         /* Base page layout */
         body {
@@ -160,93 +161,7 @@ h1 {
         </div>
 
        	<script>
-    	    const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
-       	    const SUPABASE_KEY = 				 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
-	    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-function listenForAnnouncements() {
-
-    const playerID = sessionStorage.getItem("playerID");
-
-    if (!playerID) {
-        return;
-    }
-
-
-    sb
-	.channel(`player-announcements-${playerID}`)    .on(
-    "postgres_changes",
-    {
-        event: "*",
-        schema: "public",
-        table: "announcements",
-        filter: `playerID=eq.${playerID}`
-    },
-        payload => {
-
-            const announcement = payload.new;
-
-            console.log("Announcement received:", announcement);
-
-            if (
-                announcement.sent === true &&
-                announcement.read === false
-            ) {
-                showAnnouncementPopup(announcement);
-            }
-
-        }
-    )
-    .subscribe();
-
-}
-
-
-function showAnnouncementPopup(announcement) {
-
-    document.getElementById("popupTitle").innerHTML =
-        announcement.title;
-
-
-    document.getElementById("popupMessage").innerHTML =
-        announcement.announcement;
-
-
-    document.getElementById("announcementPopup").style.display =
-        "flex";
-
-
-
-    document.getElementById("closeAnnouncement").onclick =
-    async function() {
-
-        const confirmed = confirm(
-            "Are you sure you made the announcement?"
-        );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        document.getElementById("announcementPopup").style.display =
-            "none";
-
-
-        await sb
-            .from("announcements")
-            .update({
-                read: true
-            })
-            .eq("id", announcement.id);
-
-    };
-}
-
-
-
-    	    async function syncCharacterData() {
+    	   async function syncCharacterData() {
             	// Check login using your PIN system
         	const playerID = sessionStorage.getItem("playerID");
 
@@ -265,13 +180,15 @@ function showAnnouncementPopup(announcement) {
 
         	if (dbError || !playerRow) {
             	    document.getElementById("characterHeader").innerText = "Unauthorized";
-            	    document.getElementById("characterStatus").innerText = "Character data unmapped.";
             	    return;
         	}
 
         	// Display character name
         	document.getElementById("characterHeader").innerText = playerRow.name;
     	    }
+
+	    syncCharacterData();
+
 
 	    /* Map each button ID to the exact name of the file you want to open*/
    	    const buttonLinks = {
@@ -299,8 +216,6 @@ function showAnnouncementPopup(announcement) {
        	    	});
   	    });
     	   
-syncCharacterData();
-listenForAnnouncements();
 	</script>
 	<script src="session.js"></script>
     </body>
