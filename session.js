@@ -62,8 +62,10 @@ function showAnnouncementPopup(announcement) {
     popup.style.display = "flex";
 
 
-    document.getElementById("closeAnnouncement").onclick =
-    async function() {
+    const closeButton = document.getElementById("closeAnnouncement");
+
+if (closeButton) {
+    closeButton.onclick = async function() {
 
         popup.style.display = "none";
 
@@ -75,13 +77,46 @@ function showAnnouncementPopup(announcement) {
             .eq("id", announcement.id);
 
     };
-
 }
 
+}
 
 window.addEventListener("load", () => {
     listenForAnnouncements();
 });
+
+
+
+async function verifyPlayerLogin() {
+
+    const playerID = sessionStorage.getItem("playerID");
+
+    if (!playerID) {
+        window.location.href = "login.html";
+        return false;
+    }
+
+
+    const { data: playerRow, error } = await sb
+        .from("spellboundPlayers")
+        .select("playerID")
+        .eq("playerID", playerID)
+        .single();
+
+
+    if (error || !playerRow) {
+        sessionStorage.clear();
+        window.location.href = "login.html";
+        return false;
+    }
+
+
+    return true;
+}
+
+
+
+
 
 
 // 30 minutes in milliseconds
