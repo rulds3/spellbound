@@ -146,7 +146,7 @@ h1 {
 
 	<h1 id="characterHeader">Loading...</h1>
 
-   	<!-- Container holding the 6 distinct buttons -->
+   	<!-- Container holding the 9 distinct buttons -->
     	<div class="button-grid">
             <button class="game-btn" id="btn1">Character Information</button>
             <button class="game-btn" id="btn2">Goals and Tips</button>
@@ -175,13 +175,13 @@ function listenForAnnouncements() {
 
     sb
 	.channel(`player-announcements-${playerID}`)    .on(
-        "postgres_changes",
-        {
-            event: "UPDATE",
-            schema: "public",
-            table: "announcements",
-            filter: `playerID=eq.${playerID}`
-        },
+    "postgres_changes",
+    {
+        event: "*",
+        schema: "public",
+        table: "announcements",
+        filter: `playerID=eq.${playerID}`
+    },
         payload => {
 
             const announcement = payload.new;
@@ -246,87 +246,6 @@ function showAnnouncementPopup(announcement) {
 
 
 
-//player announcements
-async function loadPlayerAnnouncements() {
-
-const playerID = sessionStorage.getItem("playerID");
-
-if (!playerID) {
-    console.log("No playerID found");
-    return;
-}
-
-
-    const { data: announcements, error } = await sb
-        .from("announcements")
-        .select("*")
-        .eq("playerID", playerID)
-        .eq("sent", true)
-        .eq("read", false)
-        .order("id", { ascending: false });
-
-    if (error) {
-        console.log("Announcement error:", error);
-        return;
-    }
-
-
-    const box = document.getElementById("playerAnnouncements");
-
-    if (!box) {
-        console.log("No announcement box found.");
-        return;
-    }
-
-
-    box.innerHTML = "";
-
-
-    announcements.forEach(item => {
-
-        box.innerHTML += `
-            <div class="announcement-box">
-
-                <h3>${item.title}</h3>
-
-                <p>${item.announcement}</p>
-
-                <button onclick="markAnnouncementRead(${item.id})">
-                    Mark Read
-                </button>
-
-            </div>
-        `;
-
-    });
-
-}
-
-
-async function markAnnouncementRead(id) {
-
-    const { error } = await sb
-        .from("announcements")
-        .update({
-            read: true
-        })
-        .eq("id", id);
-
-
-    if (error) {
-        console.log("Read error:", error);
-        return;
-    }
-
-
-    loadPlayerAnnouncements();
-
-}
-
-
-
-
-
     	    async function syncCharacterData() {
             	// Check login using your PIN system
         	const playerID = sessionStorage.getItem("playerID");
@@ -381,7 +300,6 @@ async function markAnnouncementRead(id) {
   	    });
     	   
 syncCharacterData();
-loadPlayerAnnouncements();
 listenForAnnouncements();
 	</script>
 	<script src="session.js"></script>
