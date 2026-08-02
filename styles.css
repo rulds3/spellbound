@@ -1,0 +1,235 @@
+/* =========================================
+   GENERAL PAGE
+========================================= */
+
+ /* Base page layout */
+        body {
+            font-family: Arial, sans-serif;
+	    background-image: url('magicBackground.png');
+	    background-size: cover;
+   	    background-position: center;
+    	    background-repeat: no-repeat;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 50px;
+        }
+
+
+        h1 { 
+	    font-size: 2.2rem; 
+	    color: #ffd700; 
+	    margin-top: 0; 
+	    text-shadow: 0 2px 4px rgba(0,0,0,0.5); 
+            margin-bottom: 30px;
+        }
+h2 {
+    color: #ffd966;
+}
+
+p {
+    	    /*max-width: 600px;    Prevents text from stretching wider than 600 pixels */
+            /*margin: 0 auto;       Centers the text block perfectly on the screen */
+            /*padding: 0 20px;      Adds a safety cushion on the left/right for mobile screens */
+            line-height: 1.6;     /* Spaces out lines of text so they are easier to read */
+            font-size: 1.1rem;    /* Makes the text slightly larger and cleaner */
+	    margin-bottom: 20px;
+	}
+
+	.text-box {
+    	   /* 0, 0, 0 is black. 0.8 means 85% solid, 15% transparent */
+    	   background-color: rgba(0, 31, 63, 0.85); 
+    
+   	   max-width: 650px;           /* Sets the width limit of the box */
+	   margin: 50px auto;          /* Centers the box and pushes it down from the top */
+	   padding: 40px;              /* Adds breathing room inside the box around your text */
+    	   border-radius: 12px;        /* Smooths out the corners of the box */
+    	   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Adds a subtle shadow beneath the box */
+	}
+
+/* =========================================
+   BUTTON GRID
+========================================= */
+
+        /* 3-column grid structure that collapses to 2 columns or 1 column on small screens */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        /* Styling for the buttons */
+        .game-btn {
+            //background-color: #333333;
+	    background-color: #001F3F;            
+	    color: #ffffff;
+            border: 2px solid #555555;
+            padding: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        /* Hover effects to make the screen feel responsive */
+        .game-btn:hover {
+            background-color: #4f46e5; /* Nice purple color on hover */
+            border-color: #6366f1;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(79, 70, 229, 0.4);
+        }
+
+
+        .game-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Responsive grid adjustments for small screen devices */
+        @media (max-width: 600px) {
+            .button-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 400px) {
+            .button-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+/* =========================================
+   TEXT BOXES
+========================================= */
+
+.text-box {
+    max-width: 900px;
+    margin: auto;
+    background: #2b2838;
+    border: 3px solid #c9a227;
+    border-radius: 15px;
+    padding: 25px;
+}
+
+/* =========================================
+   ANNOUNCEMENTS
+========================================= */
+
+.announcement-box {
+            background:#171122;
+            border:2px solid #6d28d9;
+            border-radius:12px;
+            padding:20px;
+            margin-bottom:15px;
+        }
+
+.announcement-box h3 {
+    color: #ffd966;
+    margin-top: 0;
+}
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+button {
+    background: #c9a227;
+    color: #1b1a24;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #ffd966;
+}
+
+.delete-button {
+    background: #8b0000;
+    color: white;
+}
+
+.delete-button:hover {
+    background: #b22222;
+}
+
+.edit-button {
+    background: royalblue;
+    color: white;
+}
+
+.edit-button:hover {
+    background: cornflowerblue;
+}
+
+.send-button {
+    background: seagreen;
+    color: white;
+}
+
+.send-button:hover {
+    background: mediumseagreen;
+}
+
+        .back-btn {
+	    background-color: #001F3F;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+/* =========================================
+   POPUP
+========================================= */
+
+.announcement-popup {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.75);
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background: #171221;
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    border: 2px solid #7c3aed;
+    max-width: 500px;
+    width: 80%;
+}
+
+.popup-content button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background: #7c3aed;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.popup-content button:hover {
+    background: #6d28d9;
+}
