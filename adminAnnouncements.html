@@ -298,7 +298,8 @@ async function loadAnnouncements() {
             announcement,
             whenToSend,
             sent,
-            read
+            read,
+	    spellboundPlayers(name)
         `)
         .order("whenToSend", { ascending: true });
 
@@ -349,7 +350,7 @@ function displayAnnouncements() {
 
                 <p>
                     <strong>Name:</strong>
-                    ${item.name}
+    		    ${item.spellboundPlayers?.name ?? "Unknown"}
                 </p>
 
                 <p>
@@ -480,7 +481,6 @@ async function scheduleAnnouncement() {
     const playerID = document.getElementById("playerSelect").value;
     const title = document.getElementById("announcementTitle").value;
     const message = document.getElementById("announcementText").value;
-    const sendTime = document.getElementById("sendTime").value;
 
     // Convert "2026-08-01T19:30" into "19:30:00"
     const timeOnly = sendTime.split("T")[1] + ":00";
