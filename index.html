@@ -105,12 +105,106 @@ h1 {
             <button class="game-btn" id="btn8">Exam Information</button>
         </div>
 
+<div class="text-box">
+    <h2>Announcements</h2>
 
+    <div id="playerAnnouncements">
+        Loading announcements...
+    </div>
+
+</div>
 
        	<script>
     	    const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
        	    const SUPABASE_KEY = 				 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
 	    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+//player announcements
+async function loadPlayerAnnouncements() {
+
+const playerID = sessionStorage.getItem("playerID");
+
+console.log("Logged in playerID:", playerID);
+
+if (!playerID) {
+    console.log("No playerID found");
+    return;
+}
+
+
+    const { data: announcements, error } = await sb
+        .from("announcements")
+        .select("*")
+        .eq("playerID", playerID)
+        .eq("sent", true)
+        .eq("read", false)
+        .order("id", { ascending: false });
+
+console.log("Announcements returned:", announcements);
+console.log("Announcement error:", error);
+
+
+    if (error) {
+        console.log("Announcement error:", error);
+        return;
+    }
+
+
+    const box = document.getElementById("playerAnnouncements");
+
+    if (!box) {
+        console.log("No announcement box found.");
+        return;
+    }
+
+
+    box.innerHTML = "";
+
+
+    announcements.forEach(item => {
+
+        box.innerHTML += `
+            <div class="announcement-box">
+
+                <h3>${item.title}</h3>
+
+                <p>${item.announcement}</p>
+
+                <button onclick="markAnnouncementRead(${item.id})">
+                    Mark Read
+                </button>
+
+            </div>
+        `;
+
+    });
+
+}
+
+
+async function markAnnouncementRead(id) {
+
+    const { error } = await sb
+        .from("announcements")
+        .update({
+            read: true
+        })
+        .eq("id", id);
+
+
+    if (error) {
+        console.log("Read error:", error);
+        return;
+    }
+
+
+    loadPlayerAnnouncements();
+
+}
+
+
+
+
 
     	    async function syncCharacterData() {
             	// Check login using your PIN system
@@ -120,7 +214,7 @@ h1 {
             	// No login → send back to login page
             	    window.location.href = "login.html";
             	    return;
-            }
+                }
 
             // Pull their data directly from spellboundPlayers
             const { data: playerRow, error: dbError } = await sb
@@ -165,6 +259,8 @@ h1 {
   	    });
     	   
     	    syncCharacterData();
+	    loadPlayerAnnouncements();
 	</script>
+	<script src="session.js"></script>
     </body>
 </html>
