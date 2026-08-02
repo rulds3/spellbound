@@ -481,6 +481,7 @@ async function scheduleAnnouncement() {
     const playerID = document.getElementById("playerSelect").value;
     const title = document.getElementById("announcementTitle").value;
     const message = document.getElementById("announcementText").value;
+    const sendTime = document.getElementById("sendTime").value;
 
     // Convert "2026-08-01T19:30" into "19:30:00"
     const timeOnly = sendTime.split("T")[1] + ":00";
@@ -676,13 +677,13 @@ async function deleteAnnouncement(id) {
 
 function clearAnnouncementForm() {
 
+    const title = document.getElementById("announcementTitle");
+    const text = document.getElementById("announcementText");
+    const sendTime = document.getElementById("sendTime");
 
-    document.getElementById("announcementTitle").value = "";
-
-    document.getElementById("announcementText").value = "";
-
-    document.getElementById("sendTime").value = "";
-
+    if (title) title.value = "";
+    if (text) text.value = "";
+    if (sendTime) sendTime.value = "";
 }
 
 
