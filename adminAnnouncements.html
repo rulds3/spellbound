@@ -482,6 +482,9 @@ async function scheduleAnnouncement() {
     const message = document.getElementById("announcementText").value;
     const sendTime = document.getElementById("sendTime").value;
 
+    // Convert "2026-08-01T19:30" into "19:30:00"
+    const timeOnly = sendTime.split("T")[1] + ":00";
+
 
     if (!playerID || !title || !message || !sendTime) {
 
@@ -499,7 +502,7 @@ async function scheduleAnnouncement() {
             playerID: playerID,
             title: title,
             announcement: message,
-	    whenToSend: new Date().toTimeString().split(" ")[0],
+	    whenToSend: timeOnly,
             sent: false,
             read: false
 
@@ -529,8 +532,7 @@ async function scheduleAnnouncement() {
 async function sendScheduledAnnouncements() {
 
 
-    const now = new Date().toISOString();
-
+    const now = new Date().toTimeString().split(" ")[0];
 
     const { data, error } = await sb
         .from("announcements")
