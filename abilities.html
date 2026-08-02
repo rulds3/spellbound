@@ -41,37 +41,9 @@
     <a href="index.html" class="back-btn">Back</a>
 
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <script src="session.js"></script>
+ <script src="session.js"></script>
 
     <script>
-	   async function syncCharacterData() {
-            	// Check login using your PIN system
-        	const playerID = sessionStorage.getItem("playerID");
-
-        	if (!playerID) {
-            	// No login → send back to login page
-            	    window.location.href = "login.html";
-            	    return;
-                }
-
-            // Pull their data directly from spellboundPlayers
-            const { data: playerRow, error: dbError } = await sb
-                .from('spellboundPlayers')
-                .select('name')
-                .eq('playerID', playerID)
-                .single();
-
-        	if (dbError || !playerRow) {
-            	    document.getElementById("characterHeader").innerText = "Unauthorized";
-            	    return;
-        	}
-
-        	// Display character name
-        	document.getElementById("characterHeader").innerText = playerRow.name;
-    	    }
-
-	    syncCharacterData();
-
     	async function loadAbilities() {
 	    const playerID = sessionStorage.getItem("playerID");
 
@@ -99,7 +71,6 @@
                         </p>
                         
 			<button
-			    //Use Ability button 
                             onclick="useAbility(${ability.id}, 							    ${ability.usesRemaining})"
                             ${ability.usesRemaining <= 0 ? "disabled" : ""}
                         >
@@ -107,7 +78,6 @@
                         </button>
 
   			<button
-			    //Undo use ability
             		    onclick="undoAbility(${ability.id}, 						    ${ability.usesRemaining}, ${ability.maxUses})"
             		    ${ability.usesRemaining >= ability.maxUses ? "disabled" : ""}
   		      	>
@@ -147,20 +117,110 @@
 
     	const newUses = currentUses + 1;
 
-    	const { error } = await sb
-            .from("playerAbilities")
-            .update({ usesRemaining: newUses })
-            .eq("id", id);
+    	const { error } = <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="session.js"></script>
 
-	if (error) {
-            console.log(error);
-            return;
-        }
+<script>
 
-        loadAbilities();
+function verifyPlayerLogin() {
+
+    const playerID = sessionStorage.getItem("playerID");
+
+    if (!playerID) {
+        window.location.href = "login.html";
+        return false;
+    }
+
+    return true;
 }
 
-	loadAbilities();
+
+async function loadAbilities() {
+
+    const playerID = sessionStorage.getItem("playerID");
+
+    const { data: abilities, error } = await sb
+        .from("playerAbilities")
+        .select("*")
+        .eq("playerID", playerID)
+        .order("id", { ascending: true });
+
+    if (error) {
+        console.log(error);
+        return;
+    }
+
+    const abilityBox = document.getElementById("characterAbilities");
+
+    abilityBox.innerHTML = "";
+
+    abilities.forEach(ability => {
+
+        abilityBox.innerHTML += `
+            <div class="ability-box ${ability.usesRemaining <= 0 ? "used-up" : ""}">
+
+                ${ability.ability}
+
+                <p>
+                    Uses remaining:
+                    <strong>${ability.usesRemaining}</strong>
+                </p>
+
+                <button onclick="useAbility(${ability.id}, ${ability.usesRemaining})"
+                    ${ability.usesRemaining <= 0 ? "disabled" : ""}>
+                    Use Ability
+                </button>
+
+                <button onclick="undoAbility(${ability.id}, ${ability.usesRemaining}, ${ability.maxUses})"
+                    ${ability.usesRemaining >= ability.maxUses ? "disabled" : ""}>
+                    Undo
+                </button>
+
+            </div>
+        `;
+    });
+}
+
+
+async function useAbility(id, currentUses) {
+
+    if (currentUses <= 0) {
+        return;
+    }
+
+    await sb
+        .from("playerAbilities")
+        .update({
+            usesRemaining: currentUses - 1
+        })
+        .eq("id", id);
+
+    loadAbilities();
+}
+
+
+async function undoAbility(id, currentUses, maxUses) {
+
+    if (currentUses >= maxUses) {
+        return;
+    }
+
+    await sb
+        .from("playerAbilities")
+        .update({
+            usesRemaining: currentUses + 1
+        })
+        .eq("id", id);
+
+    loadAbilities();
+}
+
+
+if (verifyPlayerLogin()) {
+    loadAbilities();
+}
+
+</script>
     </script>
 </body>
 </html>
