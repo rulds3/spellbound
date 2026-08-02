@@ -366,22 +366,27 @@ function displayAnnouncements() {
 
                 <p>
                     <strong>Status:</strong>
-                    ${item.sent ? "Sent" : "Scheduled"}
+                    ${item.sent ? "Sent" : "Ready to Send"}
                 </p>
 
 
-                <button 
-                    class="edit-button"
-                    onclick="editAnnouncement(${item.id})">
-                    Edit
-                </button>
+<button 
+    class="send-button"
+    onclick="sendAnnouncement(${item.id})">
+    Send Now
+</button>
 
+<button 
+    class="edit-button"
+    onclick="editAnnouncement(${item.id})">
+    Edit
+</button>
 
-                <button 
-                    class="delete-button"
-                    onclick="deleteAnnouncement(${item.id})">
-                    Delete
-                </button>
+<button 
+    class="delete-button"
+    onclick="deleteAnnouncement(${item.id})">
+    Delete
+</button>
 
 
             </div>
@@ -392,14 +397,6 @@ function displayAnnouncements() {
 
 }
 
-
-
-
-// Placeholder functions - completed in Part 2
-
-function editAnnouncement(id) {
-    console.log("Edit announcement:", id);
-}
 
 
 
@@ -422,6 +419,40 @@ async function startAdminPage() {
 
 
 startAdminPage();
+
+async function sendAnnouncement(id) {
+
+    const confirmed = confirm(
+        "Send this announcement to the player?"
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const { error } = await sb
+        .from("announcements")
+        .update({
+            sent: true
+        })
+        .eq("id", id);
+
+
+    if (error) {
+        console.log("Send error:", error);
+        alert("Could not send announcement.");
+        return;
+    }
+
+
+    alert("Announcement sent!");
+
+    loadAnnouncements();
+
+}
+
+
 
 // ================================
 // SEND ANNOUNCEMENT NOW
@@ -621,11 +652,6 @@ async function editAnnouncement(id) {
 
     }
 
-
-
-    await deleteAnnouncement(id);
-
-
 }
 
 
@@ -692,21 +718,6 @@ document
         "click",
         sendAnnouncementNow
     );
-
-
-// ================================
-// AUTOMATIC SCHEDULER
-// ================================
-
-// Check every 30 seconds
-setInterval(
-    sendScheduledAnnouncements,
-    30000
-);
-
-
-// Check once immediately
-sendScheduledAnnouncements();
 
 </script>
 
