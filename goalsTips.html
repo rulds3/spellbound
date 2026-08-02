@@ -32,7 +32,8 @@
     <!-- A simple button to go straight back to your main button screen -->
     <a href="index.html" class="back-btn">Back</a>
 
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="session.js"></script>
 
     <script>
     	async function syncCharacterData() {
@@ -105,11 +106,11 @@
     	    }
 	}
 
-
-	loadGoals();
-	syncCharacterData();
+if (verifyPlayerLogin()) {
+    loadGoals();
+    syncCharacterData();
+}
      </script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <script src="session.js"></script>
+
 </body>
 </html>
