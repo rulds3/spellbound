@@ -146,9 +146,9 @@ h1 {
 
 <div id="announcementPopup" class="announcement-popup">
     <div class="popup-content">
-        <button id="closeAnnouncement">Click after making announcement</button>
         <h2 id="popupTitle"></h2>
         <p id="popupMessage"></p>
+        <button id="closeAnnouncement">Announcement Made</button>
     </div>
 </div>
 
@@ -225,21 +225,30 @@ function showAnnouncementPopup(announcement) {
 
 
     document.getElementById("closeAnnouncement").onclick =
-        async function() {
+    async function() {
 
-            document.getElementById("announcementPopup").style.display =
-                "none";
+        const confirmed = confirm(
+            "Are you sure you made the announcement?"
+        );
 
 
-            await sb
-                .from("announcements")
-                .update({
-                    read: true
-                })
-                .eq("id", announcement.id);
+        if (!confirmed) {
+            return;
+        }
 
-        };
 
+        document.getElementById("announcementPopup").style.display =
+            "none";
+
+
+        await sb
+            .from("announcements")
+            .update({
+                read: true
+            })
+            .eq("id", announcement.id);
+
+    };
 }
 
 
