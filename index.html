@@ -173,11 +173,10 @@ function listenForAnnouncements() {
 
 
     sb
-    .channel("player-announcements")
-    .on(
+	.channel(`player-announcements-${playerID}`)    .on(
         "postgres_changes",
         {
-            event: "INSERT",
+            event: "UPDATE",
             schema: "public",
             table: "announcements",
             filter: `playerID=eq.${playerID}`
@@ -186,11 +185,13 @@ function listenForAnnouncements() {
 
             const announcement = payload.new;
 
+            console.log("Announcement received:", announcement);
 
-            if (announcement.sent === true) {
-
+            if (
+                announcement.sent === true &&
+                announcement.read === false
+            ) {
                 showAnnouncementPopup(announcement);
-
             }
 
         }
