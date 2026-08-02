@@ -194,7 +194,7 @@
        <div class="button-row">
 
             <button id="sendNowButton">
-                Announcement Edited
+                Announcement Created
             </button>
         </div>
 
@@ -457,34 +457,50 @@ async function sendAnnouncementNow() {
     const title = document.getElementById("announcementTitle").value;
     const message = document.getElementById("announcementText").value;
 
-
     if (!playerID || !title || !message) {
-        alert("Please select a player and fill in the announcement.");
+        alert("Please fill in all fields.");
         return;
     }
 
+    let error;
 
-    const { error } = await sb
-        .from("announcements")
-        .insert({
-            playerID: playerID,
-            title: title,
-            announcement: message,
-            sent: false,
-            read: false
-        });
+    if (editingId) {
 
+        ({ error } = await sb
+            .from("announcements")
+            .update({
+                playerID,
+                title,
+                announcement: message
+            })
+            .eq("id", editingId));
+
+    } else {
+
+        ({ error } = await sb
+            .from("announcements")
+            .insert({
+                playerID,
+                title,
+                announcement: message,
+                sent: false,
+                read: false
+            }));
+
+    }
 
     if (error) {
         console.log(error);
         return;
     }
 
+    editingId = null;
+
+    document.getElementById("sendNowButton").textContent =
+        "Create Announcement";
 
     clearAnnouncementForm();
-
     loadAnnouncements();
-
 }
 
 

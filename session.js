@@ -21,20 +21,21 @@ function listenForAnnouncements() {
     .on(
         "postgres_changes",
         {
-            event: "*",
+            event: "UPDATE",
             schema: "public",
             table: "announcements",
             filter: `playerID=eq.${playerID}`
         },
-        payload => {
+       payload => {
 
-            const announcement = payload.new;
+    const oldAnnouncement = payload.old;
+    const newAnnouncement = payload.new;
 
-            if (announcement.sent === true) {
-                showAnnouncementPopup(announcement);
-            }
+    if (!oldAnnouncement.sent && newAnnouncement.sent) {
+        showAnnouncementPopup(newAnnouncement);
+    }
 
-        }
+}
     )
     .subscribe();
 

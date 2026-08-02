@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Rules for Spellbound</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -65,12 +64,10 @@
     <!-- A simple button to go straight back to your main button screen -->
     <a href="index.html" class="back-btn">Back</a>
 
-
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+ <script src="session.js"></script>
 
     <script>
-        const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
-        const SUPABASE_KEY = 				 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
-        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     	async function syncCharacterData() {
             // Check login using your PIN system
@@ -100,6 +97,5 @@
     	    }
 	syncCharacterData();
      </script>
-     <script src="session.js"></script>
 </body>
 </html>
