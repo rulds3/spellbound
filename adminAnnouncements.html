@@ -292,17 +292,16 @@ async function loadAnnouncements() {
     const { data, error } = await sb
         .from("announcements")
         .select(`
-            id,
-            playerID,
-            title,
-            announcement,
-            whenToSend,
-            sent,
-            read,
-	    spellboundPlayers(name)
-        `)
-        .order("whenToSend", { ascending: true });
+    	    id,
+    	    playerID,
+    	    title,
+    	    announcement,
+    	    sent,
+    	    read,
+    	    spellboundPlayers(name)
+	`)
 
+	.order("id", { ascending: true });
 
     if (error) {
         console.log(error);
@@ -355,12 +354,6 @@ function displayAnnouncements() {
 
                 <p>
                     ${item.announcement}
-                </p>
-
-
-                <p>
-                    <strong>Send Time:</strong>
-                    ${item.whenToSend}
                 </p>
 
 
@@ -477,126 +470,18 @@ async function sendAnnouncementNow() {
             playerID: playerID,
             title: title,
             announcement: message,
-	    whenToSend: new Date().toTimeString().split(" ")[0],
-            sent: true,
-            read: false
-        });
-
-
-    if (error) {
-        console.log(error);
-        return;
-    }
-
-
-    clearAnnouncementForm();
-
-    loadAnnouncements();
-
-}
-
-
-
-// ================================
-// SCHEDULE ANNOUNCEMENT
-// ================================
-
-async function scheduleAnnouncement() {
-
-    const playerID = document.getElementById("playerSelect").value;
-    const title = document.getElementById("announcementTitle").value;
-    const message = document.getElementById("announcementText").value;
-    const sendTime = document.getElementById("sendTime").value;
-
-    // Convert "2026-08-01T19:30" into "19:30:00"
-    const timeOnly = sendTime.split("T")[1] + ":00";
-
-
-    if (!playerID || !title || !message || !sendTime) {
-
-        alert("Please fill in all fields.");
-        return;
-
-    }
-
-
-
-    const { error } = await sb
-        .from("announcements")
-        .insert({
-
-            playerID: playerID,
-            title: title,
-            announcement: message,
-	    whenToSend: timeOnly,
             sent: false,
             read: false
-
         });
 
 
-
     if (error) {
         console.log(error);
         return;
     }
-
 
 
     clearAnnouncementForm();
-
-    loadAnnouncements();
-
-}
-
-
-
-// ================================
-// CHECK SCHEDULED ANNOUNCEMENTS
-// ================================
-
-async function sendScheduledAnnouncements() {
-
-
-    const now = new Date().toTimeString().split(" ")[0];
-
-    const { data, error } = await sb
-        .from("announcements")
-        .select("id")
-        .eq("sent", false)
-        .lte("whenToSend", now);
-
-
-
-    if (error) {
-
-        console.log(error);
-        return;
-
-    }
-
-
-
-    if (data.length === 0) {
-        return;
-    }
-
-
-
-    for (const item of data) {
-
-
-        await sb
-            .from("announcements")
-            .update({
-                sent: true
-            })
-            .eq("id", item.id);
-
-
-    }
-
-
 
     loadAnnouncements();
 
@@ -634,24 +519,6 @@ async function editAnnouncement(id) {
 
     document.getElementById("playerSelect").value =
         announcement.playerID;
-
-
-
-    if (announcement.whenToSend) {
-
-        const date = new Date(announcement.whenToSend);
-
-        date.setMinutes(
-            date.getMinutes() -
-            date.getTimezoneOffset()
-        );
-
-
-        document.getElementById("sendTime").value =
-            date.toISOString().slice(0,16);
-
-    }
-
 }
 
 
@@ -699,11 +566,9 @@ function clearAnnouncementForm() {
 
     const title = document.getElementById("announcementTitle");
     const text = document.getElementById("announcementText");
-    const sendTime = document.getElementById("sendTime");
 
     if (title) title.value = "";
     if (text) text.value = "";
-    if (sendTime) sendTime.value = "";
 }
 
 
