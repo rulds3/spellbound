@@ -16,9 +16,9 @@
         <button id="closeAnnouncement">Announcement Made</button>
     </div>
 </div>
+    <h1 id="characterHeader"></h1>
 
     <div class="text-box">
-        <h1 id="characterHeader"></h1>
         <p id="characterInformation"></p>
     </div>
 
@@ -56,7 +56,12 @@
         	document.getElementById("characterHeader").innerText = playerRow.name;
         	document.getElementById("characterInformation").innerText = playerRow.characterInfo;
     	    }
-	syncCharacterData();
+
+if (verifyPlayerLogin()) {
+    syncCharacterData();
+}
+
+
      </script>
 </body>
 </html>
