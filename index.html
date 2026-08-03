@@ -19,8 +19,9 @@
     </div>
 </div>
 
-
+    <div class="character-header-box">
 	<h1 id="characterHeader">Loading...</h1>
+    </div>
 
    	<!-- Container holding the 9 distinct buttons -->
     	<div class="button-grid">
@@ -65,9 +66,6 @@
         	document.getElementById("characterHeader").innerText = playerRow.name;
     	    }
 
-	    syncCharacterData();
-
-
 	    /* Map each button ID to the exact name of the file you want to open*/
    	    const buttonLinks = {
       		"btn1": "characterInfo.html",
@@ -93,6 +91,10 @@
             	}
        	    	});
   	    });
+
+if (verifyPlayerLogin()) {
+    syncCharacterData();
+}
     	   
 	</script>
     </body>

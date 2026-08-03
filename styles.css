@@ -22,7 +22,7 @@
 
         h1 { 
 	    font-size: 4rem; 
-	    color: #ffd700; 
+	    color: #d4af37; 
 	    margin-top: 0; 
 	    text-shadow: 0 2px 4px rgba(0,0,0,0.5); 
             margin-bottom: 30px;
@@ -107,6 +107,15 @@ p {
     border: 3px solid #c9a227;
     border-radius: 15px;
     box-shadow: 0 8px 16px rgba(0,0,0,.5);
+}
+
+.character-header-box {
+    background: #2b2838;
+    border: 3px solid #c9a227;
+    border-radius: 15px;
+    padding: 15px 30px;
+    margin-bottom: 30px;
+    text-align: center;
 }
 
 /* =========================================
