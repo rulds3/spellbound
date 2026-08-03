@@ -6,9 +6,9 @@ let announcementChannel = null;
 
 function listenForAnnouncements() {
 
-    const playerID = sessionStorage.getItem("playerID");
+const playerName = sessionStorage.getItem("playerName");
 
-    if (!playerID) {
+    if (!playerName) {
         return;
     }
 
@@ -18,14 +18,14 @@ function listenForAnnouncements() {
 
 
     announcementChannel = sb
-.channel("player-announcements-" + playerID)
+.channel("player-announcements-" + playerName)
     .on(
         "postgres_changes",
         {
             event:"UPDATE",
             schema:"public",
             table:"announcements",
-            filter:`playerID=eq.${playerID}`
+            filter:`name=eq.${playerName}`
         },
 
         payload => {
@@ -97,9 +97,9 @@ function showAnnouncementPopup(announcement) {
 
 async function checkUnreadAnnouncements() {
 
-    const playerID = sessionStorage.getItem("playerID");
+const playerName = sessionStorage.getItem("playerName");
 
-    if (!playerID) {
+    if (!playerName) {
         return;
     }
 
@@ -107,7 +107,7 @@ async function checkUnreadAnnouncements() {
     const { data, error } = await sb
         .from("announcements")
         .select("*")
-        .eq("playerID", playerID)
+        .eq("name", playerName)
         .eq("sent", true)
         .eq("read", false)
         .order("id", { ascending: false })

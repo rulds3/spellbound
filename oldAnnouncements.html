@@ -40,12 +40,12 @@
 
 async function loadOldAnnouncements(){
 
-    const playerID = sessionStorage.getItem("playerID");
+const playerName = sessionStorage.getItem("playerName");
 
     const { data, error } = await sb
         .from("announcements")
         .select("*")
-        .eq("playerID", playerID)
+        .eq("name", playerName)
         .eq("sent", true)
         .order("id", { ascending:false });
 
