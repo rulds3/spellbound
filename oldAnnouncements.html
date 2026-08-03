@@ -36,51 +36,16 @@
 
 <script>
 
- async function syncCharacterData() {
-            	// Check login using your PIN system
-        	const playerID = sessionStorage.getItem("playerID");
-
-        	if (!playerID) {
-            	// No login → send back to login page
-            	    window.location.href = "login.html";
-            	    return;
-                }
-
-            // Pull their data directly from spellboundPlayers
-            const { data: playerRow, error: dbError } = await sb
-                .from('spellboundPlayers')
-                .select('name')
-                .eq('playerID', playerID)
-                .single();
-
-        	if (dbError || !playerRow) {
-            	    document.getElementById("characterHeader").innerText = "Unauthorized";
-            	    return;
-        	}
-
-        	// Display character name
-        	document.getElementById("characterHeader").innerText = playerRow.name;
-    	    }
-
-	    syncCharacterData();
-
 async function loadOldAnnouncements(){
 
     const playerID = sessionStorage.getItem("playerID");
 
-
-    if(!playerID){
-        window.location.href="login.html";
-        return;
-    }
-
-
-    const {data,error}=await sb
+    const { data, error } = await sb
         .from("announcements")
         .select("*")
-        .eq("playerID",playerID)
-        .eq("read",true)
-        .order("id",{ascending:false});
+        .eq("playerID", playerID)
+        .eq("sent", true)
+        .order("id", { ascending:false });
 
 
     if(error){
@@ -89,45 +54,52 @@ async function loadOldAnnouncements(){
     }
 
 
-    const box=document.getElementById("oldAnnouncements");
+    const box = document.getElementById("oldAnnouncements");
 
-    box.innerHTML="";
+    box.innerHTML = "";
 
 
-    if(data.length===0){
+    if(data.length === 0){
 
-        box.innerHTML="<p>No old announcements.</p>";
+        box.innerHTML = "<p>No old announcements.</p>";
         return;
 
     }
 
 
-
-    data.forEach(item=>{
-
+    data.forEach(item => {
 
         box.innerHTML += `
 
-        <div class="announcement-box">
+            <div class="announcement-box">
 
-            <h2>${item.title}</h2>
+                <h2>${item.title}</h2>
 
-            <p>${item.announcement}</p>
+                <p>${item.announcement}</p>
 
-        </div>
+            </div>
 
         `;
 
-
     });
 
-
 }
 
 
-if (verifyPlayerLogin()) {
+async function startPage(){
+
+    const loggedIn = await verifyPlayerLogin();
+
+    if (!loggedIn) {
+        return;
+    }
+
     loadOldAnnouncements();
+
 }
+
+
+startPage();
 
 </script>
 </body>

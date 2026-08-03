@@ -2,7 +2,7 @@
        	    const SUPABASE_KEY = 				 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
 	    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let announcementChannel;
+let announcementChannel = null;
 
 function listenForAnnouncements() {
 
@@ -16,50 +16,48 @@ function listenForAnnouncements() {
         return;
     }
 
+
     announcementChannel = sb
-    .channel(`player-announcements-${playerID}`)
+.channel("player-announcements-" + playerID)
     .on(
-    "postgres_changes",
-    {
-        event: "UPDATE",
-        schema: "public",
-        table: "announcements",
-        filter: `playerID=eq.${playerID}`
-    },
-   payload => {
+        "postgres_changes",
+        {
+            event:"UPDATE",
+            schema:"public",
+            table:"announcements",
+            filter:`playerID=eq.${playerID}`
+        },
 
-    const oldAnnouncement = payload.old;
-    const newAnnouncement = payload.new;
+        payload => {
 
-    if (
-        oldAnnouncement.sent === false &&
-        newAnnouncement.sent === true
-    ) {
-        showAnnouncementPopup(newAnnouncement);
-    }
+            const announcement = payload.new;
 
-}
-)
+
+            if (
+                announcement.sent === true &&
+                announcement.read === false
+            ) {
+                showAnnouncementPopup(announcement);
+            }
+
+        }
+
+    )
     .subscribe();
 
 }
 
 
-
 function showAnnouncementPopup(announcement) {
 
-    if (announcement.read) {
-        return;
-    }
-
-    let popup = document.getElementById("announcementPopup");
+    const popup = document.getElementById("announcementPopup");
 
     if (!popup) {
         return;
     }
 
 
-    document.getElementById("popupTitle").innerHTML =
+    document.getElementById("popupTitle").textContent =
         announcement.title;
 
     document.getElementById("popupMessage").innerHTML =
@@ -71,32 +69,75 @@ function showAnnouncementPopup(announcement) {
 
     const closeButton = document.getElementById("closeAnnouncement");
 
-if (closeButton) {
-    closeButton.onclick = async function() {
 
-        popup.style.display = "none";
+    if (closeButton) {
 
-      const { error } = await sb
-    .from("announcements")
-    .update({
-        read: true
-    })
-    .eq("id", announcement.id);
+        closeButton.onclick = async function() {
 
-if (error) {
-    console.log("Could not mark announcement read:", error);
+    closeButton.disabled = true;
+
+    popup.style.display = "none";
+
+    const { error } = await sb
+        .from("announcements")
+        .update({
+            read: true
+        })
+        .eq("id", announcement.id);
+
+    if (error) {
+        console.log("Could not mark announcement read:", error);
+    }
+
+};
+
+    }
+
 }
 
-    };
-}
+async function checkUnreadAnnouncements() {
+
+    const playerID = sessionStorage.getItem("playerID");
+
+    if (!playerID) {
+        return;
+    }
+
+
+    const { data, error } = await sb
+        .from("announcements")
+        .select("*")
+        .eq("playerID", playerID)
+        .eq("sent", true)
+        .eq("read", false)
+        .order("id", { ascending: false })
+        .limit(1);
+
+
+    if (error) {
+        console.log(error);
+        return;
+    }
+
+
+    if (data && data.length > 0) {
+        showAnnouncementPopup(data[0]);
+    }
 
 }
 
-if (!window.announcementStarted) {
-    window.announcementStarted = true;
+window.addEventListener("load", async () => {
+
+    const loggedIn = await verifyPlayerLogin();
+
+    if (!loggedIn) {
+        return;
+    }
+
     listenForAnnouncements();
-}
+    checkUnreadAnnouncements();
 
+});
 
 async function verifyPlayerLogin() {
 
