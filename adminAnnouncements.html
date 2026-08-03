@@ -161,11 +161,22 @@
 
         <h2>Create Announcement</h2>
 
-        <label for="playerSelect">
-            Send To Player:
-        </label>
+<label for="positionFilter">
+    Filter By Position:
+</label>
 
-        <select id="playerSelect" multiple>
+<select id="positionFilter">
+    <option value="">
+        All Positions
+    </option>
+</select>
+
+
+<label for="playerSelect">
+    Send To Player:
+</label>
+
+<select id="playerSelect" multiple size="8">
             <option value="">
                 Loading players...
             </option>
@@ -252,7 +263,7 @@ async function checkAdmin() {
     }
 
 
-    if (data.position?.toLowerCase() !== "admin")        	document.getElementById("adminPanel").classList.add("hidden");
+    if (data.position?.toLowerCase() !== "admin"){        	document.getElementById("adminPanel").classList.add("hidden");
         document.getElementById("unauthorized").classList.remove("hidden");
         return false;
     }
@@ -263,12 +274,20 @@ async function checkAdmin() {
 
 
 // Load all players for dropdown
-async function loadPlayers() {
+async function loadPlayers(position = "") {
 
-    const { data, error } = await sb
+    let query = sb
         .from("spellboundPlayers")
-        .select("playerID, name")
+        .select("playerID, name, position")
         .order("name", { ascending: true });
+
+
+    if (position) {
+        query = query.eq("position", position);
+    }
+
+
+    const { data, error } = await query;
 
 
     if (error) {
@@ -294,6 +313,40 @@ async function loadPlayers() {
 
 }
 
+//Load positions
+async function loadPositions() {
+
+    const { data, error } = await sb
+        .from("spellboundPlayers")
+        .select("position")
+        .not("position", "is", null);
+
+
+    if (error) {
+        console.log(error);
+        return;
+    }
+
+
+    const positions = [
+        ...new Set(data.map(player => player.position))
+    ];
+
+
+    const select = document.getElementById("positionFilter");
+
+
+    positions.forEach(position => {
+
+        select.innerHTML += `
+            <option value="${position}">
+                ${position}
+            </option>
+        `;
+
+    });
+
+}
 
 
 // Load announcements
@@ -413,10 +466,11 @@ async function startAdminPage() {
     }
 
 
-    await loadPlayers();
+await loadPositions();
 
-    await loadAnnouncements();
+await loadPlayers();
 
+await loadAnnouncements();
 }
 
 
@@ -460,57 +514,58 @@ async function sendAnnouncement(id) {
 
 async function sendAnnouncementNow() {
 
-    const name = document.getElementById("playerSelect").value;
+    const selectedPlayers = Array.from(
+        document.getElementById("playerSelect").selectedOptions
+    )
+    .map(option => option.value);
+
+
     const title = document.getElementById("announcementTitle").value;
     const message = document.getElementById("announcementText").value;
 
-    if (!name || !title || !message) {
-        alert("Please fill in all fields.");
+
+    if (selectedPlayers.length === 0 || !title || !message) {
+
+        alert("Please select players and fill in all fields.");
         return;
-    }
-
-    let error;
-
-    if (editingId) {
-
-        ({ error } = await sb
-            .from("announcements")
-            .update({
-                name,
-                title,
-                announcement: message
-            })
-            .eq("id", editingId));
-
-    } else {
-
-        ({ error } = await sb
-            .from("announcements")
-            .insert({
-                name,
-                title,
-                announcement: message,
-                sent: false,
-                read: false
-            }));
 
     }
+
+
+    const announcements = selectedPlayers.map(name => ({
+        name: name,
+        title: title,
+        announcement: message,
+        sent: false,
+        read: false
+    }));
+
+
+    const { error } = await sb
+        .from("announcements")
+        .insert(announcements);
+
 
     if (error) {
+
         console.log(error);
+        alert("Could not create announcements.");
         return;
+
     }
 
-    editingId = null;
-
-    document.getElementById("sendNowButton").textContent =
-        "Create Announcement";
 
     clearAnnouncementForm();
+
     loadAnnouncements();
+
+    alert(
+        "Announcement created for "
+        + selectedPlayers.length
+        + " players."
+    );
+
 }
-
-
 
 
 // ================================
@@ -604,6 +659,15 @@ document
         "click",
         sendAnnouncementNow
     );
+
+document
+    .getElementById("positionFilter")
+    .addEventListener("change", function() {
+
+        loadPlayers(this.value);
+
+    });
+
 
 </script>
 
