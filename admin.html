@@ -26,16 +26,11 @@
 
 
         h1 { 
-	    font-size: 2.2rem; 
 	    color: #ffd700; 
 	    margin-top: 0; 
 	    text-shadow: 0 2px 4px rgba(0,0,0,0.5); 
-	}
-
-	h1 {
             margin-bottom: 30px;
             font-size: 2rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         /* 3-column grid structure that collapses to 2 columns or 1 column on small screens */
@@ -112,6 +107,41 @@
        	    const SUPABASE_KEY = 				 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
 	    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+async function checkAdmin() {
+
+    const playerID = sessionStorage.getItem("playerID");
+
+    if (!playerID) {
+        window.location.href = "login.html";
+        return false;
+    }
+
+
+    const { data, error } = await sb
+        .from("spellboundPlayers")
+        .select("position")
+        .eq("playerID", playerID)
+        .single();
+
+
+    if (error || !data) {
+        window.location.href = "login.html";
+        return false;
+    }
+
+
+    if (data.position !== "Admin") {
+        alert("You do not have admin access.");
+        window.location.href = "index.html";
+        return false;
+    }
+
+
+    return true;
+}
+
+
+
     	    async function syncCharacterData() {
             	// Check login using your PIN system
         	const playerID = sessionStorage.getItem("playerID");
@@ -185,7 +215,19 @@ async function resetGame() {
        	    	});
   	    });
     	   
-    	    syncCharacterData();
-	</script>
+async function startAdminPage() {
+
+    const allowed = await checkAdmin();
+
+    if (!allowed) {
+        return;
+    }
+
+    syncCharacterData();
+
+}
+
+
+startAdminPage();	</script>
     </body>
 </html>
