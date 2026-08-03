@@ -19,24 +19,27 @@ function listenForAnnouncements() {
     announcementChannel = sb
     .channel(`player-announcements-${playerID}`)
     .on(
-        "postgres_changes",
-        {
-            event: "UPDATE",
-            schema: "public",
-            table: "announcements",
-            filter: `playerID=eq.${playerID}`
-        },
-       payload => {
+    "postgres_changes",
+    {
+        event: "UPDATE",
+        schema: "public",
+        table: "announcements",
+        filter: `playerID=eq.${playerID}`
+    },
+   payload => {
 
     const oldAnnouncement = payload.old;
     const newAnnouncement = payload.new;
 
-    if (!oldAnnouncement.sent && newAnnouncement.sent) {
+    if (
+        oldAnnouncement.sent === false &&
+        newAnnouncement.sent === true
+    ) {
         showAnnouncementPopup(newAnnouncement);
     }
 
 }
-    )
+)
     .subscribe();
 
 }
@@ -44,6 +47,10 @@ function listenForAnnouncements() {
 
 
 function showAnnouncementPopup(announcement) {
+
+    if (announcement.read) {
+        return;
+    }
 
     let popup = document.getElementById("announcementPopup");
 
@@ -69,22 +76,26 @@ if (closeButton) {
 
         popup.style.display = "none";
 
-        await sb
-            .from("announcements")
-            .update({
-                read: true
-            })
-            .eq("id", announcement.id);
+      const { error } = await sb
+    .from("announcements")
+    .update({
+        read: true
+    })
+    .eq("id", announcement.id);
+
+if (error) {
+    console.log("Could not mark announcement read:", error);
+}
 
     };
 }
 
 }
 
-window.addEventListener("load", () => {
+if (!window.announcementStarted) {
+    window.announcementStarted = true;
     listenForAnnouncements();
-});
-
+}
 
 
 async function verifyPlayerLogin() {

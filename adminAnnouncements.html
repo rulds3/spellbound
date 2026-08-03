@@ -227,7 +227,7 @@ const ADMIN_PLAYER_ID = "16739";
 
 
 let announcements = [];
-
+let editingId = null;
 
 // Check if this player is an admin
 async function checkAdmin() {
@@ -513,29 +513,27 @@ async function sendAnnouncementNow() {
 
 async function editAnnouncement(id) {
 
-
     const announcement = announcements.find(
         item => item.id === id
     );
-
 
     if (!announcement) {
         return;
     }
 
-
+    editingId = id;
 
     document.getElementById("announcementTitle").value =
         announcement.title;
 
-
     document.getElementById("announcementText").value =
         announcement.announcement;
 
-
-
     document.getElementById("playerSelect").value =
         announcement.playerID;
+
+    document.getElementById("sendNowButton").textContent =
+        "Save Changes";
 }
 
 
