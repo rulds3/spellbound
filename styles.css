@@ -40,6 +40,9 @@ p {
 	    margin-bottom: 20px;
 	}
 
+#playerSelect {
+    min-height: 150px;
+}
 
 /* =========================================
    BUTTON GRID
@@ -237,6 +240,15 @@ button:hover {
     text-align: center;
     max-height: 80vh;
     overflow-y: auto;
+}
+
+.popup-content h2 {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: clamp(16px, 5vw, 24px);
+    line-height: 1.2;
+    padding: 0 10px;
 }
 
 .popup-content button {
