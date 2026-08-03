@@ -118,6 +118,12 @@ p {
     font-size: 1rem;
 }
 
+
+.info-box h2,
+.reveal-heading {
+    text-align: center;
+}
+
 /* =========================================
    ANNOUNCEMENTS
 ========================================= */
