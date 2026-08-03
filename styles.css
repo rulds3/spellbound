@@ -28,7 +28,7 @@
             margin-bottom: 30px;
         }
 h2 {
-    color: #ffd966;
+    color: #d4af37;
 }
 
 p {
@@ -126,6 +126,13 @@ p {
     max-width:800px;
     min-height: 100px;
     box-sizing: border-box;
+}
+
+#oldAnnouncements .announcement-box {
+    padding:15px;
+    font-size:1rem;
+    line-height:1.4;
+    min-height:100px;
 }
 
 .announcement-box p,
