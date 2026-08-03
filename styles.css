@@ -141,6 +141,12 @@ p {
 .announcement-box p,
 #popupMessage {
     white-space: pre-wrap;
+    text-align: left;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .announcement-box h3 {
