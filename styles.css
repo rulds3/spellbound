@@ -114,12 +114,14 @@ p {
 ========================================= */
 
 .announcement-box {
-            background:#171122;
-            border:2px solid #6d28d9;
-            border-radius:12px;
-            padding:20px;
-            margin-bottom:15px;
-        }
+    background:#171122;
+    border:2px solid #6d28d9;
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:15px;
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
 
 .announcement-box p,
 #popupMessage {
@@ -129,6 +131,7 @@ p {
 .announcement-box h3 {
     color: #ffd966;
     margin-top: 0;
+    font-size: 1.5rem;
 }
 
 /* =========================================
