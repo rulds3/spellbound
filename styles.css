@@ -21,7 +21,7 @@
 
 
         h1 { 
-	    font-size: 4rem; 
+    	    font-size: clamp(2.5rem, 5vw, 3.5rem);
 	    color: #d4af37; 
 	    margin-top: 0; 
 	    text-shadow: 0 2px 4px rgba(0,0,0,0.5); 
