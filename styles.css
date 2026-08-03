@@ -131,26 +131,24 @@ p {
     box-sizing: border-box;
 }
 
-#oldAnnouncements .announcement-box {
-    padding:15px;
-    font-size:1rem;
-    line-height:1.4;
-    min-height:100px;
+/* Announcement formatting */
+.announcement-box h3,
+.popup-content h3 {
+    text-align: center;
+    color: #ffd966;
 }
 
 .announcement-box p,
 #popupMessage {
     white-space: pre-wrap;
+    text-align: left;
+}
+
+#popupTitle {
     text-align: center;
-    margin-left: 0;
-    margin-right: 0;
-    padding-left: 0;
-    width: 100%;
-    box-sizing: border-box;
 }
 
 .announcement-box h3 {
-    color: #ffd966;
     margin-top: 0;
     font-size: 1.5rem;
 }
@@ -267,6 +265,7 @@ button:hover {
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
+    font-size: 1rem;
 }
 
 .popup-content button:hover {
