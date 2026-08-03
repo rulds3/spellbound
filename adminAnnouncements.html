@@ -298,7 +298,7 @@ async function loadAnnouncements() {
     	    title,
     	    announcement,
     	    sent,
-    	    read,
+    	    read
 	`)
 
 	.order("id", { ascending: true });
@@ -455,7 +455,7 @@ async function sendAnnouncementNow() {
     const title = document.getElementById("announcementTitle").value;
     const message = document.getElementById("announcementText").value;
 
-    if (!playerID || !title || !message) {
+    if (!name || !title || !message) {
         alert("Please fill in all fields.");
         return;
     }
