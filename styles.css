@@ -121,6 +121,10 @@ p {
     margin-bottom:15px;
     font-size: 1.2rem;
     line-height: 1.6;
+    width: 90%;
+    max-width: 700px;
+    min-height: 120px;
+    box-sizing: border-box;
 }
 
 .announcement-box p,
