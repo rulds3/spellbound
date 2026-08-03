@@ -110,15 +110,15 @@ async function loadAbilities() {
                     <strong>${ability.usesRemaining}</strong>
                 </p>
 
-                <button onclick="useAbility(${ability.id}, ${ability.usesRemaining})"
-                    ${ability.usesRemaining <= 0 ? "disabled" : ""}>
-                    Use Ability
-                </button>
+                <button class="ability-button" onclick="useAbility(${ability.id}, ${ability.usesRemaining})"
+    ${ability.usesRemaining <= 0 ? "disabled" : ""}>
+    Use Ability
+</button>
 
-                <button onclick="undoAbility(${ability.id}, ${ability.usesRemaining}, ${ability.maxUses})"
-                    ${ability.usesRemaining >= ability.maxUses ? "disabled" : ""}>
-                    Undo
-                </button>
+<button class="ability-button" onclick="undoAbility(${ability.id}, ${ability.usesRemaining}, ${ability.maxUses})"
+    ${ability.usesRemaining >= ability.maxUses ? "disabled" : ""}>
+    Undo
+</button>
 
             </div>
         `;
