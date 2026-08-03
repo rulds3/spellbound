@@ -94,7 +94,7 @@
             <button class="game-btn" id="btn2">Timeline</button>
             <button class="game-btn" id="btn3">Rules</button>
             <button class="game-btn" id="btn4">Reset Game</button>
-            <button class="game-btn" id="btn5">Blank</button>
+            <button class="game-btn" id="btn5">Callie Fu</button>
             <button class="game-btn" id="btn6">Blank</button>
             <button class="game-btn" id="btn7">The Sorcerer's Scoop</button>
             <button class="game-btn" id="btn8">Exam Information</button>
@@ -194,6 +194,128 @@ async function resetGame() {
     alert("Game reset complete!");
 }
 
+document.getElementById("btn5")
+.addEventListener("click", startCharacterSwap);
+
+
+async function startCharacterSwap() {
+
+    const playerName = "Nina Brown";   // player receiving announcement
+    const swapCharacter = "Callie Fu"; // character to swap with
+
+
+    // Send announcement
+    const { error } = await sb
+        .from("announcements")
+        .insert({
+            name: playerName,
+            title: "Character Change",
+            announcement: "Please make this announcement to the group.",
+            sent: true,
+            read: false
+        });
+
+
+    if (error) {
+        console.log(error);
+        alert("Could not send announcement.");
+        return;
+    }
+
+
+    alert("Announcement sent. Waiting for it to be read...");
+
+
+    waitForRead(playerName, swapCharacter);
+
+}
+
+
+async function waitForRead(playerName, swapCharacter) {
+
+    const timer = setInterval(async () => {
+
+        const { data, error } = await sb
+            .from("announcements")
+            .select("read")
+            .eq("name", playerName)
+            .order("id", { ascending:false })
+            .limit(1)
+            .single();
+
+
+        if (error) {
+            console.log(error);
+            return;
+        }
+
+
+        if (data.read === true) {
+
+            clearInterval(timer);
+
+            swapNamesAndAbilities(
+                playerName,
+                swapCharacter
+            );
+
+        }
+
+    }, 3000);
+
+}
+
+async function swapNamesAndAbilities(character1, character2) {
+
+
+    const { data, error } = await sb
+        .from("spellboundPlayers")
+        .select("name, abilities")
+        .in("name", [character1, character2]);
+
+
+    if (error) {
+        console.log(error);
+        return;
+    }
+
+
+    const first = data.find(
+        p => p.name === character1
+    );
+
+    const second = data.find(
+        p => p.name === character2
+    );
+
+
+    await sb
+        .from("spellboundPlayers")
+        .update({
+            name: second.name,
+            abilities: second.abilities
+        })
+        .eq("name", first.name);
+
+
+    await sb
+        .from("spellboundPlayers")
+        .update({
+            name: first.name,
+            abilities: first.abilities
+        })
+        .eq("name", second.name);
+
+
+    alert("Character swap completed.");
+
+}
+
+
+
+
+
+
 	    document.getElementById("btn4").addEventListener("click", resetGame);
 
 	    /* Map each button ID to the exact name of the file you want to open*/
@@ -201,7 +323,6 @@ async function resetGame() {
       		"btn1": "adminAnnouncements.html",
       		"btn2": "timeline.html",
       		"btn3": "rules.pdf",
-      		"btn5": "",
       		"btn6": "",
       		"btn7": "sorcerersScoop.pdf",
       		"btn8": "examInfo.pdf",
