@@ -223,14 +223,9 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 
-// Put your admin playerID here
-const ADMIN_PLAYER_ID = "16739";
-
-
 let announcements = [];
 let editingId = null;
 
-// Check if this player is an admin
 async function checkAdmin() {
 
     const playerID = sessionStorage.getItem("playerID");
@@ -242,15 +237,29 @@ async function checkAdmin() {
     }
 
 
-    if (playerID !== ADMIN_PLAYER_ID) {
+    const { data, error } = await sb
+        .from("spellboundPlayers")
+        .select("position")
+        .eq("playerID", playerID)
+        .single();
+
+
+    if (error || !data) {
+        console.log(error);
         document.getElementById("adminPanel").classList.add("hidden");
         document.getElementById("unauthorized").classList.remove("hidden");
         return false;
     }
 
+
+    if (data.position?.toLowerCase() !== "admin")        	document.getElementById("adminPanel").classList.add("hidden");
+        document.getElementById("unauthorized").classList.remove("hidden");
+        return false;
+    }
+
+
     return true;
 }
-
 
 
 // Load all players for dropdown
