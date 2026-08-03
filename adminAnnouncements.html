@@ -460,46 +460,54 @@ async function sendAnnouncement(id) {
 
 async function sendAnnouncementNow() {
 
-    const playerSelect = document.getElementById("playerSelect");
-
-    const names = Array.from(playerSelect.selectedOptions)
-        .map(option => option.value);
-
+    const name = document.getElementById("playerSelect").value;
     const title = document.getElementById("announcementTitle").value;
     const message = document.getElementById("announcementText").value;
 
-
-    if (names.length === 0 || !title || !message) {
-        alert("Please select players and fill in all fields.");
+    if (!name || !title || !message) {
+        alert("Please fill in all fields.");
         return;
     }
 
+    let error;
 
-    const announcementsToInsert = names.map(name => ({
-        name: name,
-        title: title,
-        announcement: message,
-        sent: false,
-        read: false
-    }));
+    if (editingId) {
 
+        ({ error } = await sb
+            .from("announcements")
+            .update({
+                name,
+                title,
+                announcement: message
+            })
+            .eq("id", editingId));
 
-    const { error } = await sb
-        .from("announcements")
-        .insert(announcementsToInsert);
+    } else {
 
+        ({ error } = await sb
+            .from("announcements")
+            .insert({
+                name,
+                title,
+                announcement: message,
+                sent: false,
+                read: false
+            }));
+
+    }
 
     if (error) {
         console.log(error);
-        alert("Could not create announcements.");
         return;
     }
 
+    editingId = null;
+
+    document.getElementById("sendNowButton").textContent =
+        "Create Announcement";
 
     clearAnnouncementForm();
     loadAnnouncements();
-
-    alert("Announcements created for " + names.length + " players.");
 }
 
 
