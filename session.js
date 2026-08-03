@@ -57,7 +57,7 @@ function showAnnouncementPopup(announcement) {
     }
 
 
-    document.getElementById("popupTitle").textContent =
+    document.getElementById("popupTitle").innerHTML =
         announcement.title;
 
 
