@@ -194,7 +194,7 @@
        <div class="button-row">
 
             <button id="sendNowButton">
-                Announcement Created
+		Create Announcement
             </button>
         </div>
 
@@ -424,12 +424,13 @@ async function sendAnnouncement(id) {
     }
 
 
-    const { error } = await sb
-        .from("announcements")
-        .update({
-            sent: true
-        })
-        .eq("id", id);
+   const { error } = await sb
+    .from("announcements")
+    .update({
+        sent: true,
+        read: false
+    })
+    .eq("id", id);
 
 
     if (error) {

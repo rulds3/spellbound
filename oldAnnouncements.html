@@ -18,7 +18,7 @@
 
 <div id="announcementPopup" class="announcement-popup">
     <div class="popup-content">
-        <h2 id="popupTitle"></h2>
+        <h1 id="popupTitle"></h1>
         <p id="popupMessage"></p>
         <button id="closeAnnouncement">Announcement Made</button>
     </div>
@@ -125,8 +125,9 @@ async function loadOldAnnouncements(){
 }
 
 
-loadOldAnnouncements();
-
+if (verifyPlayerLogin()) {
+    loadOldAnnouncements();
+}
 
 </script>
 </body>
