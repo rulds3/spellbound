@@ -218,6 +218,8 @@ button:hover {
     max-width: 500px;
     width: 80%;
     text-align: center;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
 .popup-content button {
