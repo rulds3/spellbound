@@ -111,6 +111,9 @@ async function checkAdmin() {
 
     const playerID = sessionStorage.getItem("playerID");
 
+    console.log("Checking player:", playerID);
+
+
     if (!playerID) {
         window.location.href = "login.html";
         return false;
