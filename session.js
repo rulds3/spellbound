@@ -60,6 +60,7 @@ function showAnnouncementPopup(announcement) {
     document.getElementById("popupTitle").textContent =
         announcement.title;
 
+
     document.getElementById("popupMessage").innerHTML =
         announcement.announcement;
 
@@ -74,27 +75,33 @@ function showAnnouncementPopup(announcement) {
 
         closeButton.onclick = async function() {
 
-    closeButton.disabled = true;
+            closeButton.disabled = true;
 
-    popup.style.display = "none";
+            popup.style.display = "none";
 
-    const { error } = await sb
-        .from("announcements")
-        .update({
-            read: true
-        })
-        .eq("id", announcement.id);
 
-    if (error) {
-        console.log("Could not mark announcement read:", error);
-    }
+            const { error } = await sb
+                .from("announcements")
+                .update({
+                    read: true
+                })
+                .eq("id", announcement.id);
 
-};
+
+            if (error) {
+                console.log(
+                    "Could not mark announcement read:",
+                    error
+                );
+            }
+
+        };
 
     }
 
 }
 
+//Check for unread announcements
 async function checkUnreadAnnouncements() {
 
 const playerName = sessionStorage.getItem("playerName");
