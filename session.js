@@ -75,8 +75,6 @@ function showAnnouncementPopup(announcement) {
 
         closeButton.onclick = async function() {
 
-            closeButton.disabled = true;
-
             popup.style.display = "none";
 
 
