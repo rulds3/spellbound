@@ -119,7 +119,7 @@ p {
 }
 
 .info-box {
-    width: 100%;
+    width: 95%;
     box-sizing: border-box;
 }
 
@@ -127,7 +127,7 @@ p {
 .info-box h2,
 .reveal-heading {
     text-align: center;
-    width: 100%;
+    width: 95%;
 }
 
 
