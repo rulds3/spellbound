@@ -130,7 +130,7 @@ async function checkAdmin() {
     }
 
 
-    if (data.position !== "Admin") {
+    if (data.position?.toLowerCase() !== "Admin") {
         alert("You do not have admin access.");
         window.location.href = "index.html";
         return false;
