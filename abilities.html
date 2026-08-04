@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <style>     
 	.ability-box {
-    	    background-color: #1e1e2f;
+            background-color: rgba(0,31,63,.85);
     	    border: 2px solid #c9a227;
     	    border-radius: 12px;
     	    padding: 15px;
@@ -46,36 +46,6 @@
  <script src="session.js"></script>
 
     <script>
-async function loadCharacterName() {
-
-    const playerID = localStorage.getItem("playerID");
-
-    const { data: player, error } = await sb
-        .from("spellboundPlayers")
-        .select("name")
-        .eq("playerID", playerID)
-        .single();
-
-    if (error) {
-        console.log(error);
-        return;
-    }
-
-    document.getElementById("characterHeader").textContent = player.name;
-}
-
-function verifyPlayerLogin() {
-
-    const playerID = localStorage.getItem("playerID");
-
-    if (!playerID) {
-        window.location.href = "login.html";
-        return false;
-    }
-
-    return true;
-}
-
 
 async function loadAbilities() {
 
@@ -166,7 +136,6 @@ window.addEventListener("load", async () => {
         return;
     }
 
-   await loadCharacterName();
     await loadAbilities();
 
 });
