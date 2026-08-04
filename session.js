@@ -309,21 +309,21 @@ function listenForForceLogout() {
             },
             payload => {
 
-                console.log("Force logout received", payload);
+    console.log("Force logout received:", payload);
+    console.log("Stored position:", localStorage.getItem("playerPosition"));
 
+    if (
+        payload.new.forceLogout === true &&
+        localStorage.getItem("playerPosition")?.toLowerCase() !== "admin"
+    ) {
 
-                if (
-                    payload.new.forceLogout === true &&
-                    localStorage.getItem("playerPosition")?.toLowerCase() !== "admin"
-                ) {
+        console.log("Logging this player out");
 
-                    localStorage.clear();
+        localStorage.clear();
+        window.location.href = "login.html";
+    }
 
-                    window.location.href = "login.html";
-
-                }
-
-            }
+}
         )
         .subscribe();
 
