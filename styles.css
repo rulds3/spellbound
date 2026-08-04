@@ -152,15 +152,17 @@ select {
 ========================================= */
 
 .announcement-box {
-    background:#171122;
-    border:2px solid #6d28d9;
-    border-radius:12px;
-    padding:15px;
-    margin-bottom:15px;
+    background-color: rgba(0, 31, 63, .85);
+    border: 2px solid #c9a227;
+    border-radius: 12px;
+    padding: 15px;
+    margin: 15px auto;
     font-size: 1rem;
     line-height: 1.5;
-    width: 100%;
+    width: 95%;
+    max-width: 900px;
     box-sizing: border-box;
+    box-shadow: 0 8px 16px rgba(0,0,0,.5);
 }
 
 /* Announcement formatting */
