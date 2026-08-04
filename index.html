@@ -91,9 +91,17 @@
        	    	});
   	    });
 
-if (verifyPlayerLogin()) {
+window.addEventListener("load", async () => {
+
+    const loggedIn = await verifyPlayerLogin();
+
+    if (!loggedIn) {
+        return;
+    }
+
     syncCharacterData();
-}
+
+});
     	   
 	</script>
     </body>
