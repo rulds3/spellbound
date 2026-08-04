@@ -52,7 +52,7 @@ async function syncCharacterData() {
 
     const { data: playerRow, error: dbError } = await sb
         .from('spellboundPlayers')
-        .select('name')
+        .select('name, dirt')
         .eq('playerID', playerID)
         .single();
 
@@ -62,6 +62,7 @@ async function syncCharacterData() {
     }
 
     document.getElementById("characterHeader").innerText = playerRow.name;
+document.getElementById("dirt").innerHTML = playerRow.dirt ?? "";
 }
 
 
