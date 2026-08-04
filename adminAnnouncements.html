@@ -312,7 +312,8 @@ async function loadAnnouncements() {
     	    read
 	`)
 
-	.order("id", { ascending: true });
+	.order("sent", { ascending: true })
+	.order("id", { ascending: true })
 
     if (error) {
         console.log(error);
