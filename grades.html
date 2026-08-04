@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grades</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div id="announcementPopup" class="announcement-popup">
+    <div class="popup-content">
+    	<h2>Please announce to the group</h2>
+	<h3 id="popupTitle"></h3>
+	<p id="popupMessage"></p>
+	<button id="closeAnnouncement">Announcement Made</button>
+    </div>
+</div>
+
+<h1>Grade Book</h1>
+
+<div class="text-box">
+    <table class="grade-table">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Alchemy</th>
+                <th>Transformation</th>
+                <th>Foretelling</th>
+            </tr>
+        </thead>
+        <tbody id="gradeTableBody">
+        </tbody>
+    </table>
+</div>
+
+<a href="index.html" class="back-btn">Back</a>
+
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="session.js"></script>
+
+<script>
+
+async function loadGrades() {
+
+    const { data, error } = await sb
+        .from("gradeTable")
+        .select("*")
+        .order("name");
+
+    if (error) {
+        console.log(error);
+        return;
+    }
+
+    const tbody = document.getElementById("gradeTableBody");
+    tbody.innerHTML = "";
+
+    data.forEach(player => {
+
+        tbody.innerHTML += `
+        <tr>
+            <td>${player.name}</td>
+
+            <td>
+                <input
+    type="number"
+    min="0"
+    max="10"
+    value="${player.alchemy ?? ""}"
+    onchange="updateGrade(${player.id}, 'alchemy', this.value)">
+            </td>
+
+            <td>
+                <input
+    type="number"
+    min="0"
+    max="10"
+    value="${player.transformation ?? ""}"
+    onchange="updateGrade(${player.id}, 'transformation', this.value)">
+            </td>
+
+            <td>
+               <input
+    type="number"
+    min="0"
+    max="20"
+    value="${player.foretelling ?? ""}"
+    onchange="updateGrade(${player.id}, 'foretelling', this.value)">
+            </td>
+        </tr>`;
+    });
+
+}
+
+async function updateGrade(id, column, value) {
+
+    const { error } = await sb
+        .from("gradeTable")
+        .update({
+            [column]: value === "" ? null : Number(value)
+        })
+        .eq("id", id);
+
+    if (error) {
+        console.log("Grade update failed:", error);
+    }
+
+}
+
+
+
+window.addEventListener("load", async () => {
+
+    const loggedIn = await verifyPlayerLogin();
+
+    if (!loggedIn) {
+        return;
+    }
+
+    await loadGrades();
+
+});
+</script>
+</body>
+</html>

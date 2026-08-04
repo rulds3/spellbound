@@ -307,3 +307,29 @@ button:hover {
 .popup-content button:hover {
     background: #6d28d9;
 }
+
+/* =========================================
+   GRADE TABLE
+========================================= */
+.grade-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+}
+
+.grade-table th,
+.grade-table td {
+    border: 2px solid #c9a227;
+    padding: 10px;
+    text-align: center;
+}
+
+.grade-table th {
+    background: #001F3F;
+}
+
+.grade-table input {
+    width: 60px;
+    text-align: center;
+    font-size: 1rem;
+}
