@@ -109,7 +109,7 @@
 
 async function checkAdmin() {
 
-    const playerID = sessionStorage.getItem("playerID");
+    const playerID = localStorage.getItem("playerID");
 
     if (!playerID) {
 	window.location.href = "login.html";
@@ -148,7 +148,7 @@ if (data.position?.toLowerCase() !== "admin") {
 
     	    async function syncCharacterData() {
             	// Check login using your PIN system
-        	const playerID = sessionStorage.getItem("playerID");
+        	const playerID = localStorage.getItem("playerID");
 
         	if (!playerID) {
             	// No login → send back to login page
@@ -278,14 +278,54 @@ async function resetGame() {
         return;
     }
 
-    const { error } = await sb.rpc("reset_game");
 
-    if (error) {
-        console.log("Reset error:", error);
+    // Reset game database
+    const { error: resetError } = await sb.rpc("reset_game");
+
+    if (resetError) {
+        console.log("Reset error:", resetError);
         alert("Reset failed.");
         return;
     }
-    alert("Game reset complete!");
+
+
+    // Force everyone to logout
+    const { error: logoutError } = await sb
+        .from("spellboundPlayers")
+        .update({
+            forceLogout: true
+        })
+        .neq("playerID", "");
+
+
+    if (logoutError) {
+        console.log("Force logout error:", logoutError);
+        alert("Game reset, but logout failed.");
+        return;
+    }
+
+
+    // Allow time for clients to detect logout
+    setTimeout(async () => {
+
+        const { error: clearError } = await sb
+            .from("spellboundPlayers")
+            .update({
+                forceLogout: false
+            })
+            .neq("playerID", "");
+
+
+        if (clearError) {
+            console.log("Force logout reset error:", clearError);
+            return;
+        }
+
+
+        alert("Game reset complete!");
+
+    }, 5000);
+
 }
 
 

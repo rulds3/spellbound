@@ -130,6 +130,18 @@ p {
     width: 100%;
 }
 
+select {
+    width: 100%;
+    padding: 14px;
+    box-sizing: border-box;
+    background: #141021;
+    border: 1px solid #4c1d95;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    text-align: center;
+    margin-top: 20px;
+}
 
 /* =========================================
    ANNOUNCEMENTS

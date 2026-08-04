@@ -41,7 +41,7 @@
        	<script>
     	   async function syncCharacterData() {
             	// Check login using your PIN system
-        	const playerID = sessionStorage.getItem("playerID");
+        	const playerID = localStorage.getItem("playerID");
 
         	if (!playerID) {
             	// No login → send back to login page

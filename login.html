@@ -131,9 +131,10 @@ if (!playerID) {
     }
 
 
-    sessionStorage.setItem("playerID", data.playerID);
-    sessionStorage.setItem("playerName", data.name);
-    sessionStorage.setItem("playerPosition", data.position);
+localStorage.setItem("playerID", data.playerID);
+localStorage.setItem("playerName", data.name);
+localStorage.setItem("playerPosition", data.position);
+
 
 
     if (data.position?.toLowerCase() === "admin") {
@@ -148,7 +149,6 @@ if (!playerID) {
 
 });
 
-loadCharacters();
-  	</script>
+	</script>
     </body>
 </html>

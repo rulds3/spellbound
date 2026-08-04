@@ -4,10 +4,11 @@
 
 //Announcements
 let announcementChannel = null;
+let forceLogoutChannel = null;
 
 function listenForAnnouncements() {
 
-const playerName = sessionStorage.getItem("playerName");
+const playerName = localStorage.getItem("playerName");
 
     if (!playerName) {
         return;
@@ -103,7 +104,7 @@ function showAnnouncementPopup(announcement) {
 //Check for unread announcements
 async function checkUnreadAnnouncements() {
 
-const playerName = sessionStorage.getItem("playerName");
+const playerName = localStorage.getItem("playerName");
 
     if (!playerName) {
         return;
@@ -149,6 +150,8 @@ else {
 
         listenForAnnouncements();
         checkUnreadAnnouncements();
+	listenForForceLogout();
+
 
     });
 
@@ -158,7 +161,7 @@ else {
 //Verify player login
 async function verifyPlayerLogin() {
 
-    const playerID = sessionStorage.getItem("playerID");
+    const playerID = localStorage.getItem("playerID");
 
     if (!playerID) {
         window.location.href = "login.html";
@@ -174,14 +177,14 @@ async function verifyPlayerLogin() {
 
 
     if (error || !playerRow) {
-        sessionStorage.clear();
+        localStorage.clear();
         window.location.href = "login.html";
         return false;
     }
 
     if (playerRow.forceLogout === true) {
 
-        sessionStorage.clear();
+        localStorage.clear();
         window.location.href = "login.html";
         return false;
     }
@@ -192,6 +195,12 @@ async function verifyPlayerLogin() {
 
 
 async function loadCharacters() {
+
+    const select = document.getElementById("characterSelect");
+
+    if (!select || select.options.length > 1) {
+        return;
+    }
 
     const { data, error } = await sb
         .from("spellboundPlayers")
@@ -219,28 +228,59 @@ async function loadCharacters() {
 }
 
 
-// 30 minutes in milliseconds
-const SESSION_TIMEOUT = 30 * 60 * 1000;
+async function forceEveryoneLogout() {
 
-let logoutTimer;
+    const { error } = await sb
+        .from("spellboundPlayers")
+        .update({
+            forceLogout: true
+        })
+        .neq("playerID", "");
 
-function logout() {
-    sessionStorage.clear();
-    alert("You have been logged out due to inactivity.");
-    window.location.href = "login.html";
+
+    if (error) {
+        console.log("Logout error:", error);
+        alert("Could not log everyone out.");
+        return;
+    }
+
+
+    alert("Everyone has been logged out.");
+
 }
 
-function resetLogoutTimer() {
-    clearTimeout(logoutTimer);
-    logoutTimer = setTimeout(logout, SESSION_TIMEOUT);
+
+function listenForForceLogout() {
+
+    const playerID = localStorage.getItem("playerID");
+
+    if (!playerID) {
+        return;
+    }
+
+
+    sb
+    .channel("player-force-logout-" + playerID)
+    .on(
+        "postgres_changes",
+        {
+            event: "UPDATE",
+            schema: "public",
+            table: "spellboundPlayers",
+            filter: `playerID=eq.${playerID}`
+        },
+        payload => {
+
+            if (payload.new.forceLogout === true) {
+
+                localStorage.clear();
+
+                window.location.href = "login.html";
+
+            }
+
+        }
+    )
+    .subscribe();
+
 }
-
-// Reset timer whenever the player interacts with the page
-document.addEventListener("click", resetLogoutTimer);
-document.addEventListener("touchstart", resetLogoutTimer);
-document.addEventListener("keydown", resetLogoutTimer);
-document.addEventListener("mousemove", resetLogoutTimer);
-
-// Start the timer
-resetLogoutTimer();
-
