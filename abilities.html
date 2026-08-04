@@ -50,13 +50,13 @@
 
 async function loadAbilities() {
 
-    const playerID = localStorage.getItem("playerID");
+const playerName = localStorage.getItem("playerName");
 
-    const { data: abilities, error } = await sb
-        .from("playerAbilities")
-        .select("*")
-        .eq("playerID", playerID)
-        .order("id", { ascending: true });
+const { data: abilities, error } = await sb
+    .from("playerAbilities")
+    .select("*")
+    .eq("name", playerName)
+    .order("id", { ascending: true });
 
     if (error) {
         console.log(error);
