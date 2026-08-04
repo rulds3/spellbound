@@ -49,7 +49,7 @@
     <script>
 async function loadCharacterName() {
 
-    const playerID = sessionStorage.getItem("playerID");
+    const playerID = localStorage.getItem("playerID");
 
     const { data: player, error } = await sb
         .from("spellboundPlayers")
@@ -67,7 +67,7 @@ async function loadCharacterName() {
 
 function verifyPlayerLogin() {
 
-    const playerID = sessionStorage.getItem("playerID");
+    const playerID = localStorage.getItem("playerID");
 
     if (!playerID) {
         window.location.href = "login.html";
@@ -80,7 +80,7 @@ function verifyPlayerLogin() {
 
 async function loadAbilities() {
 
-    const playerID = sessionStorage.getItem("playerID");
+    const playerID = localStorage.getItem("playerID");
 
     const { data: abilities, error } = await sb
         .from("playerAbilities")
