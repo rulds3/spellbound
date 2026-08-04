@@ -22,7 +22,6 @@
         <h1 id="characterHeader"></h1>
 
     <div class="text-box">
-        <h1 id="characterHeader"></h1>
 	<h2>Goals</h2>
         <div id="characterGoals"></div>
 	<br>
@@ -102,10 +101,23 @@
     	    }
 	}
 
-if (verifyPlayerLogin()) {
-    loadGoals();
-    syncCharacterData();
-}
+window.addEventListener("load", async () => {
+
+    const loggedIn = await verifyPlayerLogin();
+
+    if (!loggedIn) {
+        return;
+    }
+
+
+    await loadGoals();
+    await syncCharacterData();
+
+    listenForAnnouncements();
+    checkUnreadAnnouncements();
+    listenForForceLogout();
+
+});
      </script>
 
 </body>
