@@ -40,7 +40,7 @@
 
 async function loadOldAnnouncements(){
 
-const playerName = sessionStorage.getItem("playerName");
+const playerName = localStorage.getItem("playerName");
 
     const { data, error } = await sb
         .from("announcements")
@@ -96,7 +96,11 @@ async function startPage(){
         return;
     }
 
-    loadOldAnnouncements();
+    await loadOldAnnouncements();
+
+    listenForAnnouncements();
+    checkUnreadAnnouncements();
+    listenForForceLogout();
 
 }
 
