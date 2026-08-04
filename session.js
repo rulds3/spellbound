@@ -2,6 +2,7 @@
        	    const SUPABASE_KEY = 				 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
 	    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+//Announcements
 let announcementChannel = null;
 
 function listenForAnnouncements() {
@@ -144,6 +145,8 @@ window.addEventListener("load", async () => {
 
 });
 
+
+//Verify player login
 async function verifyPlayerLogin() {
 
     const playerID = sessionStorage.getItem("playerID");
@@ -156,12 +159,19 @@ async function verifyPlayerLogin() {
 
     const { data: playerRow, error } = await sb
         .from("spellboundPlayers")
-        .select("playerID")
+        .select("playerID, forceLogout")
         .eq("playerID", playerID)
         .single();
 
 
     if (error || !playerRow) {
+        sessionStorage.clear();
+        window.location.href = "login.html";
+        return false;
+    }
+
+    if (playerRow.forceLogout === true) {
+
         sessionStorage.clear();
         window.location.href = "login.html";
         return false;
