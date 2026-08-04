@@ -287,8 +287,6 @@ function listenForForceLogout() {
 
     const playerID = localStorage.getItem("playerID");
 
-    console.log("Force logout listener started for", playerID);
-
     if (!playerID) {
         return;
     }
@@ -309,10 +307,7 @@ function listenForForceLogout() {
             },
             payload => {
 
-    console.log("Force logout received:", payload);
-    console.log("Stored position:", localStorage.getItem("playerPosition"));
-
-    if (
+      if (
         payload.new.forceLogout === true &&
         localStorage.getItem("playerPosition")?.toLowerCase() !== "admin"
     ) {
