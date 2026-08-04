@@ -60,9 +60,21 @@
         	document.getElementById("characterInformation").innerText = playerRow.characterInfo;
     	    }
 
-if (verifyPlayerLogin()) {
-    syncCharacterData();
-}
+window.addEventListener("load", async () => {
+
+    const loggedIn = await verifyPlayerLogin();
+
+    if (!loggedIn) {
+        return;
+    }
+
+    await syncCharacterData();
+
+    listenForAnnouncements();
+    checkUnreadAnnouncements();
+    listenForForceLogout();
+
+});
 
 
      </script>

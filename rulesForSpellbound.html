@@ -46,5 +46,25 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script src="session.js"></script>
+
+<script>
+
+async function startPage() {
+
+    const loggedIn = await verifyPlayerLogin();
+
+    if (!loggedIn) {
+        return;
+    }
+
+    listenForAnnouncements();
+    checkUnreadAnnouncements();
+    listenForForceLogout();
+
+}
+
+startPage();
+
+</script>
 </body>
 </html>
