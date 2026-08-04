@@ -163,7 +163,11 @@ async function verifyPlayerLogin() {
 
     const playerID = localStorage.getItem("playerID");
 
+ console.log("Checking player:", playerID);
+
+
     if (!playerID) {
+console.log("No player found");
         window.location.href = "login.html";
         return false;
     }
@@ -211,8 +215,6 @@ async function loadCharacters() {
         console.log(error);
         return;
     }
-
-    const select = document.getElementById("characterSelect");
 
     data.forEach(player => {
 
