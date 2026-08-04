@@ -228,22 +228,57 @@ async function loadCharacters() {
 
 async function forceEveryoneLogout() {
 
-    const { error } = await sb
-        .from("spellboundPlayers")
-        .update({
-            forceLogout: true
-        })
-        .neq("playerID", "");
+    const confirmed = confirm(
+        "Force all non-admin players to logout?"
+    );
 
-
-    if (error) {
-        console.log("Logout error:", error);
-        alert("Could not log everyone out.");
+    if (!confirmed) {
         return;
     }
 
 
-    alert("Everyone has been logged out.");
+    // Get all players
+    const { data: players, error: fetchError } = await sb
+        .from("spellboundPlayers")
+        .select("playerID, position");
+
+
+    if (fetchError) {
+        console.log("Player lookup error:", fetchError);
+        alert("Could not find players.");
+        return;
+    }
+
+
+    // Remove admins from the logout list
+    const nonAdminIDs = players
+        .filter(player => player.position?.toLowerCase() !== "admin")
+        .map(player => player.playerID);
+
+
+    if (nonAdminIDs.length === 0) {
+        alert("No non-admin players found.");
+        return;
+    }
+
+
+    // Force logout non-admins only
+    const { error: logoutError } = await sb
+        .from("spellboundPlayers")
+        .update({
+            forceLogout: true
+        })
+        .in("playerID", nonAdminIDs);
+
+
+    if (logoutError) {
+        console.log("Logout error:", logoutError);
+        alert("Could not log players out.");
+        return;
+    }
+
+
+    alert("All non-admin players have been logged out.");
 
 }
 
@@ -262,7 +297,6 @@ function listenForForceLogout() {
         return;
     }
 
-
     forceLogoutChannel = sb
         .channel("player-force-logout-" + playerID)
         .on(
@@ -278,7 +312,10 @@ function listenForForceLogout() {
                 console.log("Force logout received", payload);
 
 
-                if (payload.new.forceLogout === true) {
+                if (
+                    payload.new.forceLogout === true &&
+                    localStorage.getItem("playerPosition")?.toLowerCase() !== "admin"
+                ) {
 
                     localStorage.clear();
 
