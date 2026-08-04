@@ -163,11 +163,7 @@ async function verifyPlayerLogin() {
 
     const playerID = localStorage.getItem("playerID");
 
- console.log("Checking player:", playerID);
-
-
     if (!playerID) {
-console.log("No player found");
         window.location.href = "login.html";
         return false;
     }
