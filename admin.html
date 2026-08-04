@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Terminal</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="session.js"></script>
     <style>
         /* Base page layout */
         body {
@@ -94,8 +95,8 @@
             <button class="game-btn" id="btn2">Timeline</button>
             <button class="game-btn" id="btn3">Rules</button>
             <button class="game-btn" id="btn4">Reset Game</button>
-            <button class="game-btn" id="btn5">Callie Fu</button>
-            <button class="game-btn" id="btn6">Blank</button>
+            <button class="game-btn" id="btn5">Callie Fu Lost Scarf</button>
+            <button class="game-btn" id="btn6">Force Logout</button>
             <button class="game-btn" id="btn7">The Sorcerer's Scoop</button>
             <button class="game-btn" id="btn8">Exam Information</button>
         </div>
@@ -103,10 +104,7 @@
 
 
        	<script>
-    	    const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
-       	    const SUPABASE_KEY = 				 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5pbnVtZ3VlZ2xvdGRweWV3bWhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzNjQ5NjcsImV4cCI6MjEwMDk0MDk2N30.CyBpEIcTWG9J9Ijx1q1Hh6ZEtX1r4t5UeQCA6BmplhM";
-	    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+    	  
 async function checkAdmin() {
 
     const playerID = localStorage.getItem("playerID");
@@ -279,55 +277,19 @@ async function resetGame() {
     }
 
 
-    // Reset game database
-    const { error: resetError } = await sb.rpc("reset_game");
+    const { error } = await sb.rpc("reset_game");
 
-    if (resetError) {
-        console.log("Reset error:", resetError);
+
+    if (error) {
+        console.log(error);
         alert("Reset failed.");
         return;
     }
 
 
-    // Force everyone to logout
-    const { error: logoutError } = await sb
-        .from("spellboundPlayers")
-        .update({
-            forceLogout: true
-        })
-        .neq("playerID", "");
-
-
-    if (logoutError) {
-        console.log("Force logout error:", logoutError);
-        alert("Game reset, but logout failed.");
-        return;
-    }
-
-
-    // Allow time for clients to detect logout
-    setTimeout(async () => {
-
-        const { error: clearError } = await sb
-            .from("spellboundPlayers")
-            .update({
-                forceLogout: false
-            })
-            .neq("playerID", "");
-
-
-        if (clearError) {
-            console.log("Force logout reset error:", clearError);
-            return;
-        }
-
-
-        alert("Game reset complete!");
-
-    }, 5000);
+    alert("Game reset complete!");
 
 }
-
 
 	    document.getElementById("btn4").addEventListener("click", resetGame);
 
@@ -336,7 +298,6 @@ async function resetGame() {
       		"btn1": "adminAnnouncements.html",
       		"btn2": "timeline.html",
       		"btn3": "rules.pdf",
-      		"btn6": "",
       		"btn7": "sorcerersScoop.pdf",
       		"btn8": "examInfo.pdf",
    	    };
@@ -366,7 +327,17 @@ async function startAdminPage() {
 
 }
 
+startAdminPage();	
 
-startAdminPage();	</script>
+const logoutButton = document.getElementById("btn6");
+
+if (logoutButton) {
+    logoutButton.addEventListener(
+        "click",
+        forceEveryoneLogout
+    );
+}
+
+</script>
     </body>
 </html>

@@ -228,7 +228,7 @@ let editingId = null;
 
 async function checkAdmin() {
 
-    const playerID = sessionStorage.getItem("playerID");
+    const playerID = localStorage.getItem("playerID");
 
     if (!playerID) {
         document.getElementById("adminPanel").classList.add("hidden");

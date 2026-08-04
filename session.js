@@ -252,33 +252,42 @@ function listenForForceLogout() {
 
     const playerID = localStorage.getItem("playerID");
 
+    console.log("Force logout listener started for", playerID);
+
     if (!playerID) {
         return;
     }
 
+    if (forceLogoutChannel) {
+        return;
+    }
 
-    sb
-    .channel("player-force-logout-" + playerID)
-    .on(
-        "postgres_changes",
-        {
-            event: "UPDATE",
-            schema: "public",
-            table: "spellboundPlayers",
-            filter: `playerID=eq.${playerID}`
-        },
-        payload => {
 
-            if (payload.new.forceLogout === true) {
+    forceLogoutChannel = sb
+        .channel("player-force-logout-" + playerID)
+        .on(
+            "postgres_changes",
+            {
+                event: "UPDATE",
+                schema: "public",
+                table: "spellboundPlayers",
+                filter: `playerID=eq.${playerID}`
+            },
+            payload => {
 
-                localStorage.clear();
+                console.log("Force logout received", payload);
 
-                window.location.href = "login.html";
+
+                if (payload.new.forceLogout === true) {
+
+                    localStorage.clear();
+
+                    window.location.href = "login.html";
+
+                }
 
             }
-
-        }
-    )
-    .subscribe();
+        )
+        .subscribe();
 
 }
