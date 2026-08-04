@@ -36,27 +36,33 @@
 
         /* 3-column grid structure that collapses to 2 columns or 1 column on small screens */
         .button-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            width: 90%;
-            max-width: 600px;
-        }
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 90%;
+    max-width: 600px;
+    align-items: stretch;
+}
 
         /* Styling for the buttons */
         .game-btn {
-            //background-color: #333333;
-	    background-color: #001F3F;            
-	    color: #ffffff;
-            border: 2px solid #555555;
-            padding: 20px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
+    background-color: #001F3F;
+    color: #ffffff;
+    border: 2px solid #555555;
+    padding: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+
+    height: 90px;              /* all buttons same height */
+    display: flex;             /* center text */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
 
         /* Hover effects to make the screen feel responsive */
         .game-btn:hover {
@@ -173,7 +179,6 @@ if (data.position?.toLowerCase() !== "admin") {
 
 
 //Change Nina to Callie Fu
-// Change Nina to Callie Fu
 document.getElementById("btn5")
 .addEventListener("click", startNinaCallieSwap);
 
