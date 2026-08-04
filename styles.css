@@ -31,6 +31,10 @@ h2 {
     color: #d4af37;
 }
 
+h3 {
+    color: #d4af37;
+}
+
 p {
     	    /*max-width: 600px;    Prevents text from stretching wider than 600 pixels */
             /*margin: 0 auto;       Centers the text block perfectly on the screen */
