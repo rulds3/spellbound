@@ -159,17 +159,18 @@ async function undoAbility(id, currentUses, maxUses) {
 }
 
 
-async function startPage() {
+window.addEventListener("load", async () => {
 
     const loggedIn = await verifyPlayerLogin();
 
-    if (!loggedIn) return;
+    if (!loggedIn) {
+        return;
+    }
 
-    await loadCharacterName();
+   await loadCharacterName();
     await loadAbilities();
-}
 
-startPage();
+});
 </script>
 </body>
 </html>

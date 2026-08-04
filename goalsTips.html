@@ -101,6 +101,8 @@
     	    }
 	}
 
+
+
 window.addEventListener("load", async () => {
 
     const loggedIn = await verifyPlayerLogin();
@@ -109,13 +111,8 @@ window.addEventListener("load", async () => {
         return;
     }
 
-
-    await loadGoals();
     await syncCharacterData();
-
-    listenForAnnouncements();
-    checkUnreadAnnouncements();
-    listenForForceLogout();
+    await loadGoals();
 
 });
      </script>

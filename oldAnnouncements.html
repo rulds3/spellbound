@@ -88,7 +88,7 @@ const playerName = localStorage.getItem("playerName");
 }
 
 
-async function startPage(){
+window.addEventListener("load", async () => {
 
     const loggedIn = await verifyPlayerLogin();
 
@@ -98,14 +98,7 @@ async function startPage(){
 
     await loadOldAnnouncements();
 
-    listenForAnnouncements();
-    checkUnreadAnnouncements();
-    listenForForceLogout();
-
-}
-
-
-startPage();
+});
 
 </script>
 </body>
