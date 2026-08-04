@@ -194,30 +194,28 @@ async function resetGame() {
     alert("Game reset complete!");
 }
 
+
 document.getElementById("btn5")
-.addEventListener("click", startCharacterSwap);
+.addEventListener("click", startNinaCallieSwap);
 
 
-async function startCharacterSwap() {
+async function startNinaCallieSwap() {
 
-    const playerName = "Nina Brown";   // player receiving announcement
-    const swapCharacter = "Callie Fu"; // character to swap with
+    const announcementID = 12;
 
 
-    // Send announcement
+    // Send announcement #12
     const { error } = await sb
         .from("announcements")
-        .insert({
-            name: playerName,
-            title: "Character Change",
-            announcement: "Please make this announcement to the group.",
+        .update({
             sent: true,
             read: false
-        });
+        })
+        .eq("id", announcementID);
 
 
     if (error) {
-        console.log(error);
+        console.log("Announcement error:", error);
         alert("Could not send announcement.");
         return;
     }
@@ -226,21 +224,20 @@ async function startCharacterSwap() {
     alert("Announcement sent. Waiting for it to be read...");
 
 
-    waitForRead(playerName, swapCharacter);
+    waitForAnnouncementRead(announcementID);
 
 }
 
 
-async function waitForRead(playerName, swapCharacter) {
+async function waitForAnnouncementRead(announcementID) {
 
     const timer = setInterval(async () => {
+
 
         const { data, error } = await sb
             .from("announcements")
             .select("read")
-            .eq("name", playerName)
-            .order("id", { ascending:false })
-            .limit(1)
+            .eq("id", announcementID)
             .single();
 
 
@@ -254,62 +251,80 @@ async function waitForRead(playerName, swapCharacter) {
 
             clearInterval(timer);
 
-            swapNamesAndAbilities(
-                playerName,
-                swapCharacter
-            );
+            swapNinaAndCallie();
 
         }
+
 
     }, 3000);
 
 }
 
-async function swapNamesAndAbilities(character1, character2) {
+
+async function swapNinaAndCallie() {
 
 
     const { data, error } = await sb
         .from("spellboundPlayers")
         .select("name, abilities")
-        .in("name", [character1, character2]);
+        .in("name", [
+            "Nina Brown",
+            "Callie Fu"
+        ]);
 
 
     if (error) {
         console.log(error);
+        alert("Could not load characters.");
         return;
     }
 
 
-    const first = data.find(
-        p => p.name === character1
+    const nina = data.find(
+        p => p.name === "Nina Brown"
     );
 
-    const second = data.find(
-        p => p.name === character2
+    const callie = data.find(
+        p => p.name === "Callie Fu"
     );
 
 
+    if (!nina || !callie) {
+        alert("Could not find both characters.");
+        return;
+    }
+
+
+    // Move Callie's name and abilities to Nina's row
     await sb
         .from("spellboundPlayers")
         .update({
-            name: second.name,
-            abilities: second.abilities
+            name: callie.name,
+            abilities: callie.abilities
         })
-        .eq("name", first.name);
+        .eq("name", nina.name);
 
 
+    // Move Nina's name and abilities to Callie's row
     await sb
         .from("spellboundPlayers")
         .update({
-            name: first.name,
-            abilities: first.abilities
+            name: nina.name,
+            abilities: nina.abilities
         })
-        .eq("name", second.name);
+        .eq("name", callie.name);
 
 
-    alert("Character swap completed.");
+    alert("Nina Brown and Callie Fu have switched characters.");
 
 }
+
+
+
+
+
+
+
 
 
 
