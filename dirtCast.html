@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dirt and Tips</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+    </style>
+</head>
+
+<body>
+<div id="announcementPopup" class="announcement-popup">
+    <div class="popup-content">
+    	<h2>Please announce to the group</h2>
+	<h3 id="popupTitle"></h3>
+	<p id="popupMessage"></p>
+	<button id="closeAnnouncement">Announcement Made</button>
+    </div>
+</div>
+
+    <h1 id="characterHeader"></h1>
+ 
+
+    <div class="text-box">
+	<h2>Dirt</h2>
+        <div id="dirt"></div>
+	<br>
+	<h2>Cast</h2>
+
+	<div id="cast"></div>
+
+    </div>
+
+    <!-- A simple button to go straight back to your main button screen -->
+    <a href="index.html" class="back-btn">Back</a>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="session.js"></script>
+
+    <script>
+async function syncCharacterData() {
+
+    const playerID = localStorage.getItem("playerID");
+
+    const { data: playerRow, error: dbError } = await sb
+        .from('spellboundPlayers')
+        .select('name')
+        .eq('playerID', playerID)
+        .single();
+
+    if (dbError || !playerRow) {
+        document.getElementById("characterHeader").innerText = "Unauthorized";
+        return;
+    }
+
+    document.getElementById("characterHeader").innerText = playerRow.name;
+}
+
+
+async function loadCast() {
+
+    const { data, error } = await sb
+        .from("spellboundPlayers")
+        .select("name, position, characterDescription")
+        .neq("position", "admin")
+        .order("name");
+
+    if (error) {
+        console.log(error);
+        return;
+    }
+
+
+    const castBox = document.getElementById("cast");
+
+    castBox.innerHTML = "";
+
+
+    const groups = [
+        "Professor",
+        "Student",
+        "Detective"
+    ];
+
+
+    groups.forEach(group => {
+
+        const people = data
+            .filter(person => person.position === group)
+            .sort((a,b) => a.name.localeCompare(b.name));
+
+
+        if (people.length > 0) {
+
+            castBox.innerHTML += `
+                <h3>${group}s</h3>
+            `;
+
+
+            people.forEach(person => {
+
+                castBox.innerHTML += `
+                    <p>
+                        <strong>${person.name}</strong><br>
+                        ${person.characterDescription}
+                    </p>
+                `;
+
+            });
+        }
+
+    });
+
+}
+
+
+
+window.addEventListener("load", async () => {
+
+    const loggedIn = await verifyPlayerLogin();
+
+    if (!loggedIn) {
+        return;
+    }
+
+    await syncCharacterData();
+    await loadCast();
+
+});	
+
+
+window.addEventListener("load", async () => {
+
+    const loggedIn = await verifyPlayerLogin();
+
+    if (!loggedIn) {
+        return;
+    }
+
+    await syncCharacterData();
+
+});
+     </script>
+
+</body>
+</html>
