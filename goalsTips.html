@@ -39,7 +39,7 @@
     <script>
     	async function syncCharacterData() {
             // Check login using your PIN system
-            const playerID = sessionStorage.getItem("playerID");
+            const playerID = localStorage.getItem("playerID");
 
 
             // Pull their data directly from spellboundPlayers
@@ -60,7 +60,7 @@
     	    }
 
 	async function loadGoals() {
-	    const playerID = sessionStorage.getItem("playerID");
+	    const playerID = localStorage.getItem("playerID");
 
     	    const { data: goals, error } = await sb
         	.from("playerGoals")
