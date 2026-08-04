@@ -64,31 +64,37 @@ async function loadGrades() {
             <td>${player.name}</td>
 
             <td>
-                <input
-    type="number"
-    min="0"
-    max="10"
-    value="${player.alchemy ?? ""}"
-    onchange="updateGrade(${player.id}, 'alchemy', this.value)">
-            </td>
+    <select onchange="updateGrade(${player.id}, 'alchemy', this.value)">
+        <option value="">--</option>
+        <option value="A" ${player.alchemy === "A" ? "selected" : ""}>A</option>
+        <option value="B" ${player.alchemy === "B" ? "selected" : ""}>B</option>
+        <option value="C" ${player.alchemy === "C" ? "selected" : ""}>C</option>
+        <option value="D" ${player.alchemy === "D" ? "selected" : ""}>D</option>
+        <option value="F" ${player.alchemy === "F" ? "selected" : ""}>F</option>
+    </select>
+</td>
 
-            <td>
-                <input
-    type="number"
-    min="0"
-    max="10"
-    value="${player.transformation ?? ""}"
-    onchange="updateGrade(${player.id}, 'transformation', this.value)">
-            </td>
+<td>
+    <select onchange="updateGrade(${player.id}, 'transformation', this.value)">
+        <option value="">--</option>
+        <option value="A" ${player.transformation === "A" ? "selected" : ""}>A</option>
+        <option value="B" ${player.transformation === "B" ? "selected" : ""}>B</option>
+        <option value="C" ${player.transformation === "C" ? "selected" : ""}>C</option>
+        <option value="D" ${player.transformation === "D" ? "selected" : ""}>D</option>
+        <option value="F" ${player.transformation === "F" ? "selected" : ""}>F</option>
+    </select>
+</td>
 
-            <td>
-               <input
-    type="number"
-    min="0"
-    max="20"
-    value="${player.foretelling ?? ""}"
-    onchange="updateGrade(${player.id}, 'foretelling', this.value)">
-            </td>
+<td>
+    <select onchange="updateGrade(${player.id}, 'foretelling', this.value)">
+        <option value="">--</option>
+        <option value="A" ${player.foretelling === "A" ? "selected" : ""}>A</option>
+        <option value="B" ${player.foretelling === "B" ? "selected" : ""}>B</option>
+        <option value="C" ${player.foretelling === "C" ? "selected" : ""}>C</option>
+        <option value="D" ${player.foretelling === "D" ? "selected" : ""}>D</option>
+        <option value="F" ${player.foretelling === "F" ? "selected" : ""}>F</option>
+    </select>
+</td>
         </tr>`;
     });
 
@@ -99,7 +105,7 @@ async function updateGrade(id, column, value) {
     const { error } = await sb
         .from("gradeTable")
         .update({
-            [column]: value === "" ? null : Number(value)
+            [column]: value === "" ? null : value
         })
         .eq("id", id);
 
