@@ -37,34 +37,29 @@
 
     <script>
     	async function syncCharacterData() {
-            // Check login using your PIN system
-            const playerID = localStorage.getItem("playerID");
 
+    const playerName = localStorage.getItem("playerName");
 
-            // Pull their data directly from spellboundPlayers
-            const { data: playerRow, error: dbError } = await sb
-                .from('spellboundPlayers')
-                .select('name, tips')
-                .eq('playerID', playerID)
-                .single();
+    document.getElementById("characterHeader").innerText = playerName;
 
-        	if (dbError || !playerRow) {
-            	    document.getElementById("characterHeader").innerText = "Unauthorized";
-              	    return;
-        	}
+    const { data: playerRow, error } = await sb
+        .from('spellboundPlayers')
+        .select('tips')
+        .eq('name', playerName)
+        .single();
 
-        	// Display character information
-        	document.getElementById("characterHeader").innerText = playerRow.name;
-        	document.getElementById("characterTips").innerHTML = playerRow.tips;
-    	    }
+    if (!error && playerRow) {
+        document.getElementById("characterTips").innerHTML = playerRow.tips;
+    }
+}
 
 	async function loadGoals() {
-	    const playerID = localStorage.getItem("playerID");
+	    const playerName = localStorage.getItem("playerName");
 
     	    const { data: goals, error } = await sb
         	.from("playerGoals")
         	.select("*")
-        	.eq("playerID", playerID)
+        	.eq("name", playerName)
     		.order("completed", { ascending: true })
  		.order("id", { ascending: true });
    	    
