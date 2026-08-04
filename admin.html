@@ -203,9 +203,6 @@ async function startNinaCallieSwap() {
         return;
     }
 
-
-    alert("Announcement sent. Waiting for Nina to read it...");
-
     waitForAnnouncementRead(announcementID);
 
 }
@@ -222,25 +219,49 @@ async function waitForAnnouncementRead(announcementID) {
             .eq("id", announcementID)
             .single();
 
-
         if (error) {
             console.log("Read check error:", error);
             return;
         }
 
-
         if (data.read === true) {
 
             clearInterval(timer);
 
-            forceNinaLogout();
+            if (announcementID === 12) {
+                sendLogoutAnnouncement();
+            }
+            else if (announcementID === 13) {
+                forceNinaLogout();
+            }
 
         }
-
 
     }, 3000);
 
 }
+
+
+async function sendLogoutAnnouncement() {
+
+    const { error } = await sb
+        .from("announcements")
+        .update({
+            sent: true,
+            read: false
+        })
+        .eq("id", 13);
+
+    if (error) {
+        console.log("Announcement #13 error:", error);
+        return;
+    }
+
+    waitForAnnouncementRead(13);
+
+}
+
+
 
 
 
@@ -261,7 +282,7 @@ async function forceNinaLogout() {
     }
 
 
-    alert("Nina has been logged out. She can now log in as Callie.");
+    alert("Nina has been logged out.");
 
 }
 
