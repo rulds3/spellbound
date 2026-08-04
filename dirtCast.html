@@ -101,7 +101,7 @@ async function loadCast() {
         if (people.length > 0) {
 
             castBox.innerHTML += `
-	        ${group.charAt(0).toUpperCase() + group.slice(1)}s            
+	        <h3>${group.charAt(0).toUpperCase() + group.slice(1)}s</h3>            
 	    `;
 
 
@@ -137,17 +137,6 @@ window.addEventListener("load", async () => {
 });	
 
 
-window.addEventListener("load", async () => {
-
-    const loggedIn = await verifyPlayerLogin();
-
-    if (!loggedIn) {
-        return;
-    }
-
-    await syncCharacterData();
-
-});
      </script>
 
 </body>
