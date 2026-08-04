@@ -132,18 +132,27 @@ const playerName = sessionStorage.getItem("playerName");
 
 }
 
-window.addEventListener("load", async () => {
+if (document.getElementById("characterSelect")) {
 
-    const loggedIn = await verifyPlayerLogin();
+    loadCharacters();
 
-    if (!loggedIn) {
-        return;
-    }
+}
+else {
 
-    listenForAnnouncements();
-    checkUnreadAnnouncements();
+    window.addEventListener("load", async () => {
 
-});
+        const loggedIn = await verifyPlayerLogin();
+
+        if (!loggedIn) {
+            return;
+        }
+
+        listenForAnnouncements();
+        checkUnreadAnnouncements();
+
+    });
+
+}
 
 
 //Verify player login
@@ -182,6 +191,35 @@ async function verifyPlayerLogin() {
 }
 
 
+async function loadCharacters() {
+
+    const { data, error } = await sb
+        .from("spellboundPlayers")
+        .select("playerID, name")
+        .order("name");
+
+    if (error) {
+        console.log(error);
+        return;
+    }
+
+    const select = document.getElementById("characterSelect");
+
+    data.forEach(player => {
+
+        const option = document.createElement("option");
+
+        option.value = player.playerID;
+        option.textContent = player.name;
+
+        select.appendChild(option);
+
+    });
+
+}
+
+
+loadCharacters();
 
 
 

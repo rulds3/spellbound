@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spellbound Terminal Authentication</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { 
 	    font-family: Arial, sans-serif; 
@@ -76,12 +75,20 @@
     <body>
 	<form id="loginForm">
             <div class="login-card">
+<select id="characterSelect">
+    <option value="">Select Character</option>
+</select>
+
                 <!--Input field is visible right away-->
                 <input type="password" id="pinInput" placeholder="ENTER PIN" maxlength="4">
                 <button id="authBtn" type="submit">Enter Spellbound</button>
                 <div class="status" id="statusMsg"></div>
             </div>
 	</form>
+
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="session.js"></script>
+
 
 	<script>
 	    const SUPABASE_URL = "https://ninumgueglotdpyewmhg.supabase.co";
@@ -95,48 +102,63 @@
 	    });
 
 
-	    // Get playerID from QR code URL
-	    const urlParams = new URLSearchParams(window.location.search);
-	    const playerID = urlParams.get("id");
+//Get all the login information
+document.getElementById("loginForm").addEventListener("submit", async (event) => {
 
-	    // Make sure a QR code was scanned
-	    if (!playerID) {
-    		document.getElementById("pinInput").style.display = "none";
-    		document.getElementById("authBtn").style.display = "none";
-    		document.getElementById("statusMsg").innerText = "Please scan a character card.";
-	    }
+    event.preventDefault();
 
-	    document.getElementById("loginForm").addEventListener("submit", async (event) => {
-		event.preventDefault(); 
-   	    	const enteredPin = document.getElementById("pinInput").value;
-    	    	document.getElementById("statusMsg").innerText = "Checking credentials...";
-	   	const { data, error } = await sb
-        	    .from("spellboundPlayers")
-        	    .select("*")
-        	    .eq("playerID", playerID)
-        	    .eq("pin", enteredPin)
-        	    .single();
+    const playerID = document.getElementById("characterSelect").value;
+    const enteredPin = document.getElementById("pinInput").value;
 
-	    	    if (error || !data) {
-			document.getElementById("statusMsg").innerText = "WRONG PIN";
-        	       	document.getElementById("pinInput").value = "";
-        		return;
-    	    	    }else {
-                       	// Save who logged in
-sessionStorage.setItem("playerID", data.playerID);
-sessionStorage.setItem("playerName", data.name);
-sessionStorage.setItem("playerPosition", data.position);
-			
-			// Admin player ID
-    			if (data.position?.toLowerCase() === "admin") {
-    // Send admin to admin page
-    window.location.href = "admin.html";
-} else {
-    // Send normal players to game dashboard
-    window.location.href = "index.html";
+if (!playerID) {
+
+    document.getElementById("statusMsg").innerText =
+        "Please select your character.";
+
+    return;
 }
-            	    }
-	     });
+
+    document.getElementById("statusMsg").innerText =
+        "Checking credentials...";
+
+
+    const { data, error } = await sb
+        .from("spellboundPlayers")
+        .select("*")
+        .eq("playerID", playerID)
+        .eq("pin", enteredPin)
+        .single();
+
+
+    if (error || !data) {
+
+        document.getElementById("statusMsg").innerText =
+            "WRONG PIN";
+
+        document.getElementById("pinInput").value = "";
+
+        return;
+    }
+
+
+    sessionStorage.setItem("playerID", data.playerID);
+    sessionStorage.setItem("playerName", data.name);
+    sessionStorage.setItem("playerPosition", data.position);
+
+
+    if (data.position?.toLowerCase() === "admin") {
+
+        window.location.href = "admin.html";
+
+    } else {
+
+        window.location.href = "index.html";
+
+    }
+
+});
+
+loadCharacters();
   	</script>
     </body>
 </html>
