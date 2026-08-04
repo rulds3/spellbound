@@ -6,6 +6,12 @@
     <title>Dirt and Tips</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+
+#cast h3 {
+    color: #ffd966;
+    text-align: center;
+    font-size: 1.4rem;
+}
     </style>
 </head>
 
@@ -94,8 +100,8 @@ async function loadCast() {
         if (people.length > 0) {
 
             castBox.innerHTML += `
-                <h3>${group}s</h3>
-            `;
+	        ${group.charAt(0).toUpperCase() + group.slice(1)}s            
+	    `;
 
 
             people.forEach(person => {
