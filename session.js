@@ -204,13 +204,24 @@ async function loadCharacters() {
 
     const { data, error } = await sb
         .from("spellboundPlayers")
-        .select("playerID, name")
-        .order("name");
+        .select("playerID, name, position")
 
     if (error) {
         console.log(error);
         return;
     }
+
+data.sort((a, b) => {
+
+    // Put Admin last
+    if (a.position?.toLowerCase() === "admin") return 1;
+    if (b.position?.toLowerCase() === "admin") return -1;
+
+    // Everyone else alphabetically
+    return a.name.localeCompare(b.name);
+
+});
+
 
     data.forEach(player => {
 
