@@ -219,11 +219,6 @@ async function loadCharacters() {
 }
 
 
-loadCharacters();
-
-
-
-
 // 30 minutes in milliseconds
 const SESSION_TIMEOUT = 30 * 60 * 1000;
 
