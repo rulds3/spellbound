@@ -315,6 +315,7 @@ button:hover {
     width: 100%;
     border-collapse: collapse;
     color: white;
+    table-layout:fixed;
 }
 
 .grade-table th,
@@ -326,10 +327,23 @@ button:hover {
 
 .grade-table th {
     background: #001F3F;
+    color: #ffd966;
+    font-size: 0.9rem;
+    white-space: nowrap;
 }
 
-.grade-table input {
-    width: 60px;
+.grade-table select {
+    width: 90%;
     text-align: center;
     font-size: 1rem;
+}
+
+.grade-table th:first-child,
+.grade-table td:first-child {
+    width: 35%;
+}
+
+.grade-table th:not(:first-child),
+.grade-table td:not(:first-child) {
+    width: 21.66%;
 }
