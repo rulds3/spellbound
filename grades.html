@@ -46,7 +46,7 @@ async function loadGrades() {
 
     const { data, error } = await sb
         .from("gradeTable")
-        .select("*")
+        .select("id, name, alchemy, transformation, foretelling")
         .order("name");
 
     if (error) {
@@ -55,50 +55,48 @@ async function loadGrades() {
     }
 
     const tbody = document.getElementById("gradeTableBody");
-    tbody.innerHTML = "";
+
+    const gradeOptions = (selected) => `
+        <option value="">--</option>
+        <option value="A" ${selected === "A" ? "selected" : ""}>A</option>
+        <option value="B" ${selected === "B" ? "selected" : ""}>B</option>
+        <option value="C" ${selected === "C" ? "selected" : ""}>C</option>
+        <option value="D" ${selected === "D" ? "selected" : ""}>D</option>
+        <option value="F" ${selected === "F" ? "selected" : ""}>F</option>
+    `;
+
+    let html = "";
 
     data.forEach(player => {
 
-        tbody.innerHTML += `
+        html += `
         <tr>
             <td>${player.name}</td>
 
             <td>
-    <select onchange="updateGrade(${player.id}, 'alchemy', this.value)">
-        <option value="">--</option>
-        <option value="A" ${player.alchemy === "A" ? "selected" : ""}>A</option>
-        <option value="B" ${player.alchemy === "B" ? "selected" : ""}>B</option>
-        <option value="C" ${player.alchemy === "C" ? "selected" : ""}>C</option>
-        <option value="D" ${player.alchemy === "D" ? "selected" : ""}>D</option>
-        <option value="F" ${player.alchemy === "F" ? "selected" : ""}>F</option>
-    </select>
-</td>
+                <select onchange="updateGrade(${player.id}, 'alchemy', this.value)">
+                    ${gradeOptions(player.alchemy)}
+                </select>
+            </td>
 
-<td>
-    <select onchange="updateGrade(${player.id}, 'transformation', this.value)">
-        <option value="">--</option>
-        <option value="A" ${player.transformation === "A" ? "selected" : ""}>A</option>
-        <option value="B" ${player.transformation === "B" ? "selected" : ""}>B</option>
-        <option value="C" ${player.transformation === "C" ? "selected" : ""}>C</option>
-        <option value="D" ${player.transformation === "D" ? "selected" : ""}>D</option>
-        <option value="F" ${player.transformation === "F" ? "selected" : ""}>F</option>
-    </select>
-</td>
+            <td>
+                <select onchange="updateGrade(${player.id}, 'transformation', this.value)">
+                    ${gradeOptions(player.transformation)}
+                </select>
+            </td>
 
-<td>
-    <select onchange="updateGrade(${player.id}, 'foretelling', this.value)">
-        <option value="">--</option>
-        <option value="A" ${player.foretelling === "A" ? "selected" : ""}>A</option>
-        <option value="B" ${player.foretelling === "B" ? "selected" : ""}>B</option>
-        <option value="C" ${player.foretelling === "C" ? "selected" : ""}>C</option>
-        <option value="D" ${player.foretelling === "D" ? "selected" : ""}>D</option>
-        <option value="F" ${player.foretelling === "F" ? "selected" : ""}>F</option>
-    </select>
-</td>
+            <td>
+                <select onchange="updateGrade(${player.id}, 'foretelling', this.value)">
+                    ${gradeOptions(player.foretelling)}
+                </select>
+            </td>
         </tr>`;
     });
 
+    tbody.innerHTML = html;
+
 }
+
 
 async function updateGrade(id, column, value) {
 

@@ -265,69 +265,51 @@ if (data.position?.toLowerCase() !== "admin") {
 }
 
 
-// Load all players for dropdown
 async function loadPlayers() {
 
     const { data, error } = await sb
         .from("spellboundPlayers")
-        .select("playerID, name")
-        .order("name", { ascending: true });
-
+        .select("name")
+        .neq("position", "admin")
+        .order("name");
 
     if (error) {
         console.log(error);
         return;
     }
 
-
     const playerSelect = document.getElementById("playerSelect");
 
-    playerSelect.innerHTML = "";
-
+    let html = "";
 
     data.forEach(player => {
-
-        playerSelect.innerHTML += `
+        html += `
             <option value="${player.name}">
                 ${player.name}
             </option>
         `;
-
     });
 
+    playerSelect.innerHTML = html;
 }
-
 
 // Load announcements
 async function loadAnnouncements() {
 
     const { data, error } = await sb
         .from("announcements")
-        .select(`
-    	    id,
-    	    name,
-    	    title,
-    	    announcement,
-    	    sent,
-    	    read
-	`)
-
-	.order("sent", { ascending: true })
-	.order("id", { ascending: true })
+        .select("id, name, title, announcement, sent, read")
+        .order("sent", { ascending: true })
+        .order("id", { ascending: true });
 
     if (error) {
         console.log(error);
         return;
     }
 
-
     announcements = data;
-
-
     displayAnnouncements();
-
 }
-
 
 
 // Display announcements in admin list
@@ -335,70 +317,58 @@ function displayAnnouncements() {
 
     const box = document.getElementById("announcementList");
 
-    box.innerHTML = "";
-
-
     if (announcements.length === 0) {
-
-        box.innerHTML = `
-            <p>No announcements found.</p>
-        `;
-
+        box.innerHTML = "<p>No announcements found.</p>";
         return;
     }
 
-
+    let html = "";
 
     announcements.forEach(item => {
 
-
-        box.innerHTML += `
-
-            <div class="announcement-box 
-                ${item.sent ? "sent" : "pending"}">
+        html += `
+            <div class="announcement-box ${item.sent ? "sent" : "pending"}">
 
                 <h3>${item.title}</h3>
 
                 <p>
                     <strong>Name:</strong>
-		    ${item.name}
+                    ${item.name}
                 </p>
 
                 <p>
                     ${item.announcement}
                 </p>
 
-
                 <p>
                     <strong>Status:</strong>
                     ${item.sent ? "Sent" : "Ready to Send"}
                 </p>
 
+                <button
+                    class="send-button"
+                    onclick="sendAnnouncement(${item.id})">
+                    Send Now
+                </button>
 
-<button 
-    class="send-button"
-    onclick="sendAnnouncement(${item.id})">
-    Send Now
-</button>
+                <button
+                    class="edit-button"
+                    onclick="editAnnouncement(${item.id})">
+                    Edit
+                </button>
 
-<button 
-    class="edit-button"
-    onclick="editAnnouncement(${item.id})">
-    Edit
-</button>
-
-<button 
-    class="delete-button"
-    onclick="deleteAnnouncement(${item.id})">
-    Delete
-</button>
-
+                <button
+                    class="delete-button"
+                    onclick="deleteAnnouncement(${item.id})">
+                    Delete
+                </button>
 
             </div>
-
         `;
 
     });
+
+    box.innerHTML = html;
 
 }
 

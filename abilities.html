@@ -50,13 +50,13 @@
 
 async function loadAbilities() {
 
-const playerName = localStorage.getItem("playerName");
+    const playerName = localStorage.getItem("playerName");
 
-const { data: abilities, error } = await sb
-    .from("playerAbilities")
-    .select("*")
-    .eq("name", playerName)
-    .order("id", { ascending: true });
+    const { data: abilities, error } = await sb
+        .from("playerAbilities")
+        .select("*")
+        .eq("name", playerName)
+        .order("id", { ascending: true });
 
     if (error) {
         console.log(error);
@@ -65,11 +65,11 @@ const { data: abilities, error } = await sb
 
     const abilityBox = document.getElementById("characterAbilities");
 
-    abilityBox.innerHTML = "";
+    let html = "";
 
     abilities.forEach(ability => {
 
-        abilityBox.innerHTML += `
+        html += `
             <div class="ability-box ${ability.usesRemaining <= 0 ? "used-up" : ""}">
 
                 ${ability.ability}
@@ -79,21 +79,26 @@ const { data: abilities, error } = await sb
                     <strong>${ability.usesRemaining}</strong>
                 </p>
 
-                <button class="ability-button" onclick="useAbility(${ability.id}, ${ability.usesRemaining})"
-    ${ability.usesRemaining <= 0 ? "disabled" : ""}>
-    Use Ability
-</button>
+                <button
+                    class="ability-button"
+                    onclick="useAbility(${ability.id}, ${ability.usesRemaining})"
+                    ${ability.usesRemaining <= 0 ? "disabled" : ""}>
+                    Use Ability
+                </button>
 
-<button class="ability-button" onclick="undoAbility(${ability.id}, ${ability.usesRemaining}, ${ability.maxUses})"
-    ${ability.usesRemaining >= ability.maxUses ? "disabled" : ""}>
-    Undo
-</button>
+                <button
+                    class="ability-button"
+                    onclick="undoAbility(${ability.id}, ${ability.usesRemaining}, ${ability.maxUses})"
+                    ${ability.usesRemaining >= ability.maxUses ? "disabled" : ""}>
+                    Undo
+                </button>
 
             </div>
         `;
     });
-}
 
+    abilityBox.innerHTML = html;
+}
 
 async function useAbility(id, currentUses) {
 

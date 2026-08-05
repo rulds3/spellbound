@@ -72,6 +72,7 @@ async function loadCast() {
         .from("spellboundPlayers")
         .select("name, position, characterDescription")
         .neq("position", "admin")
+        .order("position")
         .order("name");
 
     if (error) {
@@ -79,11 +80,7 @@ async function loadCast() {
         return;
     }
 
-
     const castBox = document.getElementById("cast");
-
-    castBox.innerHTML = "";
-
 
     const groups = [
         "professor",
@@ -91,37 +88,33 @@ async function loadCast() {
         "detective"
     ];
 
+    let html = "";
 
     groups.forEach(group => {
 
-        const people = data
-            .filter(person => person.position === group)
-            .sort((a,b) => a.name.localeCompare(b.name));
+        const people = data.filter(person => person.position === group);
 
+        if (people.length === 0) return;
 
-        if (people.length > 0) {
+        html += `
+            <h3>${group.charAt(0).toUpperCase() + group.slice(1)}s</h3>
+        `;
 
-            castBox.innerHTML += `
-	        <h3>${group.charAt(0).toUpperCase() + group.slice(1)}s</h3>            
-	    `;
+        people.forEach(person => {
 
+            html += `
+                <p>
+                    <strong>${person.name}</strong> - ${person.characterDescription}
+                </p>
+            `;
 
-            people.forEach(person => {
-
-                castBox.innerHTML += `
-                    <p>
-                        <strong>${person.name}</strong><br>
-                        ${person.characterDescription}
-                    </p>
-                `;
-
-            });
-        }
+        });
 
     });
 
-}
+    castBox.innerHTML = html;
 
+}
 
 
 window.addEventListener("load", async () => {

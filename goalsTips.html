@@ -68,22 +68,24 @@
         	return;
     	    }
 
-    	    const goalBox = document.getElementById("characterGoals");
-	    goalBox.innerHTML = "";
+    	  const goalBox = document.getElementById("characterGoals");
 
-   	    goals.forEach(goal => {
-        	goalBox.innerHTML += `
-                    <p>
-                        <input 
-                            type="checkbox"
-                            ${goal.completed ? "checked" : ""}
-                            onchange="completeGoal(${goal.id}, this.checked)"
-                        >
-		        ${goal.goalText}
-	   	    </p>
-	        `;
-    	    });
-	}
+let html = "";
+
+goals.forEach(goal => {
+
+    html += `
+        <p>
+            <input
+                type="checkbox"
+                ${goal.completed ? "checked" : ""}
+                onchange="completeGoal(${goal.id}, this.checked)">
+            ${goal.goalText}
+        </p>
+    `;
+});
+
+goalBox.innerHTML = html;
 
 
 	async function completeGoal(id, completed) {

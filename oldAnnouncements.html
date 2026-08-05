@@ -31,54 +31,50 @@
 
 <script>
 
-async function loadOldAnnouncements(){
 
-const playerName = localStorage.getItem("playerName");
+async function loadOldAnnouncements() {
+
+    const playerName = localStorage.getItem("playerName");
 
     const { data, error } = await sb
         .from("announcements")
-        .select("*")
+        .select("title, announcement")
         .eq("name", playerName)
         .eq("sent", true)
-        .order("id", { ascending:false });
+        .order("id", { ascending: false });
 
-
-    if(error){
+    if (error) {
         console.log(error);
         return;
     }
 
-
     const box = document.getElementById("oldAnnouncements");
-
     box.innerHTML = "";
 
-
-    if(data.length === 0){
-
+    if (!data.length) {
         box.innerHTML = "<p>No old announcements.</p>";
         return;
-
     }
-
 
     data.forEach(item => {
 
         box.innerHTML += `
-
             <div class="announcement-box">
-
                 <h3>${item.title}</h3>
-
                 <p>${item.announcement}</p>
-
             </div>
-
         `;
 
     });
-
 }
+
+window.addEventListener("load", async () => {
+
+    if (!verifyPlayerLogin()) return;
+
+    await loadOldAnnouncements();
+
+});
 
 
 window.addEventListener("load", async () => {
