@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Game Timeline</title>
+
+<link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+
+<h1>Game Timeline</h1>
+
+
+<div class="text-box">
+
+<button onclick="createTimeline()">
+Create Timeline
+</button>
+
+
+<div id="timeline"></div>
+
+
+</div>
+
+
+<a href="admin.html" class="back-btn">
+Back
+</a>
+
+
+<script>
+
+function createTimeline() {
+
+
+    const startTime = prompt(
+        "What time does the game start? Example: 6:00 PM"
+    );
+
+
+    if (!startTime) {
+        return;
+    }
+
+
+    let start = new Date(
+        "January 1, 2026 " + startTime
+    );
+
+
+    const events = [
+
+        {
+            minutes: 30,
+            text: "Send Introduction to the Game announcement"
+        },
+
+        {
+            minutes: 60,
+            text: "Alchemy Exam Announcement: You give out potions for exam.<br><br>
+
+	    Deadly Poison: Ashes, Lizard Scales<br>
+	    Tongue-tied Potion: Ashes, Powdered Dragon Fang<br>
+	    Healing Potion: Lizard Scales, Moonbeam Dust"
+        },
+
+        {
+            minutes: 90,
+            text: "Transformation Exam Announcement: You get cauldron AND pencil to Professor Karlsen"
+        },
+
+        {
+            minutes: 115,
+            text: "Foretelling Exam Announcement, THEN End of Exams Announcement onces they're over."
+        },
+
+        {
+            minutes: 135,
+            text: "Gather Professors to determine scholarship winner"
+        },
+
+        {
+            minutes: 170,
+            text: "Announce Scholarship Winner"
+        },
+
+        {
+            minutes: 180,
+            text: "Game End Announcements"
+        }
+
+
+    ];
+
+
+
+    let html = "";
+
+
+    events.forEach(event => {
+
+
+        let time = new Date(
+            start.getTime() +
+            event.minutes * 60000
+        );
+
+
+        html += `
+
+        <p>
+            <strong>
+            ${time.toLocaleTimeString([], {
+                hour: "numeric",
+                minute: "2-digit"
+            })}
+            </strong>
+
+            -
+            ${event.text}
+
+        </p>
+
+        `;
+
+    });
+
+
+
+    document.getElementById("timeline").innerHTML =
+        html;
+
+}
+
+
+</script>
+
+
+</body>
+</html>
