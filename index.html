@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Player Terminal</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-    </style>
 
 </head>
     <body>
@@ -20,7 +18,7 @@
     </div>
 </div>
 
-	<h1 id="characterHeader">Loading...</h1>
+	<h1 id="characterHeader"></h1>
 
    	<!-- Container holding the 9 distinct buttons -->
     	<div class="button-grid">
@@ -30,7 +28,7 @@
             <button class="game-btn" id="btn4">Abilities</button>
             <button class="game-btn" id="btn5">Secret and Info</button>
             <button class="game-btn" id="btn6">Rules</button>
-            <button class="game-btn" id="btn7">The Sorcerer's Scoop</button>
+            <button class="game-btn" id="btn7">Intro & Newspaper</button>
             <button class="game-btn" id="btn8">Exam Information</button>
             <button class="game-btn" id="btn9">Old Announcements</button>
 <button id="professorButton" class="game-btn" style="display:none;">
@@ -44,61 +42,6 @@
 
        	<script>
 
-
-window.addEventListener("load", async () => {
-
-    const loggedIn = await verifyPlayerLogin();
-
-    if (!loggedIn) {
-        return;
-    }
-
-    const position = localStorage.getItem("playerPosition");
-
-    if (position && position.toLowerCase() === "professor") {
-
-        document.getElementById("professorButton").style.display = "block";
-
-    }
-
-});
-
-
-document.getElementById("professorButton")
-.addEventListener("click", () => {
-
-    window.location.href = "professor.html";
-
-});
-
-
-
-    	   async function syncCharacterData() {
-            	// Check login using your PIN system
-        	const playerID = localStorage.getItem("playerID");
-
-        	if (!playerID) {
-            	// No login → send back to login page
-            	    window.location.href = "login.html";
-            	    return;
-                }
-
-            // Pull their data directly from spellboundPlayers
-            const { data: playerRow, error: dbError } = await sb
-                .from('spellboundPlayers')
-                .select('name')
-                .eq('playerID', playerID)
-                .single();
-
-        	if (dbError || !playerRow) {
-            	    document.getElementById("characterHeader").innerText = "Unauthorized";
-            	    return;
-        	}
-
-        	// Display character name
-        	document.getElementById("characterHeader").innerText = playerRow.name;
-    	    }
-
 	    /* Map each button ID to the exact name of the file you want to open*/
    	    const buttonLinks = {
       		"btn1": "characterInfo.html",
@@ -107,26 +50,48 @@ document.getElementById("professorButton")
       		"btn4": "abilities.html",
       		"btn5": "secretNInfo.html",
       		"btn6": "rulesForSpellbound.html",
-      		"btn7": "sorcerersScoop.pdf",
+      		"btn7": "introPaper.html",
       		"btn8": "examInfo.pdf",
 		"btn9": "oldAnnouncements.html",
 		"professorButton": "grades.html"
    	    };
 
-   	    /* Loop through all buttons and add the click feature*/
-   	    document.querySelectorAll('.game-btn').forEach(button => {
-       		button.addEventListener('click', (event) => {
-           	const buttonId = event.target.id;
-           	const targetPage = buttonLinks[buttonId];
 
-           	if (targetPage) {
-           	    /*This line tells the browser to change pages instantly*/
-            	    window.location.href = targetPage;
-            	}
-       	    	});
-  	    });
+
 
 window.addEventListener("load", async () => {
+
+    const player = JSON.parse(
+        localStorage.getItem("playerData")
+    );
+
+    if (player) {
+
+        document.getElementById("characterHeader").innerText =
+            player.name;
+
+        if (player.position?.toLowerCase() === "professor") {
+            document.getElementById("professorButton")
+                .style.display = "block";
+        }
+    }
+
+
+    document.querySelectorAll(".game-btn")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                const targetPage = buttonLinks[button.id];
+
+                if (targetPage) {
+                    window.location.href = targetPage;
+                }
+
+            });
+
+        });
+
 
     const loggedIn = await verifyPlayerLogin();
 
@@ -134,10 +99,7 @@ window.addEventListener("load", async () => {
         return;
     }
 
-    syncCharacterData();
-
-});
-    	   
+});  	   
 	</script>
     </body>
 </html>

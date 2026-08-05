@@ -134,6 +134,7 @@ if (!playerID) {
 localStorage.setItem("playerID", data.playerID);
 localStorage.setItem("playerName", data.name);
 localStorage.setItem("playerPosition", data.position);
+localStorage.setItem("playerData", JSON.stringify(data));
 
 
     if (data.position?.toLowerCase() === "admin") {
