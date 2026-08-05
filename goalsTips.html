@@ -53,12 +53,13 @@
     }
 }
 
+
 	async function loadGoals() {
 	    const playerName = localStorage.getItem("playerName");
 
     	    const { data: goals, error } = await sb
         	.from("playerGoals")
-        	.select("*")
+		.select("id, name, goalText, completed")
         	.eq("name", playerName)
     		.order("completed", { ascending: true })
  		.order("id", { ascending: true });
@@ -86,7 +87,7 @@ goals.forEach(goal => {
 });
 
 goalBox.innerHTML = html;
-
+}
 
 	async function completeGoal(id, completed) {
     	    const { error } = await sb
