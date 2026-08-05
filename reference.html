@@ -18,24 +18,16 @@
     </div>
 </div>
 
-	<h1 id="characterHeader"></h1>
+	<h1>For Reference</h1>
 
    	<!-- Container holding the 9 distinct buttons -->
     	<div class="button-grid">
-	    <button class="game-btn" id="reference">For Reference</button>
-            <button class="game-btn" id="btn7">Intro & Newspaper</button>
+	    <button class="game-btn" id="btn7">Intro & Newspaper</button>
             <button class="game-btn" id="btn1">Character Information</button>
-            <button class="game-btn" id="btn2">Goals and Tips</button>
             <button class="game-btn" id="btn3">Dirt and Cast</button>
-            <button class="game-btn" id="btn4">Abilities</button>
-            <button class="game-btn" id="btn5">Secret and Info</button>
             <button class="game-btn" id="btn8">Exam Information</button>
             <button class="game-btn" id="btn9">Old Announcements</button>
             <button class="game-btn" id="btn6">Rules</button>
-<button id="professorButton" class="game-btn" style="display:none;">
-    Grades
-</button>
-
         </div>
 
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -46,18 +38,12 @@
 	    /* Map each button ID to the exact name of the file you want to open*/
    	    const buttonLinks = {
       		"btn1": "characterInfo.html",
-      		"btn2": "goalsTips.html",
       		"btn3": "dirtCast.html",
-      		"btn4": "abilities.html",
-      		"btn5": "secretNInfo.html",
       		"btn6": "rulesForSpellbound.html",
       		"btn7": "introPaper.html",
       		"btn8": "examInfo.jpg",
 		"btn9": "oldAnnouncements.html",
-		"professorButton": "grades.html"
    	    };
-
-
 
 
 window.addEventListener("load", async () => {
