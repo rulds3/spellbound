@@ -347,3 +347,22 @@ button:hover {
 .grade-table td:not(:first-child) {
     width: 21.66%;
 }
+
+
+
+/* =========================================
+Inline Photos
+========================================= */
+.center-image {
+    display: block;
+    margin: 30px auto;
+    max-width: 90%;
+    height: auto;
+}
+
+.text-box img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+}
