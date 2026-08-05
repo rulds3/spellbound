@@ -48,23 +48,7 @@
 
 window.addEventListener("load", async () => {
 
-    const player = JSON.parse(
-        localStorage.getItem("playerData")
-    );
-
-    if (player) {
-
-        document.getElementById("characterHeader").innerText =
-            player.name;
-
-        if (player.position?.toLowerCase() === "professor") {
-            document.getElementById("professorButton")
-                .style.display = "block";
-        }
-    }
-
-
-    document.querySelectorAll(".game-btn")
+        document.querySelectorAll(".game-btn")
         .forEach(button => {
 
             button.addEventListener("click", () => {
