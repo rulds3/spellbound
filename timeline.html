@@ -4,6 +4,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="session.js"></script>
 
 <title>Game Timeline</title>
 
@@ -135,9 +137,47 @@ function createTimeline() {
 
     document.getElementById("timeline").innerHTML =
         html;
+localStorage.setItem("gameTimeline", html);
 
 }
 
+
+async function checkAdmin() {
+
+    const player = JSON.parse(
+        localStorage.getItem("playerData")
+    );
+
+    if (!player || player.position?.toLowerCase() !== "admin") {
+        window.location.href = "index.html";
+        return false;
+    }
+
+    return true;
+}
+
+
+window.addEventListener("load", async () => {
+
+    const loggedIn = await verifyPlayerLogin();
+
+    if (!loggedIn) {
+        return;
+    }
+
+    const allowed = await checkAdmin();
+
+    if (!allowed) {
+        return;
+    }
+
+const savedTimeline = localStorage.getItem("gameTimeline");
+
+if (savedTimeline) {
+    document.getElementById("timeline").innerHTML = savedTimeline;
+}
+
+});
 
 </script>
 
