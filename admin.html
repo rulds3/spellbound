@@ -73,8 +73,9 @@
     	<div class="button-grid">
             <button class="game-btn" id="btn1">Announcement</button>
             <button class="game-btn" id="btn2">Timeline</button>
-	    <button class="game-btn" Id="btn3">The Library</button>
+	    <button class="game-btn" id="btn3">The Library</button>
             <button class="game-btn" id="btn5">Callie Fu Lost Scarf</button>
+            <button class="game-btn" id="btn7">Angela Unconscious or 8:15</button>	
             <button class="game-btn" id="btn6">Force Logout</button>
             <button class="game-btn" id="btn4">Reset Game</button>
         </div>
@@ -122,44 +123,32 @@ if (data.position?.toLowerCase() !== "admin") {
 
 
 
-    	    async function syncCharacterData() {
-            	// Check login using your PIN system
-        	const playerID = localStorage.getItem("playerID");
+function syncCharacterData() {
 
-        	if (!playerID) {
-            	// No login → send back to login page
-            	    window.location.href = "login.html";
-            	    return;
-                }
+    const player = JSON.parse(localStorage.getItem("playerData"));
 
-                // Pull their data directly from spellboundPlayers
-            	const { data: playerRow, error: dbError } = await sb
-                    .from('spellboundPlayers')
-                    .select('name')
-                    .eq('playerID', playerID)
-                    .single();
+    if (player) {
+        document.getElementById("characterHeader").innerText = player.name;
+    }
 
-        	if (dbError || !playerRow) {
-            	    document.getElementById("characterHeader").innerText = "Unauthorized";
-            	    document.getElementById("characterStatus").innerText = "Character data unmapped.";
-            	    return;
-        	}
+}
 
-        	// Display character name
-        	document.getElementById("characterHeader").innerText = playerRow.name;
-    	    }
-
-
-//Change Nina to Callie Fu
-document.getElementById("btn5")
-.addEventListener("click", startNinaCallieSwap);
 
 
 async function startNinaCallieSwap() {
 
-    const announcementID = 12;
+   const announcementID = 12;
 
-    // Send announcement #12
+const sent = await sendAnnouncement(announcementID);
+
+if (!sent) return;
+
+waitForAnnouncementRead(announcementID);
+
+}
+
+async function sendAnnouncement(announcementID) {
+
     const { error } = await sb
         .from("announcements")
         .update({
@@ -168,18 +157,14 @@ async function startNinaCallieSwap() {
         })
         .eq("id", announcementID);
 
-
     if (error) {
         console.log("Announcement error:", error);
         alert("Could not send announcement.");
-        return;
+        return false;
     }
 
-    waitForAnnouncementRead(announcementID);
-
+    return true;
 }
-
-
 
 async function waitForAnnouncementRead(announcementID) {
 
@@ -216,24 +201,15 @@ async function waitForAnnouncementRead(announcementID) {
 
 async function sendLogoutAnnouncement() {
 
-    const { error } = await sb
-        .from("announcements")
-        .update({
-            sent: true,
-            read: false
-        })
-        .eq("id", 13);
+    const sent = await sendAnnouncement(13);
 
-    if (error) {
-        console.log("Announcement #13 error:", error);
+    if (!sent) {
         return;
     }
 
     waitForAnnouncementRead(13);
 
 }
-
-
 
 
 
@@ -289,7 +265,6 @@ async function resetGame() {
 
 }
 
-	    document.getElementById("btn4").addEventListener("click", resetGame);
 
 	    /* Map each button ID to the exact name of the file you want to open*/
    	    const buttonLinks = {
@@ -323,16 +298,12 @@ async function startAdminPage() {
 
 }
 
+document.getElementById("btn4").addEventListener("click", resetGame);
+document.getElementById("btn5").addEventListener("click", startNinaCallieSwap);
+document.getElementById("btn6").addEventListener("click", forceEveryoneLogout);
+document.getElementById("btn7").addEventListener("click", () => sendAnnouncement(9));
 startAdminPage();	
 
-const logoutButton = document.getElementById("btn6");
-
-if (logoutButton) {
-    logoutButton.addEventListener(
-        "click",
-        forceEveryoneLogout
-    );
-}
 
 </script>
     </body>
