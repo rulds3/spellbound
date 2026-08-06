@@ -352,6 +352,7 @@ Timeline Table
     margin-top: 20px;
     background-color: #161521;
     color: #f5e6c8;
+    table-layout:fixed;
 }
 
 .timeline-table th {
@@ -362,10 +363,16 @@ Timeline Table
     font-size: 18px;
 }
 
+.timeline-table th:first-child {
+    width: 100px;
+    text-align: center;
+}
+
 .timeline-table td {
     border: 2px solid #c9a227;
     padding: 12px;
     vertical-align: top;
+    word-wrap:break-word/
 }
 
 .timeline-table tr:nth-child(even) {
@@ -378,7 +385,19 @@ Timeline Table
     white-space: nowrap;
 }
 
+@media (max-width: 600px) {
 
+    .timeline-table th,
+    .timeline-table td {
+        padding: 8px;
+        font-size: .9rem;
+    }
+
+    .timeline-table td:first-child {
+        width: 70px;
+    }
+
+}
 
 
 
