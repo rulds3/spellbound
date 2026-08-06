@@ -50,13 +50,6 @@ if (!startHour) {
 }
 
 
-let start = new Date();
-
-start.setHours(Number(startHour));
-start.setMinutes(0);
-start.setSeconds(0);
-
-
     const events = [
 
         {
@@ -104,42 +97,35 @@ Gather Professors to determine scholarship winner.`
 
 
 
-    let html = "";
+   let html = "";
+
+events.forEach(event => {
+
+    let totalMinutes = Number(startHour) * 60 + event.minutes;
+
+    let hours = Math.floor(totalMinutes / 60);
+    let minutes = totalMinutes % 60;
 
 
-    events.forEach(event => {
+    html += `
+
+    <p>
+        <strong>
+        ${hours}:${minutes.toString().padStart(2, "0")}
+        </strong>
+
+        -
+        ${event.text}
+
+    </p>
+
+    `;
+
+});
 
 
-        let time = new Date(
-            start.getTime() +
-            event.minutes * 60000
-        );
+document.getElementById("timeline").innerHTML = html;
 
-
-        html += `
-
-        <p>
-            <strong>
-            ${time.toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true
-})}
-            </strong>
-
-            -
-            ${event.text}
-
-        </p>
-
-        `;
-
-    });
-
-
-
-    document.getElementById("timeline").innerHTML =
-        html;
 localStorage.setItem("gameTimeline", html);
 
 }
