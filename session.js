@@ -104,28 +104,16 @@ function showAnnouncementPopup(announcement) {
 //Check for unread announcements
 async function checkUnreadAnnouncements() {
 
-    const playerName = localStorage.getItem("playerName");
+const playerName = localStorage.getItem("playerName");
 
     if (!playerName) {
         return;
     }
 
 
-    // Only check once per login session
-    if (sessionStorage.getItem("checkedAnnouncements")) {
-        return;
-    }
-
-
-    sessionStorage.setItem(
-        "checkedAnnouncements",
-        "true"
-    );
-
-
     const { data, error } = await sb
         .from("announcements")
-        .select("id, title, announcement")
+        .select("*")
         .eq("name", playerName)
         .eq("sent", true)
         .eq("read", false)
@@ -134,7 +122,7 @@ async function checkUnreadAnnouncements() {
 
 
     if (error) {
-        console.log("Announcement check error:", error);
+        console.log(error);
         return;
     }
 
@@ -142,6 +130,30 @@ async function checkUnreadAnnouncements() {
     if (data && data.length > 0) {
         showAnnouncementPopup(data[0]);
     }
+
+}
+
+if (document.getElementById("characterSelect")) {
+
+    loadCharacters();
+
+}
+else {
+
+    window.addEventListener("load", async () => {
+
+        const loggedIn = await verifyPlayerLogin();
+
+        if (!loggedIn) {
+            return;
+        }
+
+        listenForAnnouncements();
+        checkUnreadAnnouncements();
+	listenForForceLogout();
+
+
+    });
 
 }
 
@@ -157,51 +169,20 @@ async function verifyPlayerLogin() {
     }
 
 
-    // Use cached player data first
-    const cachedPlayer = localStorage.getItem("playerData");
-
-    if (cachedPlayer) {
-
-        const player = JSON.parse(cachedPlayer);
-
-        if (player.forceLogout === true &&
-            player.position?.toLowerCase() !== "admin") {
-
-            localStorage.clear();
-            window.location.href = "login.html";
-            return false;
-        }
-
-        return true;
-    }
-
-
-
-    // First time only: get player from database
     const { data: playerRow, error } = await sb
         .from("spellboundPlayers")
-        .select("playerID, name, position, forceLogout")
+        .select("playerID, forceLogout")
         .eq("playerID", playerID)
         .single();
 
 
     if (error || !playerRow) {
-
         localStorage.clear();
         window.location.href = "login.html";
         return false;
     }
 
-
-    // Save player data for future pages
-    localStorage.setItem(
-        "playerData",
-        JSON.stringify(playerRow)
-    );
-
-
-    if (playerRow.forceLogout === true &&
-        playerRow.position?.toLowerCase() !== "admin") {
+    if (playerRow.forceLogout === true) {
 
         localStorage.clear();
         window.location.href = "login.html";
@@ -211,6 +192,7 @@ async function verifyPlayerLogin() {
 
     return true;
 }
+
 
 async function loadCharacters() {
 
@@ -223,7 +205,6 @@ async function loadCharacters() {
     const { data, error } = await sb
         .from("spellboundPlayers")
         .select("playerID, name, position")
-	.order("name");
 
     if (error) {
         console.log(error);
@@ -351,62 +332,5 @@ function listenForForceLogout() {
 }
         )
         .subscribe();
-
-}
-
-if (document.getElementById("characterSelect")) {
-
-    loadCharacters();
-
-}
-else {
-
-    window.addEventListener("load", async () => {
-
-        const loggedIn = await verifyPlayerLogin();
-
-        if (!loggedIn) {
-            return;
-        }
-
-        listenForAnnouncements();
-
-        await checkUnreadAnnouncements();
-
-        listenForForceLogout();
-
-    });
-
-async function checkAdmin() {
-
-    const playerID = localStorage.getItem("playerID");
-
-    if (!playerID) {
-        window.location.href = "login.html";
-        return false;
-    }
-
-
-    const { data, error } = await sb
-        .from("spellboundPlayers")
-        .select("position")
-        .eq("playerID", playerID)
-        .single();
-
-
-    if (error || !data) {
-        window.location.href = "index.html";
-        return false;
-    }
-
-
-    if (data.position?.toLowerCase() !== "admin") {
-        window.location.href = "index.html";
-        return false;
-    }
-
-
-    return true;
-}
 
 }
