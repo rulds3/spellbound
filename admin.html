@@ -8,9 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script src="session.js"></script>
     <style>
-        /* Base page layout */
-      
-        /* 3-column grid structure that collapses to 2 columns or 1 column on small screens */
+       /* 3-column grid structure that collapses to 2 columns or 1 column on small screens */
         .button-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -71,14 +69,12 @@
     <body>
 	<h1 id="characterHeader">Loading...</h1>
 
-   	<!-- Container holding the 6 distinct buttons -->
+   	<!-- Container holding the admin buttons -->
     	<div class="button-grid">
+            <button class="game-btn" id="btn8">Reference</button>
             <button class="game-btn" id="btn1">Announcement</button>
-            <button class="game-btn" id="btn2">Timeline</button>
-            <button class="game-btn" id="btn3">Rules</button>
             <button class="game-btn" id="btn5">Callie Fu Lost Scarf</button>
-            <button class="game-btn" id="btn7">The Sorcerer's Scoop</button>
-            <button class="game-btn" id="btn8">Exam Information</button>
+            <button class="game-btn" id="btn7">8:15 / Angela Unconscious</button>	
             <button class="game-btn" id="btn6">Force Logout</button>
             <button class="game-btn" id="btn4">Reset Game</button>
         </div>
@@ -105,65 +101,56 @@ async function checkAdmin() {
 
 
     if (error || !data) {
-        console.log(error);
-        document.getElementById("adminPanel").classList.add("hidden");
-        document.getElementById("unauthorized").classList.remove("hidden");
-        return false;
-    }
-
-
-if (data.position?.toLowerCase() !== "admin") {
-
-    document.getElementById("adminPanel").classList.add("hidden");
-    document.getElementById("unauthorized").classList.remove("hidden");
-
+    window.location.href = "login.html";
     return false;
 }
 
+
+if (data.position?.toLowerCase() !== "admin") {
+    window.location.href = "index.html";
+    return false;
+}
 
     return true;
 }
 
 
 
-    	    async function syncCharacterData() {
-            	// Check login using your PIN system
-        	const playerID = localStorage.getItem("playerID");
+function syncCharacterData() {
 
-        	if (!playerID) {
-            	// No login → send back to login page
-            	    window.location.href = "login.html";
-            	    return;
-                }
+    const player = JSON.parse(localStorage.getItem("playerData"));
 
-                // Pull their data directly from spellboundPlayers
-            	const { data: playerRow, error: dbError } = await sb
-                    .from('spellboundPlayers')
-                    .select('name')
-                    .eq('playerID', playerID)
-                    .single();
+    if (player) {
+        document.getElementById("characterHeader").innerText = player.name;
+    }
 
-        	if (dbError || !playerRow) {
-            	    document.getElementById("characterHeader").innerText = "Unauthorized";
-            	    document.getElementById("characterStatus").innerText = "Character data unmapped.";
-            	    return;
-        	}
+}
 
-        	// Display character name
-        	document.getElementById("characterHeader").innerText = playerRow.name;
-    	    }
-
-
-//Change Nina to Callie Fu
-document.getElementById("btn5")
-.addEventListener("click", startNinaCallieSwap);
 
 
 async function startNinaCallieSwap() {
 
-    const announcementID = 12;
+   const announcementID = 12;
 
-    // Send announcement #12
+const sent = await sendAnnouncement(announcementID);
+
+if (!sent) return;
+
+waitForAnnouncementRead(announcementID);
+
+}
+
+async function sendAnnouncement(announcementID) {
+
+    const confirmed = confirm(
+        "Are you sure?"
+    );
+
+    if (!confirmed) {
+        return false;
+    }
+
+
     const { error } = await sb
         .from("announcements")
         .update({
@@ -176,13 +163,11 @@ async function startNinaCallieSwap() {
     if (error) {
         console.log("Announcement error:", error);
         alert("Could not send announcement.");
-        return;
+        return false;
     }
 
-    waitForAnnouncementRead(announcementID);
-
+    return true;
 }
-
 
 
 async function waitForAnnouncementRead(announcementID) {
@@ -220,24 +205,15 @@ async function waitForAnnouncementRead(announcementID) {
 
 async function sendLogoutAnnouncement() {
 
-    const { error } = await sb
-        .from("announcements")
-        .update({
-            sent: true,
-            read: false
-        })
-        .eq("id", 13);
+    const sent = await sendAnnouncement(13);
 
-    if (error) {
-        console.log("Announcement #13 error:", error);
+    if (!sent) {
         return;
     }
 
     waitForAnnouncementRead(13);
 
 }
-
-
 
 
 
@@ -293,15 +269,11 @@ async function resetGame() {
 
 }
 
-	    document.getElementById("btn4").addEventListener("click", resetGame);
 
 	    /* Map each button ID to the exact name of the file you want to open*/
    	    const buttonLinks = {
       		"btn1": "adminAnnouncements.html",
-      		"btn2": "timeline.html",
-      		"btn3": "rules.pdf",
-      		"btn7": "sorcerersScoop.pdf",
-      		"btn8": "examInfo.pdf",
+		"btn8": "adminReference.html"
    	    };
 
    	    /* Loop through all buttons and add the click feature*/
@@ -329,16 +301,13 @@ async function startAdminPage() {
 
 }
 
+
+document.getElementById("btn4").addEventListener("click", resetGame);
+document.getElementById("btn5").addEventListener("click", startNinaCallieSwap);
+document.getElementById("btn6").addEventListener("click", forceEveryoneLogout);
+document.getElementById("btn7").addEventListener("click", () => sendAnnouncement(9));
 startAdminPage();	
 
-const logoutButton = document.getElementById("btn6");
-
-if (logoutButton) {
-    logoutButton.addEventListener(
-        "click",
-        forceEveryoneLogout
-    );
-}
 
 </script>
     </body>
