@@ -319,9 +319,8 @@ button:hover {
     height: 45px;
     min-width: 60px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .grade-table td[contenteditable="true"]:focus {
