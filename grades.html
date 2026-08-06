@@ -64,20 +64,22 @@ async function loadGrades() {
     <tr>
         <td>${player.name}</td>
 
+<td contenteditable="true"
+    data-old="${player.alchemy || ""}"
+    onblur="updateGrade(${player.id}, 'alchemy', this)"
+    onkeydown="saveOnEnter(event)">
+    ${player.alchemy || ""}
+</td>
         <td contenteditable="true"
-            onblur="updateGrade(${player.id}, 'alchemy', this.innerText)"
-            onkeydown="saveOnEnter(event)">
-            ${player.alchemy || ""}
-        </td>
-
-        <td contenteditable="true"
-            onblur="updateGrade(${player.id}, 'transformation', this.innerText)"
+    data-old="${player.transformation || ""}"
+            onblur="updateGrade(${player.id}, 'transformation', this)"
             onkeydown="saveOnEnter(event)">
             ${player.transformation || ""}
         </td>
 
         <td contenteditable="true"
-            onblur="updateGrade(${player.id}, 'foretelling', this.innerText)"
+    data-old="${player.foretelling || ""}"
+            onblur="updateGrade(${player.id}, 'foretelling', this)"
             onkeydown="saveOnEnter(event)">
             ${player.foretelling || ""}
         </td>
@@ -98,21 +100,22 @@ function saveOnEnter(event) {
 
 }
 
-async function updateGrade(id, column, value) {
 
-    value = value.trim().toUpperCase();
+async function updateGrade(id, column, cell) {
 
+    let value = cell.innerText.trim().toUpperCase();
 
     const validGrades = ["A", "B", "C", "D", "F"];
 
-
     if (value !== "" && !validGrades.includes(value)) {
 
-        alert("Please enter only A, B, C, D, or F.");
+    alert("Please enter only A, B, C, D, or F.");
 
-        return;
-    }
+    cell.innerText = cell.dataset.old;
+    cell.blur();
 
+    return;
+}
 
     const { error } = await sb
         .from("gradeTable")
@@ -121,14 +124,12 @@ async function updateGrade(id, column, value) {
         })
         .eq("id", id);
 
-
     if (error) {
-
         console.log("Grade update failed:", error);
         return;
-
     }
 
+    cell.dataset.old = value;
 }
 
 
