@@ -40,20 +40,21 @@ Back
 
 function createTimeline() {
 
-
-    const startTime = prompt(
-        "What time does the game start? Example: 6:00 PM"
-    );
-
-
-    if (!startTime) {
-        return;
-    }
+const startHour = prompt(
+    "What hour does the game start? Example: 7"
+);
 
 
-    let start = new Date(
-        "January 1, 2026 " + startTime
-    );
+if (!startHour) {
+    return;
+}
+
+
+let start = new Date();
+
+start.setHours(Number(startHour));
+start.setMinutes(0);
+start.setSeconds(0);
 
 
     const events = [
@@ -120,9 +121,10 @@ Gather Professors to determine scholarship winner.`
         <p>
             <strong>
             ${time.toLocaleTimeString([], {
-                hour: "numeric",
-                minute: "2-digit"
-            })}
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+})}
             </strong>
 
             -
