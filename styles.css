@@ -348,6 +348,16 @@ button:hover {
     width: 21.66%;
 }
 
+.grade-table select {
+    width: 70px;
+    padding: 8px;
+    text-align: center;
+    font-size: 1rem;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
 
 
 /* =========================================
