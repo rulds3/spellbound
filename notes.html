@@ -24,6 +24,11 @@
     box-sizing: border-box;
 }
 
+.notes-box .game-btn {
+    display: block;
+    margin: 20px auto 0;
+}
+
 </style>
 
 </head>
@@ -36,12 +41,33 @@
 
 <textarea id="notes" placeholder="Write your notes here..."></textarea>
 
+<button class="game-btn" onclick="clearNotes()">
+    Clear Notes from Device
+</button>
+
 </div>
 
 <a href="index.html" class="back-btn">Back</a>
 
 
 <script>
+function clearNotes() {
+
+    const confirmed = confirm(
+        "Are you sure you want to delete all notes saved on this device?"
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    localStorage.removeItem("playerNotes");
+
+    notesBox.value = "";
+
+}
+
+
 
 const notesBox = document.getElementById("notes");
 
