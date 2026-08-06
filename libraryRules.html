@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Items</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="announcementPopup" class="announcement-popup">
+    <div class="popup-content">
+    	<h2>Please announce to the group</h2>
+	<h3 id="popupTitle"></h3>
+	<p id="popupMessage"></p>
+	<button id="closeAnnouncement">Announcement Made</button>
+    </div>
+</div>
+
+
+
+    	<h1>Library Items</h1>
+
+<div class="text-box">
+
+<h2>Game Rules</h2>
+
+<h3>Fighting –</h3>
+<p>
+    To attack, must have a weapon OR Magical Attack ability AND wand.
+</p>
+
+<p>
+    In rock, paper, scissors...if attacker:
+</p>
+
+<ul>
+    <li><strong>Wins:</strong> The victim falls unconscious.</li>
+    <li><strong>Ties:</strong> No effect.</li>
+    <li><strong>Loses:</strong> The victim can attack back or flee and can’t be attacked by the same person for 10 min.</li>
+</ul>
+
+
+<h3>Unconscious Characters –</h3>
+
+<ul>
+    <li>They have to be still (unconscious) for 10 min or until healed.</li>
+    <li>If it’s after the End of Exams announcement and they aren’t healed, they die. Use the With Your Last Dying Breath card.</li>
+    <li>An unconscious character can’t be killed...finished off.</li>
+    <li>They can be searched...librarian offers all items to searcher.</li>
+</ul>
+
+
+<h3>Pickpocket –</h3>
+
+<ul>
+    <li>They can only steal 1 gold coin, no more.</li>
+    <li>If the victim doesn’t have the requested item, take something else at random.</li>
+    <li>If the victim doesn’t have anything, the pickpocket attempt fails.</li>
+</ul>
+
+
+<h3>Poison –</h3>
+
+<ul>
+    <li>Only healed with a healing potion.</li>
+    <li>Victim temporarily loses their abilities.</li>
+    <li>Healed after 10 min if before final exams.</li>
+    <li>Dead after 10 min if after final exams. Use With Your Last Dying Breath card.</li>
+</ul>
+
+
+<h3>Arrests –</h3>
+
+<p>
+    Can only be done after End of Exams Announcement.
+</p>
+
+<ul>
+    <li>Librarian keeps arrest warrants once used.</li>
+    <li>Librarian and detective both take them to jail.</li>
+    <li>The arresting detective may confiscate any wands, weapons, or items that they suspect to be related to a crime, but no coins, first aid items, or other valuables or personal effects.</li>
+    <li>The person under arrest can’t use physical abilities like pickpocketing, attacking, etc., but can use talking abilities.</li>
+    <li>The person can resist arrest by attacking the detective, or using Fio Bestia, Velieris, or Glacialis.</li>
+</ul>
+
+<p>
+    Escape is possible if:
+</p>
+
+<ul>
+    <li>Someone can cut the ropes.</li>
+    <li>The jailed player comes up with a good idea and wins rock, paper, scissors with the librarian.</li>
+    <li>They use the Amulet of Power.</li>
+    <li>A detective frees them.</li>
+</ul>
+
+
+<h3>Capturing (Rope) –</h3>
+
+<ul>
+    <li>Rock, paper, scissors with victim.</li>
+    <li>If unsuccessful, must wait 10 min before trying again.</li>
+    <li>Escaping is the same as arresting.</li>
+    <li>If captured before the End of Exams announcement, they automatically find an easy way to escape.</li>
+</ul>
+
+
+<h3>Red Paint –</h3>
+
+<p>
+    If someone chooses to paint another red X, have them leave the playing area for a few moments, then:
+</p>
+
+<p>
+    <em>
+    “Oh, no! A red X has been painted on _________ door!”
+    </em>
+</p>
+
+
+<h3>Ventus Contego – Shantell Andersen and Skyler Patterson</h3>
+
+<ul>
+    <li>They can’t attack or be attacked for 10 minutes.</li>
+</ul>
+
+
+<h3>Reverse Alchemy – Lee Roderick</h3>
+
+<ul>
+    <li>Can’t be used on popularity potion.</li>
+</ul>
+
+
+<h3>Levitas – Veronica Olsen</h3>
+
+<ul>
+    <li>If Veronica wins rock, paper, scissors with librarian, victim is unconscious for 10 minutes (see unconscious).</li>
+    <li>If successful the first time, can’t use a 2nd time on the same player.</li>
+</ul>
+
+<h2>End of the Game</h2>
+
+<p>
+    After all Game End announcements:
+</p>
+
+<ul>
+    <li>Read “The Solution”.</li>
+    <li>
+        Have everyone point to (but don’t reveal yet):
+        <ul>
+            <li>Who they think has been stealing wands.</li>
+            <li>Who they think is Callie Fu.</li>
+            <li>The person who ruined Casey’s motorcycle.</li>
+            <li>The person trying to blow up the school.</li>
+        </ul>
+    </li>
+    <li>
+        Have everyone say who they were, what they were up to, and whether
+        they succeeded or not.
+    </li>
+</ul>
+
+
+
+</div>
+
+    <!-- A simple button to go straight back to your main button screen -->
+    <a href="adminReference.html" class="back-btn">Back</a>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="session.js"></script>
+
+<script>
+
+window.addEventListener("load", async () => {
+
+    const loggedIn = await verifyPlayerLogin();
+
+    if (!loggedIn) {
+        return;
+    }
+
+
+    const admin = await checkAdmin();
+
+    if (!admin) {
+        return;
+    }
+
+});
+
+</script>
+</body>
+</html>
