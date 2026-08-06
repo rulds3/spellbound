@@ -45,15 +45,7 @@ Back
 
 function createTimeline() {
 
-    const existingTimeline = localStorage.getItem("gameTimeline");
-
-    if (existingTimeline) {
-        alert("The timeline has already been created for this game.");
-        return;
-    }
-
-
-    const startHour = prompt(
+     const startHour = prompt(
         "What time are you starting? Example: 7"
     );
 
@@ -140,6 +132,17 @@ localStorage.setItem("gameTimeline", html);
 }
 
 
+wasync function loadTimeline() {
+
+    const savedTimeline = localStorage.getItem("gameTimeline");
+
+    if (savedTimeline) {
+        document.getElementById("timeline").innerHTML = savedTimeline;
+    }
+
+}
+
+
 window.addEventListener("load", async () => {
 
     const loggedIn = await verifyPlayerLogin();
@@ -154,11 +157,7 @@ window.addEventListener("load", async () => {
         return;
     }
 
-const savedTimeline = localStorage.getItem("gameTimeline");
-
-if (savedTimeline) {
-    document.getElementById("timeline").innerHTML = savedTimeline;
-}
+    await loadTimeline();
 
 });
 
