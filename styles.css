@@ -315,8 +315,13 @@ button:hover {
     cursor: text;
     font-size: 1.4rem;
     font-weight: bold;
+
     height: 45px;
     min-width: 60px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .grade-table td[contenteditable="true"]:focus {
