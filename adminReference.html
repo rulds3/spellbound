@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Reference</title>
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+    <body>
+
+	<h1>For Reference</h1>
+
+   	<!-- Container holding the 9 distinct buttons -->
+    	<div class="button-grid">
+ 	    <button class="game-btn" id="btn3">The Library</button>
+            <button class="game-btn" id="btn2">Timeline</button>
+        </div>
+
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="session.js"></script>
+
+       	<script>
+
+	    /* Map each button ID to the exact name of the file you want to open*/
+   	    const buttonLinks = {
+      		"btn3": "library.html",
+      		"btn2": "timeline.html",
+     	    };
+
+
+window.addEventListener("load", async () => {
+
+        document.querySelectorAll(".game-btn")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                const targetPage = buttonLinks[button.id];
+
+                if (targetPage) {
+                    window.location.href = targetPage;
+                }
+
+            });
+
+        });
+
+
+ const loggedIn = await verifyPlayerLogin();
+
+if (!loggedIn) {
+    return;
+}
+
+const admin = await checkAdmin();
+
+if (!admin) {
+    return;
+}
+
+});  	
+
+async function checkAdmin() {
+
+    const playerID = localStorage.getItem("playerID");
+
+    if (!playerID) {
+        window.location.href = "login.html";
+        return false;
+    }
+
+
+    const { data, error } = await sb
+        .from("spellboundPlayers")
+        .select("position")
+        .eq("playerID", playerID)
+        .single();
+
+
+    if (error || !data) {
+        window.location.href = "index.html";
+        return false;
+    }
+
+
+    if (data.position?.toLowerCase() !== "admin") {
+        window.location.href = "index.html";
+        return false;
+    }
+
+
+    return true;
+}   
+	</script>
+    </body>
+</html>
