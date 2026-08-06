@@ -56,49 +56,63 @@ async function loadGrades() {
 
     const tbody = document.getElementById("gradeTableBody");
 
-    const gradeOptions = (selected) => `
-        <option value="">--</option>
-        <option value="A" ${selected === "A" ? "selected" : ""}>A</option>
-        <option value="B" ${selected === "B" ? "selected" : ""}>B</option>
-        <option value="C" ${selected === "C" ? "selected" : ""}>C</option>
-        <option value="D" ${selected === "D" ? "selected" : ""}>D</option>
-        <option value="F" ${selected === "F" ? "selected" : ""}>F</option>
-    `;
+       let html = "";
 
-    let html = "";
+ data.forEach(player => {
 
-    data.forEach(player => {
+    html += `
+    <tr>
+        <td>${player.name}</td>
 
-        html += `
-        <tr>
-            <td>${player.name}</td>
+        <td contenteditable="true"
+            onblur="updateGrade(${player.id}, 'alchemy', this.innerText)"
+            onkeydown="saveOnEnter(event)">
+            ${player.alchemy || ""}
+        </td>
 
-            <td>
-                <select onchange="updateGrade(${player.id}, 'alchemy', this.value)">
-                    ${gradeOptions(player.alchemy)}
-                </select>
-            </td>
+        <td contenteditable="true"
+            onblur="updateGrade(${player.id}, 'transformation', this.innerText)"
+            onkeydown="saveOnEnter(event)">
+            ${player.transformation || ""}
+        </td>
 
-            <td>
-                <select onchange="updateGrade(${player.id}, 'transformation', this.value)">
-                    ${gradeOptions(player.transformation)}
-                </select>
-            </td>
+        <td contenteditable="true"
+            onblur="updateGrade(${player.id}, 'foretelling', this.innerText)"
+            onkeydown="saveOnEnter(event)">
+            ${player.foretelling || ""}
+        </td>
 
-            <td>
-                <select onchange="updateGrade(${player.id}, 'foretelling', this.value)">
-                    ${gradeOptions(player.foretelling)}
-                </select>
-            </td>
-        </tr>`;
-    });
+    </tr>`;
+});
 
     tbody.innerHTML = html;
 
 }
 
+function saveOnEnter(event) {
+
+    if (event.key === "Enter") {
+        event.preventDefault();
+        event.target.blur();
+    }
+
+}
 
 async function updateGrade(id, column, value) {
+
+    value = value.trim().toUpperCase();
+
+
+    const validGrades = ["A", "B", "C", "D", "F"];
+
+
+    if (value !== "" && !validGrades.includes(value)) {
+
+        alert("Please enter only A, B, C, D, or F.");
+
+        return;
+    }
+
 
     const { error } = await sb
         .from("gradeTable")
@@ -107,12 +121,50 @@ async function updateGrade(id, column, value) {
         })
         .eq("id", id);
 
+
+    if (error) {
+
+        console.log("Grade update failed:", error);
+        return;
+
+    }
+
+
+    showSavedMessage();
+
+}
+
+
+    const { error } = await sb
+        .from("gradeTable")
+        .update({
+            [column]: value === "" ? null : value
+        })
+        .eq("id", id);
+
+
     if (error) {
         console.log("Grade update failed:", error);
     }
 
 }
 
+function showSavedMessage() {
+
+    const message = document.getElementById("saveMessage");
+
+    message.innerText = "✓ Saved";
+
+    message.style.color = "#ffd966";
+
+
+    setTimeout(() => {
+
+        message.innerText = "";
+
+    }, 1500);
+
+}
 
 
 window.addEventListener("load", async () => {

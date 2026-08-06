@@ -311,59 +311,32 @@ button:hover {
 /* =========================================
    GRADE TABLE
 ========================================= */
-.grade-table {
-    width: 100%;
-    border-collapse: collapse;
-    color: white;
-    table-layout:fixed;
-}
-
-.grade-table th,
-.grade-table td {
-    border: 2px solid #c9a227;
-    padding: 10px;
-    text-align: center;
-}
-
-.grade-table th {
-    background: #001F3F;
-    color: #ffd966;
-    font-size: 0.9rem;
-    white-space: nowrap;
-}
-
-.grade-table select {
-    width: 90%;
-    text-align: center;
-    font-size: 1rem;
-}
-
-.grade-table th:first-child,
-.grade-table td:first-child {
-    width: 35%;
-}
-
-.grade-table th:not(:first-child),
-.grade-table td:not(:first-child) {
-    width: 21.66%;
-}
-
-.grade-table select {
-    width: 70px;
-    height: 40px;
-    text-align: center;
-    font-size: 1.1rem;
+.grade-table td[contenteditable="true"] {
+    cursor: text;
+    font-size: 1.4rem;
     font-weight: bold;
-    background: #001F3F;
-    color: #ffd966;
-    border: 2px solid #c9a227;
-    border-radius: 6px;
-
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    height: 45px;
+    min-width: 60px;
 }
 
+.grade-table td[contenteditable="true"]:focus {
+    outline: 3px solid #ffd966;
+    background-color: #222;
+}
+
+.grade-table td:first-child {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+
+.grade-table tr:nth-child(even) {
+    background-color: rgba(255,255,255,0.05);
+}
+
+.grade-table tr:hover {
+    background-color: rgba(255,217,102,0.15);
+}
 /* =========================================
 Inline Photos
 ========================================= */
