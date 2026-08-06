@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Announcement Admin</title>
-
-    <link rel="stylesheet" href="styles.css">
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
     <style>
-         body {
+        body {
             background-color: #1b1a24;
             color: #f5e6c8;
             font-family: Georgia, serif;
@@ -38,8 +34,6 @@
             border-bottom: 1px solid #c9a227;
             padding-bottom: 5px;
         }
-
-
 
         label {
             display: block;
@@ -271,51 +265,69 @@ if (data.position?.toLowerCase() !== "admin") {
 }
 
 
+// Load all players for dropdown
 async function loadPlayers() {
 
     const { data, error } = await sb
         .from("spellboundPlayers")
-        .select("name")
-        .neq("position", "admin")
-        .order("name");
+        .select("playerID, name")
+        .order("name", { ascending: true });
+
 
     if (error) {
         console.log(error);
         return;
     }
 
+
     const playerSelect = document.getElementById("playerSelect");
 
-    let html = "";
+    playerSelect.innerHTML = "";
+
 
     data.forEach(player => {
-        html += `
+
+        playerSelect.innerHTML += `
             <option value="${player.name}">
                 ${player.name}
             </option>
         `;
+
     });
 
-    playerSelect.innerHTML = html;
 }
+
 
 // Load announcements
 async function loadAnnouncements() {
 
     const { data, error } = await sb
         .from("announcements")
-        .select("id, name, title, announcement, sent, read")
-        .order("sent", { ascending: true })
-        .order("id", { ascending: true });
+        .select(`
+    	    id,
+    	    name,
+    	    title,
+    	    announcement,
+    	    sent,
+    	    read
+	`)
+
+	.order("sent", { ascending: true })
+	.order("id", { ascending: true })
 
     if (error) {
         console.log(error);
         return;
     }
 
+
     announcements = data;
+
+
     displayAnnouncements();
+
 }
+
 
 
 // Display announcements in admin list
@@ -323,58 +335,70 @@ function displayAnnouncements() {
 
     const box = document.getElementById("announcementList");
 
+    box.innerHTML = "";
+
+
     if (announcements.length === 0) {
-        box.innerHTML = "<p>No announcements found.</p>";
+
+        box.innerHTML = `
+            <p>No announcements found.</p>
+        `;
+
         return;
     }
 
-    let html = "";
+
 
     announcements.forEach(item => {
 
-        html += `
-            <div class="announcement-box ${item.sent ? "sent" : "pending"}">
+
+        box.innerHTML += `
+
+            <div class="announcement-box 
+                ${item.sent ? "sent" : "pending"}">
 
                 <h3>${item.title}</h3>
 
                 <p>
                     <strong>Name:</strong>
-                    ${item.name}
+		    ${item.name}
                 </p>
 
                 <p>
                     ${item.announcement}
                 </p>
 
+
                 <p>
                     <strong>Status:</strong>
                     ${item.sent ? "Sent" : "Ready to Send"}
                 </p>
 
-                <button
-                    class="send-button"
-                    onclick="sendAnnouncement(${item.id})">
-                    Send Now
-                </button>
 
-                <button
-                    class="edit-button"
-                    onclick="editAnnouncement(${item.id})">
-                    Edit
-                </button>
+<button 
+    class="send-button"
+    onclick="sendAnnouncement(${item.id})">
+    Send Now
+</button>
 
-                <button
-                    class="delete-button"
-                    onclick="deleteAnnouncement(${item.id})">
-                    Delete
-                </button>
+<button 
+    class="edit-button"
+    onclick="editAnnouncement(${item.id})">
+    Edit
+</button>
+
+<button 
+    class="delete-button"
+    onclick="deleteAnnouncement(${item.id})">
+    Delete
+</button>
+
 
             </div>
+
         `;
 
     });
-
-    box.innerHTML = html;
 
 }
 
