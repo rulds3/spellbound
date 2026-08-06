@@ -350,15 +350,19 @@ button:hover {
 
 .grade-table select {
     width: 70px;
-    padding: 8px;
+    height: 40px;
     text-align: center;
-    font-size: 1rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    background: #001F3F;
+    color: #ffd966;
+    border: 2px solid #c9a227;
+    border-radius: 6px;
 
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
 }
-
 
 /* =========================================
 Inline Photos
