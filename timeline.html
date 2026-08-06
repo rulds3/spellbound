@@ -25,7 +25,7 @@
 
 <div class="text-box">
 
-<button onclick="createTimeline()">
+<button class="game-btn" onclick="createTimeline()">
 Create Timeline
 </button>
 
@@ -59,8 +59,8 @@ if (!startHour) {
 
         {
             minutes: 30,
-            text: "Send Introduction to the Game announcement.<br>
-	    AND if no one has asked to see the crime scene yet, suggest it to the detectives."
+            text: `Send Introduction to the Game announcement.<br>
+	    AND if no one has asked to see the crime scene yet, suggest it to the detectives.`
         },
 
         {
@@ -135,21 +135,6 @@ document.getElementById("timeline").innerHTML = html;
 
 localStorage.setItem("gameTimeline", html);
 
-}
-
-
-async function checkAdmin() {
-
-    const player = JSON.parse(
-        localStorage.getItem("playerData")
-    );
-
-    if (!player || player.position?.toLowerCase() !== "admin") {
-        window.location.href = "index.html";
-        return false;
-    }
-
-    return true;
 }
 
 
