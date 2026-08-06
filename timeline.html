@@ -10,6 +10,11 @@
 <title>Game Timeline</title>
 
 <link rel="stylesheet" href="styles.css">
+<style>
+.indent {
+    margin-left: 30px;
+}
+</style>
 
 </head>
 
@@ -59,11 +64,11 @@ if (!startHour) {
 
         {
             minutes: 60,
-            text: `Alchemy Exam Announcement: You give out potions for exam.<br><br>
+            text: `Alchemy Exam Announcement: You give out potions for exam.<br>
 
-	    Deadly Poison: Ashes, Lizard Scales<br>
+	    <div class="indent">Deadly Poison: Ashes, Lizard Scales<br>
 	    Tongue-tied Potion: Ashes, Powdered Dragon Fang<br>
-	    Healing Potion: Lizard Scales, Moonbeam Dust`
+	    Healing Potion: Lizard Scales, Moonbeam Dust</div>`
         },
 
         {
@@ -73,13 +78,14 @@ if (!startHour) {
 
         {
             minutes: 115,
-            text: "Foretelling Exam Announcement, THEN End of Exams Announcement once they're over."
+            text: `Foretelling Exam Announcement,<br> 
+	    <div class="indent">THEN End of Exams Announcement once they're over.</div>
         },
 
 	{
             minutes: 135,
             text: `A Message Beyond the Grave Announcement if not already given.<br>
-Gather Professors to determine scholarship winner.`
+<div class="indent">Gather Professors to determine scholarship winner.<div>`
         },
 
         {
