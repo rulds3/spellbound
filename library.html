@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-    </style>
 </head>
 <body>
 
@@ -21,9 +19,8 @@
 
 
 
-    	<h1> The Library </h1>
+    	<h1>The Library</h1>
 
-    <div class="text-box">
     	<div class="text-box">
 
 <h2>Amulet of Power</h2> Whoever brings you both halves of the amulet. Once one ability is used, the other cannot be used by the same person. But if it passes to a new owner, both abilities are available again. Each person can only ever use one ability.
@@ -115,8 +112,7 @@ If the gargoyle stone is sealed into the red box, and then the box is opened, ta
     <li>Third person gets the Defensive Magic Lesson Plan book.</li>
 </ul>
 
-</div>
-	
+
     </div>
 
     <!-- A simple button to go straight back to your main button screen -->
@@ -124,5 +120,26 @@ If the gargoyle stone is sealed into the red box, and then the box is opened, ta
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script src="session.js"></script>
+
+<script>
+
+window.addEventListener("load", async () => {
+
+    const loggedIn = await verifyPlayerLogin();
+
+    if (!loggedIn) {
+        return;
+    }
+
+
+    const admin = await checkAdmin();
+
+    if (!admin) {
+        return;
+    }
+
+});
+
+</script>
 </body>
 </html>
