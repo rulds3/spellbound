@@ -93,7 +93,20 @@ function createTimeline() {
 
 
 
-   let html = "";
+  let html = `
+
+<table class="timeline-table">
+
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>Event</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+`;
 
 events.forEach(event => {
 
@@ -105,19 +118,32 @@ events.forEach(event => {
 
     html += `
 
-    <p>
-        <strong>
-        ${hours}:${minutes.toString().padStart(2, "0")}
-        </strong>
+        <tr>
 
-        -
-        ${event.text}
+            <td>
+                <strong>
+                ${hours}:${minutes.toString().padStart(2, "0")}
+                </strong>
+            </td>
 
-    </p>
+            <td>
+                ${event.text}
+            </td>
+
+        </tr>
 
     `;
 
 });
+
+
+html += `
+
+    </tbody>
+
+</table>
+
+`;
 
 
 document.getElementById("timeline").innerHTML = html;
