@@ -45,15 +45,17 @@ Back
 
 function createTimeline() {
 
-const startHour = prompt(
-    "What hour does the game start? Example: 7"
-);
+    const existingTimeline = localStorage.getItem("gameTimeline");
+
+    if (existingTimeline) {
+        alert("The timeline has already been created for this game.");
+        return;
+    }
 
 
-if (!startHour) {
-    return;
-}
-
+    const startHour = prompt(
+        "What time are you starting? Example: 7"
+    );
 
     const events = [
 
