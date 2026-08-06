@@ -129,41 +129,6 @@ async function updateGrade(id, column, value) {
 
     }
 
-
-    showSavedMessage();
-
-}
-
-
-    const { error } = await sb
-        .from("gradeTable")
-        .update({
-            [column]: value === "" ? null : value
-        })
-        .eq("id", id);
-
-
-    if (error) {
-        console.log("Grade update failed:", error);
-    }
-
-}
-
-function showSavedMessage() {
-
-    const message = document.getElementById("saveMessage");
-
-    message.innerText = "✓ Saved";
-
-    message.style.color = "#ffd966";
-
-
-    setTimeout(() => {
-
-        message.innerText = "";
-
-    }, 1500);
-
 }
 
 
