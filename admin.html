@@ -69,7 +69,7 @@
     <body>
 	<h1 id="characterHeader">Loading...</h1>
 
-   	<!-- Container holding the 6 distinct buttons -->
+   	<!-- Container holding the admin buttons -->
     	<div class="button-grid">
             <button class="game-btn" id="btn8">Reference</button>
             <button class="game-btn" id="btn1">Announcement</button>
@@ -103,21 +103,15 @@ async function checkAdmin() {
 
 
     if (error || !data) {
-        console.log(error);
-        document.getElementById("adminPanel").classList.add("hidden");
-        document.getElementById("unauthorized").classList.remove("hidden");
-        return false;
-    }
-
-
-if (data.position?.toLowerCase() !== "admin") {
-
-    document.getElementById("adminPanel").classList.add("hidden");
-    document.getElementById("unauthorized").classList.remove("hidden");
-
+    window.location.href = "login.html";
     return false;
 }
 
+
+if (data.position?.toLowerCase() !== "admin") {
+    window.location.href = "index.html";
+    return false;
+}
 
     return true;
 }
@@ -282,7 +276,7 @@ async function resetGame() {
    	    const buttonLinks = {
       		"btn1": "adminAnnouncements.html",
       		"btn2": "timeline.html",
-		"btn3": "library.html"
+		"btn3": "library.html",
 		"btn8": "adminReference.html"
    	    };
 
