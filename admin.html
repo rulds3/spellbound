@@ -75,7 +75,7 @@
             <button class="game-btn" id="btn2">Timeline</button>
 	    <button class="game-btn" id="btn3">The Library</button>
             <button class="game-btn" id="btn5">Callie Fu Lost Scarf</button>
-            <button class="game-btn" id="btn7">Angela Unconscious or 8:15</button>	
+            <button class="game-btn" id="btn7">8:15 / Angela Unconscious</button>	
             <button class="game-btn" id="btn6">Force Logout</button>
             <button class="game-btn" id="btn4">Reset Game</button>
         </div>
@@ -149,6 +149,15 @@ waitForAnnouncementRead(announcementID);
 
 async function sendAnnouncement(announcementID) {
 
+    const confirmed = confirm(
+        "Are you sure?"
+    );
+
+    if (!confirmed) {
+        return false;
+    }
+
+
     const { error } = await sb
         .from("announcements")
         .update({
@@ -156,6 +165,7 @@ async function sendAnnouncement(announcementID) {
             read: false
         })
         .eq("id", announcementID);
+
 
     if (error) {
         console.log("Announcement error:", error);
@@ -165,6 +175,7 @@ async function sendAnnouncement(announcementID) {
 
     return true;
 }
+
 
 async function waitForAnnouncementRead(announcementID) {
 
@@ -297,6 +308,7 @@ async function startAdminPage() {
     syncCharacterData();
 
 }
+
 
 document.getElementById("btn4").addEventListener("click", resetGame);
 document.getElementById("btn5").addEventListener("click", startNinaCallieSwap);
