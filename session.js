@@ -377,4 +377,36 @@ else {
 
     });
 
+async function checkAdmin() {
+
+    const playerID = localStorage.getItem("playerID");
+
+    if (!playerID) {
+        window.location.href = "login.html";
+        return false;
+    }
+
+
+    const { data, error } = await sb
+        .from("spellboundPlayers")
+        .select("position")
+        .eq("playerID", playerID)
+        .single();
+
+
+    if (error || !data) {
+        window.location.href = "index.html";
+        return false;
+    }
+
+
+    if (data.position?.toLowerCase() !== "admin") {
+        window.location.href = "index.html";
+        return false;
+    }
+
+
+    return true;
+}
+
 }
