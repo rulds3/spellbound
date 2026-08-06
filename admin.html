@@ -4,11 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Terminal</title>
-    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script src="session.js"></script>
     <style>
-       /* 3-column grid structure that collapses to 2 columns or 1 column on small screens */
+        /* Base page layout */
+        body {
+            font-family: Arial, sans-serif;
+            /*background-color: #1a1a1a;  Use if I want a solid color.*/
+	    background-image: url('magicBackground.png');
+	    background-size: cover;
+   	    background-position: center;
+    	    background-repeat: no-repeat;
+
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+
+        h1 { 
+	    color: #ffd700; 
+	    margin-top: 0; 
+	    text-shadow: 0 2px 4px rgba(0,0,0,0.5); 
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        /* 3-column grid structure that collapses to 2 columns or 1 column on small screens */
         .button-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -69,12 +95,14 @@
     <body>
 	<h1 id="characterHeader">Loading...</h1>
 
-   	<!-- Container holding the admin buttons -->
+   	<!-- Container holding the 6 distinct buttons -->
     	<div class="button-grid">
-            <button class="game-btn" id="btn8">Reference</button>
             <button class="game-btn" id="btn1">Announcement</button>
+            <button class="game-btn" id="btn2">Timeline</button>
+            <button class="game-btn" id="btn3">Rules</button>
             <button class="game-btn" id="btn5">Callie Fu Lost Scarf</button>
-            <button class="game-btn" id="btn7">8:15 / Angela Unconscious</button>	
+            <button class="game-btn" id="btn7">The Sorcerer's Scoop</button>
+            <button class="game-btn" id="btn8">Exam Information</button>
             <button class="game-btn" id="btn6">Force Logout</button>
             <button class="game-btn" id="btn4">Reset Game</button>
         </div>
@@ -101,56 +129,65 @@ async function checkAdmin() {
 
 
     if (error || !data) {
-    window.location.href = "login.html";
-    return false;
-}
+        console.log(error);
+        document.getElementById("adminPanel").classList.add("hidden");
+        document.getElementById("unauthorized").classList.remove("hidden");
+        return false;
+    }
 
 
 if (data.position?.toLowerCase() !== "admin") {
-    window.location.href = "index.html";
+
+    document.getElementById("adminPanel").classList.add("hidden");
+    document.getElementById("unauthorized").classList.remove("hidden");
+
     return false;
 }
+
 
     return true;
 }
 
 
 
-function syncCharacterData() {
+    	    async function syncCharacterData() {
+            	// Check login using your PIN system
+        	const playerID = localStorage.getItem("playerID");
 
-    const player = JSON.parse(localStorage.getItem("playerData"));
+        	if (!playerID) {
+            	// No login → send back to login page
+            	    window.location.href = "login.html";
+            	    return;
+                }
 
-    if (player) {
-        document.getElementById("characterHeader").innerText = player.name;
-    }
+                // Pull their data directly from spellboundPlayers
+            	const { data: playerRow, error: dbError } = await sb
+                    .from('spellboundPlayers')
+                    .select('name')
+                    .eq('playerID', playerID)
+                    .single();
 
-}
+        	if (dbError || !playerRow) {
+            	    document.getElementById("characterHeader").innerText = "Unauthorized";
+            	    document.getElementById("characterStatus").innerText = "Character data unmapped.";
+            	    return;
+        	}
 
+        	// Display character name
+        	document.getElementById("characterHeader").innerText = playerRow.name;
+    	    }
+
+
+//Change Nina to Callie Fu
+document.getElementById("btn5")
+.addEventListener("click", startNinaCallieSwap);
 
 
 async function startNinaCallieSwap() {
 
-   const announcementID = 12;
+    const announcementID = 12;
 
-const sent = await sendAnnouncement(announcementID);
-
-if (!sent) return;
-
-waitForAnnouncementRead(announcementID);
-
-}
-
-async function sendAnnouncement(announcementID) {
-
-    const confirmed = confirm(
-        "Are you sure?"
-    );
-
-    if (!confirmed) {
-        return false;
-    }
-
-
+    // Send announcement #12
     const { error } = await sb
         .from("announcements")
         .update({
@@ -163,11 +200,13 @@ async function sendAnnouncement(announcementID) {
     if (error) {
         console.log("Announcement error:", error);
         alert("Could not send announcement.");
-        return false;
+        return;
     }
 
-    return true;
+    waitForAnnouncementRead(announcementID);
+
 }
+
 
 
 async function waitForAnnouncementRead(announcementID) {
@@ -205,15 +244,24 @@ async function waitForAnnouncementRead(announcementID) {
 
 async function sendLogoutAnnouncement() {
 
-    const sent = await sendAnnouncement(13);
+    const { error } = await sb
+        .from("announcements")
+        .update({
+            sent: true,
+            read: false
+        })
+        .eq("id", 13);
 
-    if (!sent) {
+    if (error) {
+        console.log("Announcement #13 error:", error);
         return;
     }
 
     waitForAnnouncementRead(13);
 
 }
+
+
 
 
 
@@ -269,11 +317,15 @@ async function resetGame() {
 
 }
 
+	    document.getElementById("btn4").addEventListener("click", resetGame);
 
 	    /* Map each button ID to the exact name of the file you want to open*/
    	    const buttonLinks = {
       		"btn1": "adminAnnouncements.html",
-		"btn8": "adminReference.html"
+      		"btn2": "timeline.html",
+      		"btn3": "rules.pdf",
+      		"btn7": "sorcerersScoop.pdf",
+      		"btn8": "examInfo.pdf",
    	    };
 
    	    /* Loop through all buttons and add the click feature*/
@@ -301,13 +353,16 @@ async function startAdminPage() {
 
 }
 
-
-document.getElementById("btn4").addEventListener("click", resetGame);
-document.getElementById("btn5").addEventListener("click", startNinaCallieSwap);
-document.getElementById("btn6").addEventListener("click", forceEveryoneLogout);
-document.getElementById("btn7").addEventListener("click", () => sendAnnouncement(9));
 startAdminPage();	
 
+const logoutButton = document.getElementById("btn6");
+
+if (logoutButton) {
+    logoutButton.addEventListener(
+        "click",
+        forceEveryoneLogout
+    );
+}
 
 </script>
     </body>
