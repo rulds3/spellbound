@@ -58,32 +58,76 @@
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
  <script src="session.js"></script>
 
+```html
 <script>
 
 const notesBox = document.getElementById("notes");
 
 
-// Load saved notes when page opens
-window.addEventListener("load", () => {
+// Load the player's notes from Supabase
+async function loadNotes() {
 
-    notesBox.value =
-        localStorage.getItem("playerNotes") || "";
+    const playerID = localStorage.getItem("playerID");
 
-});
+    if (!playerID) {
+        window.location.href = "login.html";
+        return;
+    }
 
 
-// Save automatically as they type
-notesBox.addEventListener("input", () => {
+    const { data, error } = await sb
+        .from("spellboundPlayers")
+        .select("notes")
+        .eq("playerID", playerID)
+        .single();
 
-    localStorage.setItem(
-        "playerNotes",
-        notesBox.value
-    );
 
-});
+    if (error) {
+        console.log("Error loading notes:", error);
+        alert("Could not load your notes.");
+        return;
+    }
+
+
+    // Put saved notes into the textarea
+    notesBox.value = data?.notes || "";
+}
+
+
+// Save the player's notes to Supabase
+async function saveNotes() {
+
+    const playerID = localStorage.getItem("playerID");
+
+    if (!playerID) {
+        window.location.href = "login.html";
+        return;
+    }
+
+
+    const { error } = await sb
+        .from("spellboundPlayers")
+        .update({
+            notes: notesBox.value
+        })
+        .eq("playerID", playerID);
+
+
+    if (error) {
+        console.log("Error saving notes:", error);
+    }
+}
+
+
+// Load notes when the page opens
+window.addEventListener("load", loadNotes);
+
+
+// Save automatically as the player types
+notesBox.addEventListener("input", saveNotes);
+
 
 </script>
-
 
 </body>
 </html>
