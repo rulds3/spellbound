@@ -16,23 +16,32 @@
 .timeline-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: auto;
+}
+
+.timeline-table col.time-column {
+    width: 1%;
+}
+
+.timeline-table col.event-column {
+    width: 99%;
 }
 
 .timeline-table th:first-child,
 .timeline-table td:first-child {
-    width: 1%;
-    min-width: 55px;
     white-space: nowrap;
-    padding-left: 10px; 
+    width: 1%;
+    padding-left: 10px;
     padding-right: 10px;
 }
 
-.timeline-table th:last-child,
-.timeline-table td:last-child {
-    width: auto;
+.timeline-table th:nth-child(2),
+.timeline-table td:nth-child(2) {
+    width: 99%;
 }
 
 </style>
+
 
 </head>
 
@@ -124,17 +133,17 @@ function createTimeline() {
     ];
 
 
-
-  let html = `
+let html = `
 
 <table class="timeline-table">
 
+    <colgroup>
+        <col class="time-column">
+        <col class="event-column">
+    </colgroup>
+
     <thead>
-        <tr>
-            <th>Time</th>
-            <th>Event</th>
-        </tr>
-    </thead>
+
 
     <tbody>
 
