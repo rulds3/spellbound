@@ -73,7 +73,8 @@
     	<div class="button-grid">
             <button class="game-btn" id="btn8">Reference</button>
             <button class="game-btn" id="btn1">Announcement</button>
-            <button class="game-btn" id="btn5">Callie Fu Lost Scarf</button>
+            <button class="game-btn" id="btn2">Grades</button>
+            <button class="game-btn" id="btn5">Lost Scarf</button>
             <button class="game-btn" id="btn7">8:15 / Angela Unconscious</button>	
             <button class="game-btn" id="btn6">Force Logout</button>
             <button class="game-btn" id="btn4">Reset Game</button>
@@ -264,8 +265,6 @@ async function resetGame() {
         return;
     }
 
-    localStorage.clear();
-
     alert("Game reset complete!");
 
 }
@@ -274,6 +273,7 @@ async function resetGame() {
 	    /* Map each button ID to the exact name of the file you want to open*/
    	    const buttonLinks = {
       		"btn1": "adminAnnouncements.html",
+      		"btn2": "grades.html",
 		"btn8": "adminReference.html"
    	    };
 
