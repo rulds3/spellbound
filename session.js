@@ -203,7 +203,6 @@ async function verifyPlayerLogin() {
     if (playerRow.forceLogout === true &&
         playerRow.position?.toLowerCase() !== "admin") {
 
-        localStorage.clear();
         window.location.href = "login.html";
         return false;
     }

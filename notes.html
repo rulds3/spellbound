@@ -39,10 +39,6 @@
 
 <div class="text-box notes-box">
 
-<button class="game-btn" onclick="clearNotes()">
-    Clear Notes From This Device
-</button>
-
 <textarea id="notes" placeholder="Write your notes here..."></textarea>
 
 </div>
@@ -51,23 +47,6 @@
 
 
 <script>
-function clearNotes() {
-
-    const confirmed = confirm(
-        "Are you sure you want to delete all game notes saved on this device?"
-    );
-
-    if (!confirmed) {
-        return;
-    }
-
-    localStorage.removeItem("playerNotes");
-
-    notesBox.value = "";
-
-}
-
-
 
 const notesBox = document.getElementById("notes");
 
