@@ -301,7 +301,7 @@ async function loadAnnouncements() {
 
     const { data, error } = await sb
         .from("announcements")
-        .select("id, name, title, announcement, sent, read")
+        .select("id, name, title, announcement, adminNotes, sent, read")
         .order("sent", { ascending: true })
         .order("id", { ascending: true });
 
@@ -342,6 +342,19 @@ function displayAnnouncements() {
                 <p>
                     ${item.announcement}
                 </p>
+
+${ 
+item.adminNotes 
+? ` 
+<div class="admin-notes"> 
+<strong>Admin Notes:</strong> 
+<p>${item.adminNotes}</p> 
+</div> ` 
+: "" 
+}
+
+
+
 
                 <p>
                     <strong>Status:</strong>
