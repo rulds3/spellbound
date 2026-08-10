@@ -166,8 +166,6 @@ async function verifyPlayerLogin() {
 
         if (player.forceLogout === true &&
             player.position?.toLowerCase() !== "admin") {
-
-            localStorage.clear();
             window.location.href = "login.html";
             return false;
         }
@@ -186,8 +184,6 @@ async function verifyPlayerLogin() {
 
 
     if (error || !playerRow) {
-
-        localStorage.clear();
         window.location.href = "login.html";
         return false;
     }
@@ -344,8 +340,6 @@ if (
 ) {
 
         console.log("Logging this player out");
-
-        localStorage.clear();
         window.location.href = "login.html";
     }
 
