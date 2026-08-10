@@ -170,6 +170,43 @@ async function sendAnnouncement(announcementID) {
     return true;
 }
 
+async function transferNinaNotesToCallie() {
+
+    // Get Nina Brown's notes
+    const { data: nina, error: ninaError } = await sb
+        .from("spellboundPlayers")
+        .select("notes")
+        .eq("name", "Nina Brown")
+        .single();
+
+
+    if (ninaError || !nina) {
+        console.log("Nina notes error:", ninaError);
+        alert("Could not retrieve Nina's notes.");
+        return false;
+    }
+
+
+    // Copy Nina's notes to Callie Fu
+    const { error: callieError } = await sb
+        .from("spellboundPlayers")
+        .update({
+            notes: nina.notes || ""
+        })
+        .eq("name", "Callie Fu");
+
+
+    if (callieError) {
+        console.log("Callie notes error:", callieError);
+        alert("Could not transfer Nina's notes to Callie.");
+        return false;
+    }
+
+
+    console.log("Nina's notes transferred to Callie.");
+    return true;
+}
+
 
 async function waitForAnnouncementRead(announcementID) {
 
@@ -191,6 +228,12 @@ async function waitForAnnouncementRead(announcementID) {
             clearInterval(timer);
 
             if (announcementID === 12) {
+		// Transfer Nina's notes to Callie 
+		const transferred = await transferNinaNotesToCallie(); 
+
+		if (!transferred) 
+			{ return; }
+
                 sendLogoutAnnouncement();
             }
             else if (announcementID === 13) {
